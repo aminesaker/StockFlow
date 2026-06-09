@@ -158,7 +158,7 @@ export async function updateOrderStatus(id: string, status: string) {
           .eq('id', id)
           .single()
 
-        const customer = (order?.customer as { email: string; full_name: string } | null)
+        const customer = (order?.customer as { email: string; full_name: string }[] | null)?.[0]
         const invoice = (order?.invoices as { id: string }[] | null)?.[0]
 
         if (customer?.email && invoice?.id) {

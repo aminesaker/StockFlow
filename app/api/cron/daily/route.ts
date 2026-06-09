@@ -66,7 +66,7 @@ export async function GET(req: NextRequest) {
     .eq('status', 'overdue')
 
   for (const inv of (overdueList ?? [])) {
-    const customer = inv.customer as { email: string; full_name: string } | null
+    const customer = (inv.customer as { email: string; full_name: string }[] | null)?.[0]
     if (!customer?.email) continue
 
     const dueDate = new Date(inv.due_date)
