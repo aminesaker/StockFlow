@@ -14,8 +14,14 @@ const createOrderSchema = z.object({
   })).min(1, 'Au moins un article requis'),
 })
 
+async function getUserId() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Non authentifié')
+  return { supabase, userId: user.id }
+}
+
 export async function createOrder(formData: FormData) {
-  // Parse items JSON from form
   let items
   try {
     items = JSON.parse(formData.get('items') as string)
@@ -34,7 +40,7 @@ export async function createOrder(formData: FormData) {
   const { customer_id, notes, items: orderItems } = parsed.data
   const total_amount = orderItems.reduce((s, i) => s + i.quantity * i.unit_price, 0)
 
-  const supabase = await createClient()
+  const { supabase, userId } = await getUserId()
 
   // Vérifier le stock disponible
   for (const item of orderItems) {
@@ -53,16 +59,16 @@ export async function createOrder(formData: FormData) {
     }
   }
 
-  // Créer la commande
+  // Créer la commande avec user_id
   const { data: order, error: orderError } = await supabase
     .from('orders')
-    .insert({ customer_id, notes, total_amount, status: 'pending' })
+    .insert({ customer_id, notes, total_amount, status: 'pending', user_id: userId })
     .select()
     .single()
 
   if (orderError || !order) return { error: { _root: [orderError?.message ?? 'Erreur création commande'] } }
 
-  // Insérer les lignes
+  // Insérer les lignes (RLS order_items vérifie via orders.user_id)
   const { error: itemsError } = await supabase.from('order_items').insert(
     orderItems.map((item) => ({
       order_id: order.id,
@@ -73,7 +79,6 @@ export async function createOrder(formData: FormData) {
   )
 
   if (itemsError) {
-    // Rollback manuel : supprimer la commande
     await supabase.from('orders').delete().eq('id', order.id)
     return { error: { _root: [itemsError.message] } }
   }
@@ -93,7 +98,7 @@ export async function createOrder(formData: FormData) {
 }
 
 export async function updateOrderStatus(id: string, status: string) {
-  const supabase = await createClient()
+  const { supabase } = await getUserId()
   const { error } = await supabase.from('orders').update({ status }).eq('id', id)
 
   if (error) return { error: error.message }
@@ -103,7 +108,7 @@ export async function updateOrderStatus(id: string, status: string) {
 }
 
 export async function deleteOrder(id: string) {
-  const supabase = await createClient()
+  const { supabase } = await getUserId()
   const { error } = await supabase.from('orders').delete().eq('id', id)
 
   if (error) return { error: error.message }

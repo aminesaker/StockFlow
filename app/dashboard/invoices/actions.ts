@@ -4,6 +4,13 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { invoiceSchema } from '@/lib/validations'
 
+async function getUserId() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Non authentifié')
+  return { supabase, userId: user.id }
+}
+
 export async function createInvoice(formData: FormData) {
   const parsed = invoiceSchema.safeParse({
     customer_id: formData.get('customer_id'),
@@ -15,21 +22,18 @@ export async function createInvoice(formData: FormData) {
 
   if (!parsed.success) return { error: parsed.error.flatten().fieldErrors }
 
-  const supabase = await createClient()
+  const { supabase, userId } = await getUserId()
 
-  // Génère le numéro de facture via la fonction SQL
-  const { data: invoiceNumber, error: numError } = await supabase
-    .rpc('generate_invoice_number')
-
+  const { data: invoiceNumber, error: numError } = await supabase.rpc('generate_invoice_number')
   if (numError) return { error: { _root: [numError.message] } }
 
-  const payload = {
+  const { error } = await supabase.from('invoices').insert({
     ...parsed.data,
     invoice_number: invoiceNumber,
     order_id: parsed.data.order_id || null,
-  }
+    user_id: userId,
+  })
 
-  const { error } = await supabase.from('invoices').insert(payload)
   if (error) return { error: { _root: [error.message] } }
 
   revalidatePath('/dashboard/invoices')
@@ -37,11 +41,9 @@ export async function createInvoice(formData: FormData) {
   return { success: true }
 }
 
-// Crée une facture directement depuis une commande (1 clic)
 export async function createInvoiceFromOrder(orderId: string) {
-  const supabase = await createClient()
+  const { supabase, userId } = await getUserId()
 
-  // Récupère la commande + client
   const { data: order, error: orderError } = await supabase
     .from('orders')
     .select('*, customer:customers(id, full_name)')
@@ -50,7 +52,6 @@ export async function createInvoiceFromOrder(orderId: string) {
 
   if (orderError || !order) return { error: 'Commande introuvable' }
 
-  // Vérifie qu'une facture n'existe pas déjà pour cette commande
   const { data: existing } = await supabase
     .from('invoices')
     .select('id, invoice_number')
@@ -59,12 +60,9 @@ export async function createInvoiceFromOrder(orderId: string) {
 
   if (existing) return { error: `Facture ${existing.invoice_number} existe déjà pour cette commande` }
 
-  const { data: invoiceNumber, error: numError } = await supabase
-    .rpc('generate_invoice_number')
-
+  const { data: invoiceNumber, error: numError } = await supabase.rpc('generate_invoice_number')
   if (numError) return { error: numError.message }
 
-  // Échéance = 30 jours
   const dueDate = new Date()
   dueDate.setDate(dueDate.getDate() + 30)
 
@@ -75,6 +73,7 @@ export async function createInvoiceFromOrder(orderId: string) {
     amount: order.total_amount,
     due_date: dueDate.toISOString().split('T')[0],
     status: 'draft',
+    user_id: userId,
   })
 
   if (error) return { error: error.message }
@@ -85,8 +84,11 @@ export async function createInvoiceFromOrder(orderId: string) {
   return { success: true, invoiceNumber }
 }
 
-export async function updateInvoiceStatus(id: string, status: string) {
-  const supabase = await createClient()
+export async function updateInvoiceStatus(
+  id: string,
+  status: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled'
+) {
+  const { supabase } = await getUserId()
 
   const update: Record<string, unknown> = { status }
   if (status === 'paid') update.paid_at = new Date().toISOString()
@@ -99,7 +101,7 @@ export async function updateInvoiceStatus(id: string, status: string) {
 }
 
 export async function deleteInvoice(id: string) {
-  const supabase = await createClient()
+  const { supabase } = await getUserId()
   const { error } = await supabase.from('invoices').delete().eq('id', id)
 
   if (error) return { error: error.message }

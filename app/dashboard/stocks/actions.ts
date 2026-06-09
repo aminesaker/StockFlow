@@ -4,6 +4,13 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { productSchema } from '@/lib/validations'
 
+async function getUserId() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Non authentifié')
+  return { supabase, userId: user.id }
+}
+
 export async function createProduct(formData: FormData) {
   const raw = {
     name: formData.get('name'),
@@ -18,12 +25,10 @@ export async function createProduct(formData: FormData) {
   }
 
   const parsed = productSchema.safeParse(raw)
-  if (!parsed.success) {
-    return { error: parsed.error.flatten().fieldErrors }
-  }
+  if (!parsed.success) return { error: parsed.error.flatten().fieldErrors }
 
-  const supabase = await createClient()
-  const { error } = await supabase.from('products').insert(parsed.data)
+  const { supabase, userId } = await getUserId()
+  const { error } = await supabase.from('products').insert({ ...parsed.data, user_id: userId })
 
   if (error) return { error: { _root: [error.message] } }
 
@@ -46,11 +51,10 @@ export async function updateProduct(id: string, formData: FormData) {
   }
 
   const parsed = productSchema.safeParse(raw)
-  if (!parsed.success) {
-    return { error: parsed.error.flatten().fieldErrors }
-  }
+  if (!parsed.success) return { error: parsed.error.flatten().fieldErrors }
 
-  const supabase = await createClient()
+  const { supabase } = await getUserId()
+  // RLS filtre automatiquement par user_id
   const { error } = await supabase.from('products').update(parsed.data).eq('id', id)
 
   if (error) return { error: { _root: [error.message] } }
@@ -60,7 +64,7 @@ export async function updateProduct(id: string, formData: FormData) {
 }
 
 export async function deleteProduct(id: string) {
-  const supabase = await createClient()
+  const { supabase } = await getUserId()
   const { error } = await supabase.from('products').delete().eq('id', id)
 
   if (error) return { error: error.message }
@@ -71,8 +75,6 @@ export async function deleteProduct(id: string) {
 }
 
 // ── Import CSV ─────────────────────────────────────────────────────────────────
-// Colonnes attendues (même ordre que le template) :
-// name, sku, description, price, stock_quantity, low_stock_threshold, category, image_url
 
 type CsvRow = {
   name: string; sku: string; description?: string
@@ -91,7 +93,6 @@ function parseCsv(text: string): CsvRow[] {
   }
 
   return lines.slice(1).map((line, i) => {
-    // Gestion basique des champs entre guillemets
     const values: string[] = []
     let current = ''
     let inQuotes = false
@@ -140,12 +141,13 @@ export async function importProductsCsv(formData: FormData) {
 
   if (!rows.length) return { error: 'Aucune ligne à importer.' }
 
-  const supabase = await createClient()
+  const { supabase, userId } = await getUserId()
 
-  // Upsert sur la clé SKU
+  const rowsWithUser = rows.map((r) => ({ ...r, user_id: userId }))
+
   const { error, count } = await supabase
     .from('products')
-    .upsert(rows, { onConflict: 'sku', ignoreDuplicates: false })
+    .upsert(rowsWithUser, { onConflict: 'sku', ignoreDuplicates: false })
     .select('id')
 
   if (error) return { error: error.message }
