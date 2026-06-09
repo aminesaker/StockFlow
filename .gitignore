@@ -40,3 +40,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# debug artifacts (Cowork)
+/scan.js
+/scan2.js
+/scan3.js
+/_scan.js
+/tsconfig.check.json

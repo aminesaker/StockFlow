@@ -10,6 +10,8 @@ const navItems = [
   { href: '/dashboard/orders', label: 'Commandes', icon: '🛒', exact: false },
   { href: '/dashboard/customers', label: 'Clients', icon: '👥', exact: false },
   { href: '/dashboard/invoices', label: 'Factures', icon: '🧾', exact: false },
+  { href: '/dashboard/settings', label: 'Paramètres', icon: '⚙️', exact: false },
+  { href: '/dashboard/api-docs', label: 'API', icon: '🔌', exact: false },
 ]
 
 type Props = { userEmail: string }

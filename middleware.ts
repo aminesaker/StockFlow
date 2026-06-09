@@ -36,7 +36,8 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/login') ||
     pathname.startsWith('/register') ||
     pathname.startsWith('/payment') ||
-    pathname.startsWith('/api/webhooks')
+    pathname.startsWith('/api/webhooks') ||
+    pathname.startsWith('/api/v1')
 
   if (!user && !isPublic) {
     return NextResponse.redirect(new URL('/login', request.url))
