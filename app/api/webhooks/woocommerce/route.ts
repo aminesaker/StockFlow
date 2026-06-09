@@ -146,6 +146,12 @@ async function handleOrder(
     if (existing && existing.status !== status) {
       await supabase.from('orders').update({ status }).eq('id', existing.id)
 
+      // Restock si la commande passe en annulée/remboursée (mapWcStatus
+      // mappe 'cancelled', 'refunded' et 'failed' vers 'cancelled').
+      if (status === 'cancelled' && existing.status !== 'cancelled') {
+        await restockOrder(supabase, existing.id)
+      }
+
       // Auto-facturation si passage en "delivered"
       if (status === 'delivered' && settings?.auto_invoice !== false) {
         await triggerAutoInvoice(supabase, userId, existing.id)
@@ -257,6 +263,27 @@ async function handleOrder(
     const { data: authUser } = await supabase.auth.admin.getUserById(userId)
     const email = userSettings?.notify_email ?? authUser?.user?.email
     if (email) await sendStockAlert(email, { products: stockAlerts }).catch(console.error)
+  }
+}
+
+// ── Restock (annulation / remboursement) ───────────────────────────────────
+
+// Ré-incrémente le stock des produits d'une commande annulée/remboursée.
+async function restockOrder(
+  supabase: ReturnType<typeof getServiceClient>,
+  orderId: string
+) {
+  const { data: items } = await supabase
+    .from('order_items')
+    .select('product_id, quantity')
+    .eq('order_id', orderId)
+
+  if (!items) return
+  for (const it of items) {
+    await supabase.rpc('increment_stock', {
+      p_product_id: it.product_id,
+      p_quantity: it.quantity,
+    })
   }
 }
 
