@@ -1,7 +1,7 @@
 // ============================================================
 // Plomberie commune des webhooks de synchro : auth par clé API,
 // rate limiting, vérification de signature (déléguée à l'adaptateur),
-// parsing et dispatch vers le cœur. Réutilisé par chaque route plateforme.
+// parsing, dispatch vers le cœur, et capture d'erreurs (observabilité).
 // ============================================================
 import { NextRequest, NextResponse } from 'next/server'
 import { createHash } from 'crypto'
@@ -15,6 +15,7 @@ import {
   upsertCustomer,
 } from './core'
 import { checkRateLimit, RATE_LIMITS } from '@/lib/rate-limit'
+import { logError } from '@/lib/observability'
 import type { PlatformAdapter } from './types'
 
 function ok(message: string) {
@@ -78,32 +79,42 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
   const action = adapter.parse(req.headers, payload)
   const src = adapter.source
 
-  // 6. Dispatch vers le cœur
-  switch (action.kind) {
-    case 'ping':
-      return ok('ping')
-    case 'ignore':
-      return ok(`ignoré (${action.reason})`)
-    case 'product.upsert': {
-      const r = await upsertProduct(supabase, userId, src, action.product)
-      return ok(`product ${r} — ${src}#${action.product.externalId}`)
+  // 6. Dispatch vers le cœur (avec capture d'erreurs)
+  try {
+    switch (action.kind) {
+      case 'ping':
+        return ok('ping')
+      case 'ignore':
+        return ok(`ignoré (${action.reason})`)
+      case 'product.upsert': {
+        const r = await upsertProduct(supabase, userId, src, action.product)
+        return ok(`product ${r} — ${src}#${action.product.externalId}`)
+      }
+      case 'product.delete':
+        await deleteProduct(supabase, userId, src, { externalId: action.externalId, sku: action.sku })
+        return ok(`product deleted — ${src}`)
+      case 'order.created':
+        await createOrder(supabase, userId, src, action.order, settings)
+        return ok(`order created — ${src}#${action.order.externalId}`)
+      case 'order.updated':
+        await updateOrder(supabase, userId, src, action.order, settings)
+        return ok(`order updated — ${src}#${action.order.externalId}`)
+      case 'order.deleted':
+        await deleteOrder(supabase, userId, src, action.externalId)
+        return ok(`order deleted — ${src}#${action.externalId}`)
+      case 'customer.upsert':
+        await upsertCustomer(supabase, userId, action.customer)
+        return ok(`customer upserted — ${src}`)
+      default:
+        return ok('ignoré')
     }
-    case 'product.delete':
-      await deleteProduct(supabase, userId, src, { externalId: action.externalId, sku: action.sku })
-      return ok(`product deleted — ${src}`)
-    case 'order.created':
-      await createOrder(supabase, userId, src, action.order, settings)
-      return ok(`order created — ${src}#${action.order.externalId}`)
-    case 'order.updated':
-      await updateOrder(supabase, userId, src, action.order, settings)
-      return ok(`order updated — ${src}#${action.order.externalId}`)
-    case 'order.deleted':
-      await deleteOrder(supabase, userId, src, action.externalId)
-      return ok(`order deleted — ${src}#${action.externalId}`)
-    case 'customer.upsert':
-      await upsertCustomer(supabase, userId, action.customer)
-      return ok(`customer upserted — ${src}`)
-    default:
-      return ok('ignoré')
+  } catch (e) {
+    await logError(supabase, {
+      userId,
+      source: src,
+      context: action.kind,
+      message: e,
+    })
+    return err('Erreur interne de synchronisation', 500)
   }
 }
