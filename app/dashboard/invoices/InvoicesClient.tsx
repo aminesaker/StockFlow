@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import Link from 'next/link'
+import { toast } from 'sonner'
 import type { Customer, Invoice, Order } from '@/types'
 import InvoiceForm from '@/components/invoices/InvoiceForm'
 import { deleteInvoice, updateInvoiceStatus } from './actions'
@@ -59,20 +61,31 @@ export default function InvoicesClient({ invoices, customers, orders }: Props) {
 
   function handleDelete(id: string) {
     if (!confirm('Supprimer cette facture ?')) return
-    startTransition(() => {
-  void deleteInvoice(id)
-})
+    startTransition(async () => {
+      const r = await deleteInvoice(id)
+      if (r.error) toast.error(r.error)
+      else toast.success('Facture supprimée')
+    })
   }
 
   function handleStatusChange(id: string, status: Invoice['status']) {
-    startTransition(() => {
-  void updateInvoiceStatus(id, status)
-})
+    const labels: Record<string, string> = { sent: 'Envoyée', paid: 'Payée' }
+    startTransition(async () => {
+      const r = await updateInvoiceStatus(id, status)
+      if (r.error) toast.error(r.error)
+      else toast.success(`Facture marquée "${labels[status] ?? status}"`)
+    })
   }
 
   return (
     <div>
-      <div className="flex justify-end mb-4">
+      <div className="flex items-center justify-end gap-2 mb-4">
+        <a
+          href="/api/export/invoices"
+          className="px-3 py-2 border border-gray-200 text-gray-600 text-sm rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          ⬇ Exporter CSV
+        </a>
         <button
           onClick={() => setShowCreate(true)}
           className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
@@ -99,7 +112,14 @@ export default function InvoicesClient({ invoices, customers, orders }: Props) {
               const nextLabel = STATUS_NEXT_LABEL[inv.status as Invoice['status']]
               return (
                 <tr key={inv.id} className="border-b border-gray-100 hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium text-gray-900">{inv.invoice_number}</td>
+                  <td className="px-4 py-3 font-medium">
+                    <Link
+                      href={`/dashboard/invoices/${inv.id}`}
+                      className="text-blue-600 hover:underline font-medium"
+                    >
+                      {inv.invoice_number}
+                    </Link>
+                  </td>
                   <td className="px-4 py-3 text-gray-500">{inv.customer?.full_name ?? '—'}</td>
                   <td className="px-4 py-3 text-right font-medium">{inv.amount.toFixed(2)} €</td>
                   <td className="px-4 py-3 text-gray-500">

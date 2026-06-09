@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { toast } from 'sonner'
 import type { Customer } from '@/types'
 import CustomerForm from '@/components/customers/CustomerForm'
 import { deleteCustomer } from './actions'
@@ -11,14 +12,22 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
 
   function handleDelete(id: string) {
     if (!confirm('Supprimer ce client ?')) return
-    startTransition(() => {
-  void deleteCustomer(id)
-})
+    startTransition(async () => {
+      const r = await deleteCustomer(id)
+      if (r.error) toast.error(r.error)
+      else toast.success('Client supprimé')
+    })
   }
 
   return (
     <div>
-      <div className="flex justify-end mb-4">
+      <div className="flex items-center justify-end gap-2 mb-4">
+        <a
+          href="/api/export/customers"
+          className="px-3 py-2 border border-gray-200 text-gray-600 text-sm rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          ⬇ Exporter CSV
+        </a>
         <button
           onClick={() => setModal('create')}
           className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"

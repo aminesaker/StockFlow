@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import Link from 'next/link'
+import { toast } from 'sonner'
 import type { Customer, Order, Product } from '@/types'
 import OrderForm from '@/components/orders/OrderForm'
 import { deleteOrder, updateOrderStatus } from './actions'
@@ -36,16 +38,18 @@ export default function OrdersClient({ orders, customers, products }: Props) {
 
   function handleDelete(id: string) {
     if (!confirm('Supprimer cette commande ?')) return
-    startTransition(() => {
-  void deleteOrder(id)
-})
+    startTransition(async () => {
+      const result = await deleteOrder(id)
+      if (result.error) toast.error(result.error)
+      else toast.success('Commande supprimée')
+    })
   }
 
   function handleGenerateInvoice(orderId: string) {
     startTransition(async () => {
       const result = await createInvoiceFromOrder(orderId)
-      if (result.error) alert(result.error)
-      else alert(`Facture ${result.invoiceNumber} créée !`)
+      if (result.error) toast.error(result.error)
+      else toast.success(`Facture ${result.invoiceNumber} créée !`)
     })
   }
 
@@ -60,7 +64,13 @@ export default function OrdersClient({ orders, customers, products }: Props) {
 
   return (
     <div>
-      <div className="flex justify-end mb-4">
+      <div className="flex items-center justify-end gap-2 mb-4">
+        <a
+          href="/api/export/orders"
+          className="px-3 py-2 border border-gray-200 text-gray-600 text-sm rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          ⬇ Exporter CSV
+        </a>
         <button
           onClick={() => setShowCreate(true)}
           className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
@@ -87,8 +97,13 @@ export default function OrdersClient({ orders, customers, products }: Props) {
               const canAdvance = statusIdx !== -1 && statusIdx < STATUS_FLOW.length - 1
               return (
                 <tr key={order.id} className="border-b border-gray-100 hover:bg-gray-50">
-                  <td className="px-4 py-3 font-mono text-gray-500 text-xs">
-                    {order.id.slice(0, 8)}...
+                  <td className="px-4 py-3 font-mono text-xs">
+                    <Link
+                      href={`/dashboard/orders/${order.id}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {order.id.slice(0, 8)}…
+                    </Link>
                   </td>
                   <td className="px-4 py-3 text-gray-900">{order.customer?.full_name ?? '—'}</td>
                   <td className="px-4 py-3 text-right font-medium">{order.total_amount.toFixed(2)} €</td>
