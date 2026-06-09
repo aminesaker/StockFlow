@@ -236,6 +236,41 @@ export async function updateOrder(
   }
 }
 
+// ── CLIENTS ─────────────────────────────────────────────────────────────────
+
+export async function upsertCustomer(
+  supabase: DB,
+  userId: string,
+  c: NormalizedCustomer
+) {
+  if (!c.email) return
+  const { error } = await supabase
+    .from('customers')
+    .upsert({ ...mapCustomerRow(c), user_id: userId }, { onConflict: 'email' })
+  if (error) console.error('[sync] customer upsert error', error)
+}
+
+// Suppression de commande → traitée comme une annulation (restock + statut).
+export async function deleteOrder(
+  supabase: DB,
+  userId: string,
+  source: string,
+  externalId: string
+) {
+  const { data: existing } = await supabase
+    .from('orders')
+    .select('id, status')
+    .eq('user_id', userId)
+    .eq('external_source', source)
+    .eq('external_id', externalId)
+    .maybeSingle()
+  if (!existing) return
+  if (existing.status !== 'cancelled') {
+    await restockOrder(supabase, existing.id)
+    await supabase.from('orders').update({ status: 'cancelled' }).eq('id', existing.id)
+  }
+}
+
 // ── Helpers internes ──────────────────────────────────────────────────────────
 
 function mapCustomerRow(c: NormalizedCustomer) {

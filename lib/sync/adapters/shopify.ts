@@ -5,6 +5,7 @@
 // ============================================================
 import { createHmac, timingSafeEqual } from 'crypto'
 import type {
+  NormalizedCustomer,
   NormalizedOrder,
   NormalizedProduct,
   OrderStatus,
@@ -74,6 +75,23 @@ function mapOrder(o: ShOrder): NormalizedOrder {
   }
 }
 
+type ShCustomer = {
+  id?: number; first_name?: string; last_name?: string; email?: string; phone?: string
+  default_address?: ShAddress
+}
+
+function mapCustomer(c: ShCustomer): NormalizedCustomer {
+  const a = c.default_address || {}
+  return {
+    fullName: `${c.first_name || ''} ${c.last_name || ''}`.trim() || (c.email || 'Client'),
+    email: c.email || '',
+    phone: c.phone || a.phone || undefined,
+    address: [a.address1, a.address2].filter(Boolean).join(', ') || undefined,
+    city: a.city || undefined,
+    country: a.country || undefined,
+  }
+}
+
 export const shopifyAdapter: PlatformAdapter = {
   source: 'shopify',
 
@@ -111,6 +129,16 @@ export const shopifyAdapter: PlatformAdapter = {
       topic === 'orders/partially_fulfilled'
     ) {
       return { kind: 'order.updated', order: mapOrder(payload as ShOrder) }
+    }
+
+    if (topic === 'customers/create' || topic === 'customers/update') {
+      return { kind: 'customer.upsert', customer: mapCustomer(payload as ShCustomer) }
+    }
+    if (topic === 'orders/delete') {
+      const o = payload as Partial<ShOrder>
+      return o.id != null
+        ? { kind: 'order.deleted', externalId: String(o.id) }
+        : { kind: 'ignore', reason: 'orders/delete sans id' }
     }
 
     return { kind: 'ignore', reason: `topic ${topic}` }

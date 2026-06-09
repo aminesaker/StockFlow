@@ -11,6 +11,8 @@ import {
   deleteProduct,
   createOrder,
   updateOrder,
+  deleteOrder,
+  upsertCustomer,
 } from './core'
 import { checkRateLimit, RATE_LIMITS } from '@/lib/rate-limit'
 import type { PlatformAdapter } from './types'
@@ -95,6 +97,12 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
     case 'order.updated':
       await updateOrder(supabase, userId, src, action.order, settings)
       return ok(`order updated — ${src}#${action.order.externalId}`)
+    case 'order.deleted':
+      await deleteOrder(supabase, userId, src, action.externalId)
+      return ok(`order deleted — ${src}#${action.externalId}`)
+    case 'customer.upsert':
+      await upsertCustomer(supabase, userId, action.customer)
+      return ok(`customer upserted — ${src}`)
     default:
       return ok('ignoré')
   }

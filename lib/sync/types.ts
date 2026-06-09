@@ -51,6 +51,8 @@ export type SyncAction =
   | { kind: 'product.delete'; externalId?: string; sku?: string | null }
   | { kind: 'order.created'; order: NormalizedOrder }
   | { kind: 'order.updated'; order: NormalizedOrder }
+  | { kind: 'order.deleted'; externalId: string }
+  | { kind: 'customer.upsert'; customer: NormalizedCustomer }
   | { kind: 'ignore'; reason: string }
   | { kind: 'ping' }
 

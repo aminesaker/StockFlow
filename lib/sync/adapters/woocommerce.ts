@@ -4,6 +4,7 @@
 // ============================================================
 import { createHmac, timingSafeEqual } from 'crypto'
 import type {
+  NormalizedCustomer,
   NormalizedOrder,
   NormalizedProduct,
   OrderStatus,
@@ -71,6 +72,23 @@ function mapOrder(o: WcOrder): NormalizedOrder {
   }
 }
 
+type WcCustomer = {
+  id?: number; first_name?: string; last_name?: string; email?: string
+  billing?: WcBilling & { phone?: string }
+}
+
+function mapCustomer(c: WcCustomer): NormalizedCustomer {
+  const b = c.billing || {}
+  return {
+    fullName: `${c.first_name || ''} ${c.last_name || ''}`.trim() || (c.email || 'Client'),
+    email: c.email || '',
+    phone: b.phone || undefined,
+    address: [b.address_1, b.address_2].filter(Boolean).join(', ') || undefined,
+    city: b.city || undefined,
+    country: b.country || undefined,
+  }
+}
+
 export const woocommerceAdapter: PlatformAdapter = {
   source: 'woocommerce',
 
@@ -103,6 +121,17 @@ export const woocommerceAdapter: PlatformAdapter = {
       const wc = payload as WcProduct
       if (wc.status === 'trash') return { kind: 'ignore', reason: 'product trash' }
       return { kind: 'product.upsert', product: mapProduct(wc) }
+    }
+
+    if (topic === 'customer.created' || topic === 'customer.updated') {
+      return { kind: 'customer.upsert', customer: mapCustomer(payload as WcCustomer) }
+    }
+
+    if (topic === 'order.deleted') {
+      const o = payload as Partial<WcOrder>
+      return o.id != null
+        ? { kind: 'order.deleted', externalId: String(o.id) }
+        : { kind: 'ignore', reason: 'order.deleted sans id' }
     }
 
     if (topic === 'product.deleted') {
