@@ -1,7 +1,7 @@
 // ============================================================
 // Plomberie commune des webhooks de synchro : auth par clé API,
-// vérification de signature (déléguée à l'adaptateur), parsing et
-// dispatch vers le cœur. Réutilisé par chaque route plateforme.
+// rate limiting, vérification de signature (déléguée à l'adaptateur),
+// parsing et dispatch vers le cœur. Réutilisé par chaque route plateforme.
 // ============================================================
 import { NextRequest, NextResponse } from 'next/server'
 import { createHash } from 'crypto'
@@ -12,6 +12,7 @@ import {
   createOrder,
   updateOrder,
 } from './core'
+import { checkRateLimit, RATE_LIMITS } from '@/lib/rate-limit'
 import type { PlatformAdapter } from './types'
 
 function ok(message: string) {
@@ -40,7 +41,16 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
   if (!keyRow) return err('Clé API invalide', 401)
   const userId = keyRow.user_id
 
-  // 2. Réglages + secret de webhook (partagé entre plateformes du tenant)
+  // 2. Rate limiting par tenant (anti-abus)
+  const allowed = await checkRateLimit(
+    supabase,
+    `wh:${userId}`,
+    RATE_LIMITS.webhook.limit,
+    RATE_LIMITS.webhook.windowSeconds
+  )
+  if (!allowed) return err('Trop de requêtes — réessayez dans un instant', 429)
+
+  // 3. Réglages + secret de webhook (partagé entre plateformes du tenant)
   const { data: settings } = await supabase
     .from('user_settings')
     .select('wc_webhook_secret, auto_invoice, stock_alerts')
@@ -48,12 +58,12 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
     .maybeSingle()
   const secret = settings?.wc_webhook_secret ?? null
 
-  // 3. Vérification de signature (propre à la plateforme)
+  // 4. Vérification de signature (propre à la plateforme)
   if (!adapter.verifySignature(rawBody, req.headers, secret)) {
     return err('Signature invalide', 401)
   }
 
-  // 4. Parsing
+  // 5. Parsing
   const bodyText = rawBody.toString('utf-8')
   if (!bodyText.trim()) return ok(`${adapter.source} webhook reachable`)
   let payload: unknown
@@ -66,7 +76,7 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
   const action = adapter.parse(req.headers, payload)
   const src = adapter.source
 
-  // 5. Dispatch vers le cœur
+  // 6. Dispatch vers le cœur
   switch (action.kind) {
     case 'ping':
       return ok('ping')

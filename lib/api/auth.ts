@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { createHash, randomBytes } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
+import { checkRateLimit, RATE_LIMITS } from '@/lib/rate-limit'
 
 // ── Service client (bypass RLS pour les lookups de clés) ──────────────────
 
@@ -79,6 +80,16 @@ export function withApiAuth(handler: ApiHandler) {
     if (!auth.ok) return apiError(auth.error, auth.status)
 
     const supabase = getServiceClient()
+
+    // Rate limiting par tenant (anti-abus)
+    const allowed = await checkRateLimit(
+      supabase,
+      `api:${auth.userId}`,
+      RATE_LIMITS.api.limit,
+      RATE_LIMITS.api.windowSeconds
+    )
+    if (!allowed) return apiError('Trop de requêtes — réessayez dans un instant', 429)
+
     return handler(req, { userId: auth.userId, supabase })
   }
 }
