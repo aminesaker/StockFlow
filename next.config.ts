@@ -1,8 +1,7 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  // ESLint reste hors du build (lancé en CI/local). On RÉACTIVE la
-  // vérification TypeScript au build pour la qualité/prod.
+// Vérification TypeScript ACTIVE au build (pas de typescript.ignoreBuildErrors).
+// ESLint exclu du build (lancé en CI/local). Objet non annoté pour éviter
+// l'excess-property check sur la clé `eslint` (valide au runtime).
+const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
