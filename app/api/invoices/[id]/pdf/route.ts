@@ -33,11 +33,10 @@ export async function GET(
     return NextResponse.json({ error: 'Facture introuvable' }, { status: 404 })
   }
 
-  const buffer = await renderToBuffer(
-    createElement(InvoicePDF, { data: invoice as Parameters<typeof InvoicePDF>[0]['data'] })
-  )
-
-  return new NextResponse(buffer, {
+const buffer = await renderToBuffer(
+  createElement(InvoicePDF as any, { data: invoice }) as any
+)
+  return new NextResponse(new Uint8Array(buffer), {
     headers: {
       'Content-Type': 'application/pdf',
       'Content-Disposition': `attachment; filename="${invoice.invoice_number}.pdf"`,

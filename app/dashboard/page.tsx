@@ -113,7 +113,7 @@ export default async function DashboardPage() {
               <div key={o.id} className="px-5 py-3 flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-900">
-                    {(o.customer as { full_name: string } | null)?.full_name ?? '—'}
+                    {((Array.isArray(o.customer) ? o.customer[0] : o.customer) as { full_name: string } | null)?.full_name ?? '—'}
                   </p>
                   <p className="text-xs text-gray-400">
                     {new Date(o.created_at).toLocaleDateString('fr-FR')}

@@ -13,7 +13,9 @@ export default function StocksClient({ products }: Props) {
 
   function handleDelete(id: string) {
     if (!confirm('Supprimer ce produit ?')) return
-    startTransition(() => deleteProduct(id))
+    startTransition(() => {
+  void deleteProduct(id)
+})
   }
 
   return (

@@ -36,7 +36,9 @@ export default function OrdersClient({ orders, customers, products }: Props) {
 
   function handleDelete(id: string) {
     if (!confirm('Supprimer cette commande ?')) return
-    startTransition(() => deleteOrder(id))
+    startTransition(() => {
+  void deleteOrder(id)
+})
   }
 
   function handleGenerateInvoice(orderId: string) {
@@ -51,7 +53,9 @@ export default function OrdersClient({ orders, customers, products }: Props) {
     const idx = STATUS_FLOW.indexOf(order.status as Order['status'])
     if (idx === -1 || idx === STATUS_FLOW.length - 1) return
     const next = STATUS_FLOW[idx + 1]
-    startTransition(() => updateOrderStatus(order.id, next))
+    startTransition(() => {
+  void updateOrderStatus(order.id, next)
+})
   }
 
   return (

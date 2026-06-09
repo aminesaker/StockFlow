@@ -11,7 +11,9 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
 
   function handleDelete(id: string) {
     if (!confirm('Supprimer ce client ?')) return
-    startTransition(() => deleteCustomer(id))
+    startTransition(() => {
+  void deleteCustomer(id)
+})
   }
 
   return (

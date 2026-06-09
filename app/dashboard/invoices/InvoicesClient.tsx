@@ -59,11 +59,15 @@ export default function InvoicesClient({ invoices, customers, orders }: Props) {
 
   function handleDelete(id: string) {
     if (!confirm('Supprimer cette facture ?')) return
-    startTransition(() => deleteInvoice(id))
+    startTransition(() => {
+  void deleteInvoice(id)
+})
   }
 
   function handleStatusChange(id: string, status: Invoice['status']) {
-    startTransition(() => updateInvoiceStatus(id, status))
+    startTransition(() => {
+  void updateInvoiceStatus(id, status)
+})
   }
 
   return (
