@@ -35,6 +35,10 @@ export async function middleware(request: NextRequest) {
   const isPublic =
     pathname === '/' ||
     pathname.startsWith('/api/demo-request') ||
+    pathname.startsWith('/tarifs') ||
+    pathname.startsWith('/fonctionnalites') ||
+    pathname.startsWith('/contact') ||
+    pathname.startsWith('/api/contact') ||
     pathname.startsWith('/login') ||
     pathname.startsWith('/register') ||
     pathname.startsWith('/payment') ||
