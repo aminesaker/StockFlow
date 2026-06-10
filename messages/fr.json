@@ -1,65 +1,86 @@
 {
-  "common": {
-    "appName": "TijaraFlow",
-    "email": "Email",
-    "password": "Mot de passe",
-    "back": "Retour",
-    "loading": "Chargement…"
-  },
-  "nav": {
-    "features": "Fonctionnalités",
-    "pricing": "Tarifs",
-    "contact": "Contact",
-    "login": "Connexion",
-    "requestDemo": "Demander une démo"
-  },
-  "footer": {
-    "rights": "Tous droits réservés.",
-    "features": "Fonctionnalités",
-    "pricing": "Tarifs",
-    "contact": "Contact",
-    "login": "Connexion"
-  },
+  "common": { "appName": "TijaraFlow", "email": "Email", "password": "Mot de passe", "back": "Retour", "loading": "Chargement…" },
+  "nav": { "features": "Fonctionnalités", "pricing": "Tarifs", "contact": "Contact", "login": "Connexion", "requestDemo": "Demander une démo" },
+  "footer": { "rights": "Tous droits réservés.", "features": "Fonctionnalités", "pricing": "Tarifs", "contact": "Contact", "login": "Connexion" },
   "auth": {
-    "login": {
-      "subtitle": "Connectez-vous à votre compte",
-      "emailPlaceholder": "vous@example.com",
-      "submit": "Se connecter",
-      "loading": "Connexion…",
-      "forgot": "Mot de passe oublié ?",
-      "noAccount": "Pas encore de compte ?",
-      "signupLink": "S’inscrire"
-    },
-    "register": {
-      "subtitle": "Créer votre compte",
-      "passwordPlaceholder": "8 caractères minimum",
-      "submit": "Créer le compte",
-      "loading": "Création…",
-      "haveAccount": "Déjà un compte ?",
-      "loginLink": "Se connecter",
-      "successTitle": "Vérifiez votre email",
-      "successBody": "Un lien de confirmation a été envoyé à {email}."
-    },
-    "reset": {
-      "title": "Mot de passe oublié",
-      "subtitle": "Recevez un lien de réinitialisation par email.",
-      "emailPlaceholder": "vous@example.com",
-      "submit": "Envoyer le lien",
-      "loading": "Envoi…",
-      "sent": "Si un compte existe pour {email}, un email de réinitialisation vient d’être envoyé. Pensez à vérifier vos spams.",
-      "backToLogin": "← Retour à la connexion"
-    },
-    "resetUpdate": {
-      "title": "Nouveau mot de passe",
-      "subtitle": "Choisissez un nouveau mot de passe pour votre compte.",
-      "newPassword": "Nouveau mot de passe",
-      "confirm": "Confirmer",
-      "submit": "Mettre à jour le mot de passe",
-      "loading": "Mise à jour…",
-      "done": "Mot de passe mis à jour ✓ Redirection vers votre tableau de bord…",
-      "tooShort": "Le mot de passe doit faire au moins 8 caractères.",
-      "mismatch": "Les mots de passe ne correspondent pas.",
-      "backToLogin": "← Retour à la connexion"
+    "login": { "subtitle": "Connectez-vous à votre compte", "emailPlaceholder": "vous@example.com", "submit": "Se connecter", "loading": "Connexion…", "forgot": "Mot de passe oublié ?", "noAccount": "Pas encore de compte ?", "signupLink": "S’inscrire" },
+    "register": { "subtitle": "Créer votre compte", "passwordPlaceholder": "8 caractères minimum", "submit": "Créer le compte", "loading": "Création…", "haveAccount": "Déjà un compte ?", "loginLink": "Se connecter", "successTitle": "Vérifiez votre email", "successBody": "Un lien de confirmation a été envoyé à {email}." },
+    "reset": { "title": "Mot de passe oublié", "subtitle": "Recevez un lien de réinitialisation par email.", "emailPlaceholder": "vous@example.com", "submit": "Envoyer le lien", "loading": "Envoi…", "sent": "Si un compte existe pour {email}, un email de réinitialisation vient d’être envoyé. Pensez à vérifier vos spams.", "backToLogin": "← Retour à la connexion" },
+    "resetUpdate": { "title": "Nouveau mot de passe", "subtitle": "Choisissez un nouveau mot de passe pour votre compte.", "newPassword": "Nouveau mot de passe", "confirm": "Confirmer", "submit": "Mettre à jour le mot de passe", "loading": "Mise à jour…", "done": "Mot de passe mis à jour ✓ Redirection vers votre tableau de bord…", "tooShort": "Le mot de passe doit faire au moins 8 caractères.", "mismatch": "Les mots de passe ne correspondent pas.", "backToLogin": "← Retour à la connexion" }
+  },
+  "landing": {
+    "meta": { "title": "TijaraFlow — Synchronisez vos boutiques e-commerce, automatiquement", "description": "TijaraFlow connecte WooCommerce et Shopify à un tableau de bord unique : stock en temps réel, commandes, clients et factures synchronisés automatiquement. Demandez une démo." },
+    "hero": { "badge": "WooCommerce · Shopify · et plus", "title1": "Vos stocks, commandes et factures.", "title2": "Synchronisés tout seuls.", "subtitle": "TijaraFlow connecte vos boutiques e-commerce à un seul tableau de bord. Une vente, un retour, une commande ? Votre stock, vos clients et vos factures se mettent à jour en temps réel, sans aucune saisie manuelle.", "ctaDemo": "Demander une démo gratuite", "ctaFeatures": "Voir les fonctionnalités", "trust1": "Installation en quelques minutes", "trust2": "Sans engagement" },
+    "mockup": { "revenue": "Chiffre d’affaires", "orders": "Commandes", "lowStock": "Stock bas", "latest": "Dernières commandes", "liveSync": "Synchro en direct", "paid": "Payée", "prepared": "Préparée", "delivered": "Livrée" },
+    "platforms": { "compatible": "Compatible avec :", "soonPresta": "PrestaShop (bientôt)", "soonMagento": "Magento (bientôt)", "apiOpen": "+ API ouverte pour tout site" },
+    "problems": { "kicker": "Vous vous reconnaissez ?", "title": "Gérer son stock entre plusieurs outils, ça coûte du temps et de l’argent", "items": [
+      { "title": "Des ruptures que vous ne voyez pas venir", "body": "Une vente sur une boutique, et le stock n’est plus à jour ailleurs. Résultat : survente, clients déçus, commandes annulées." },
+      { "title": "La saisie manuelle vous épuise", "body": "Recopier chaque commande, chaque client, chaque produit d’un outil à l’autre. Du temps perdu et des erreurs à la clé." },
+      { "title": "Une visibilité éclatée", "body": "Vos ventes sont sur WooCommerce, vos stats ailleurs, vos factures dans un 3e outil. Impossible de piloter sereinement." },
+      { "title": "Les factures qui passent à la trappe", "body": "Une commande livrée sans facture envoyée, c’est de la trésorerie en retard et un suivi compliqué." }
+    ] },
+    "solution": { "kicker": "La solution", "title": "Tout votre e-commerce, synchronisé et automatisé", "items": [
+      { "title": "Synchro multi-plateformes", "body": "Connectez WooCommerce, Shopify et bientôt d’autres. Vos produits et commandes remontent automatiquement." },
+      { "title": "Stock en temps réel, dans les deux sens", "body": "Une vente décrémente le stock, une annulation ou un remboursement le ré-incrémente. Toujours juste." },
+      { "title": "Clients & commandes automatiques", "body": "Chaque commande crée le client, les lignes et met à jour le statut sans aucune intervention." },
+      { "title": "Facturation automatique", "body": "Commande livrée = facture générée et envoyée par email au client, automatiquement." },
+      { "title": "Sécurisé par conception", "body": "Signature des webhooks, clés API par client, protection anti-abus. Vos données restent protégées." },
+      { "title": "API ouverte", "body": "Un site sur-mesure ou une plateforme non encore supportée ? Branchez-le via notre API." }
+    ] },
+    "how": { "kicker": "En 3 étapes", "title": "Opérationnel le jour même", "steps": [
+      { "title": "Connectez votre boutique", "body": "Ajoutez votre clé dans WooCommerce ou Shopify en quelques clics. Aucun développement requis." },
+      { "title": "Tout se synchronise", "body": "Produits, commandes, clients et stock remontent en temps réel dans votre tableau de bord." },
+      { "title": "Pilotez depuis un seul endroit", "body": "Suivez vos ventes, votre stock et vos factures — automatisés — au même endroit." }
+    ] },
+    "values": [
+      { "value": "Temps réel", "label": "Synchro instantanée" },
+      { "value": "0", "label": "Saisie manuelle" },
+      { "value": "2 sens", "label": "Stock vente & retour" },
+      { "value": "Sans", "label": "Engagement" }
+    ],
+    "faq": { "title": "Questions fréquentes", "items": [
+      { "q": "Quelles plateformes sont supportées ?", "a": "WooCommerce et Shopify aujourd’hui, PrestaShop et Magento bientôt. Et pour tout autre site, une API ouverte permet de se connecter." },
+      { "q": "Combien de temps pour connecter ma boutique ?", "a": "Quelques minutes : vous générez une clé, vous la collez dans votre boutique, et la synchronisation démarre immédiatement." },
+      { "q": "Mes données sont-elles sécurisées ?", "a": "Oui. Chaque échange est signé (HMAC), chaque client dispose de sa propre clé, et une protection anti-abus est en place." },
+      { "q": "Faut-il des compétences techniques ?", "a": "Non. La connexion se fait par copier-coller d’une clé, sans aucun développement." },
+      { "q": "Le stock se met-il à jour dans les deux sens ?", "a": "Oui : une vente décrémente le stock, une annulation ou un remboursement le restitue automatiquement." }
+    ] },
+    "demo": { "title": "Voyez TijaraFlow sur vos propres données", "subtitle": "Réservez une démo de 20 minutes. On connecte votre boutique en direct et vous repartez avec une vision claire de ce que l’automatisation peut vous faire gagner.", "bullets": ["Démonstration sur votre cas réel", "Réponses à toutes vos questions", "Aucune carte bancaire requise"] }
+  },
+  "demoForm": { "name": "Nom *", "email": "Email pro *", "company": "Entreprise / boutique", "message": "Votre besoin (optionnel)", "namePh": "Votre nom", "emailPh": "vous@entreprise.com", "companyPh": "Nom de votre boutique", "messagePh": "Quelles plateformes utilisez-vous ? Combien de produits/commandes ?", "submit": "Demander ma démo gratuite", "sending": "Envoi…", "successTitle": "Demande envoyée !", "successBody": "Merci, nous vous recontactons très vite pour planifier votre démo.", "error": "Une erreur est survenue", "footnote": "Réponse sous 24h ouvrées · Sans engagement" },
+  "pricing": {
+    "meta": { "title": "Tarifs — TijaraFlow", "description": "Des forfaits simples et transparents pour synchroniser et automatiser votre e-commerce avec TijaraFlow." },
+    "kicker": "Tarifs", "title": "Un prix simple, qui grandit avec vous", "subtitle": "Commencez gratuitement. Passez à un forfait supérieur quand vos volumes augmentent. Sans engagement, résiliable à tout moment.", "popular": "Le plus populaire", "note": "Besoin d’un volume sur mesure ou d’un accompagnement ?", "noteLink": "Parlons-en →",
+    "plans": {
+      "starter": { "name": "Starter", "price": "Gratuit", "cta": "Commencer gratuitement", "highlights": ["500 produits", "500 commandes / mois", "1 boutique", "Synchro temps réel"] },
+      "pro": { "name": "Pro", "price": "29 €/mois", "cta": "Choisir Pro", "highlights": ["5 000 produits", "5 000 commandes / mois", "Automatisations", "Alertes de stock"] },
+      "business": { "name": "Business", "price": "99 €/mois", "cta": "Nous contacter", "highlights": ["Produits & commandes illimités", "Multi-boutiques", "IA prédictive", "API publique"] }
     }
-  }
+  },
+  "features": {
+    "meta": { "title": "Fonctionnalités — TijaraFlow", "description": "Synchronisation multi-boutiques, stock temps réel, commandes, facturation automatique, prévisions, rapports et API. Découvrez tout ce que TijaraFlow automatise." },
+    "kicker": "Fonctionnalités", "title": "Tout votre e-commerce, automatisé", "subtitle": "TijaraFlow relie vos boutiques et prend en charge les tâches répétitives, pour que vous vous concentriez sur la vente.",
+    "items": [
+      { "title": "Synchronisation multi-boutiques", "desc": "WooCommerce et Shopify connectés à un tableau de bord unique. Une vente, un retour, une annulation ? Tout se met à jour en temps réel, sans saisie." },
+      { "title": "Stock en temps réel", "desc": "Décrément automatique à chaque commande, restock sur annulation/remboursement, et alertes dès qu’un produit passe sous son seuil." },
+      { "title": "Commandes & clients centralisés", "desc": "Toutes vos commandes et fiches clients regroupées, quelle que soit la boutique d’origine, avec historique complet." },
+      { "title": "Facturation automatique", "desc": "Génération de la facture (PDF) dès qu’une commande est livrée, et envoi par email au client — sans rien faire." },
+      { "title": "Prévisions de stock", "desc": "Calcul de la vélocité des ventes, date de rupture estimée et quantités de réapprovisionnement suggérées par produit." },
+      { "title": "Rapports & exports", "desc": "Chiffre d’affaires, top produits, meilleurs clients et valeur de stock sur la période de votre choix. Export CSV en un clic." },
+      { "title": "Automatisations", "desc": "Facturation auto, alertes de stock, relances d’impayés et rapport hebdomadaire : activez ce que vous voulez, en un toggle." },
+      { "title": "API publique & webhooks", "desc": "Une API REST et des webhooks pour connecter n’importe quel site ou outil maison. Intégration sur mesure possible." },
+      { "title": "Hub d’intégrations", "desc": "État des connexions, configuration guidée des webhooks et journal de synchronisation en temps réel." }
+    ],
+    "cta": { "title": "Prêt à arrêter la double saisie ?", "subtitle": "Voyez TijaraFlow en action sur votre propre boutique.", "demo": "Demander une démo", "pricing": "Voir les tarifs" }
+  },
+  "contact": {
+    "meta": { "title": "Contact — TijaraFlow", "description": "Une question, une demande de démo ou un projet d’intégration ? Contactez l’équipe TijaraFlow." },
+    "kicker": "Contact", "title": "Parlons de votre e-commerce", "subtitle": "Démo personnalisée, question sur les forfaits, ou intégration sur mesure : écrivez-nous, nous répondons sous 24h ouvrées.",
+    "info": [
+      { "title": "Démo en direct", "body": "On vous montre TijaraFlow branché sur votre boutique." },
+      { "title": "Intégration sur mesure", "body": "Un site maison ? Notre API ouverte s’y connecte." },
+      { "title": "Réponse rapide", "body": "Sous 24h ouvrées, par une vraie personne." }
+    ]
+  },
+  "contactForm": { "name": "Nom *", "email": "Email *", "company": "Entreprise / boutique", "subject": "Sujet", "message": "Message *", "namePh": "Votre nom", "emailPh": "vous@entreprise.com", "companyPh": "Nom de votre boutique", "subjectPh": "Démo, question, partenariat…", "messagePh": "Comment pouvons-nous vous aider ?", "submit": "Envoyer le message", "sending": "Envoi…", "successTitle": "Message envoyé !", "successBody": "Merci, nous revenons vers vous sous 24h ouvrées.", "error": "Une erreur est survenue", "footnote": "Réponse sous 24h ouvrées · Sans engagement" }
 }
