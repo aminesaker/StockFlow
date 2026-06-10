@@ -1,86 +1,397 @@
 {
-  "common": { "appName": "TijaraFlow", "email": "Email", "password": "Password", "back": "Back", "loading": "Loading…" },
-  "nav": { "features": "Features", "pricing": "Pricing", "contact": "Contact", "login": "Sign in", "requestDemo": "Request a demo" },
-  "footer": { "rights": "All rights reserved.", "features": "Features", "pricing": "Pricing", "contact": "Contact", "login": "Sign in" },
+  "common": {
+    "appName": "TijaraFlow",
+    "email": "Email",
+    "password": "Password",
+    "back": "Back",
+    "loading": "Loading…"
+  },
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "login": "Sign in",
+    "requestDemo": "Request a demo"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "features": "Features",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "login": "Sign in"
+  },
   "auth": {
-    "login": { "subtitle": "Sign in to your account", "emailPlaceholder": "you@example.com", "submit": "Sign in", "loading": "Signing in…", "forgot": "Forgot password?", "noAccount": "No account yet?", "signupLink": "Sign up" },
-    "register": { "subtitle": "Create your account", "passwordPlaceholder": "8 characters minimum", "submit": "Create account", "loading": "Creating…", "haveAccount": "Already have an account?", "loginLink": "Sign in", "successTitle": "Check your email", "successBody": "A confirmation link has been sent to {email}." },
-    "reset": { "title": "Forgot password", "subtitle": "Get a reset link by email.", "emailPlaceholder": "you@example.com", "submit": "Send link", "loading": "Sending…", "sent": "If an account exists for {email}, a reset email has just been sent. Remember to check your spam folder.", "backToLogin": "← Back to sign in" },
-    "resetUpdate": { "title": "New password", "subtitle": "Choose a new password for your account.", "newPassword": "New password", "confirm": "Confirm", "submit": "Update password", "loading": "Updating…", "done": "Password updated ✓ Redirecting to your dashboard…", "tooShort": "Password must be at least 8 characters.", "mismatch": "Passwords do not match.", "backToLogin": "← Back to sign in" }
+    "login": {
+      "subtitle": "Sign in to your account",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Sign in",
+      "loading": "Signing in…",
+      "forgot": "Forgot password?",
+      "noAccount": "No account yet?",
+      "signupLink": "Sign up"
+    },
+    "register": {
+      "subtitle": "Create your account",
+      "passwordPlaceholder": "8 characters minimum",
+      "submit": "Create account",
+      "loading": "Creating…",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Sign in",
+      "successTitle": "Check your email",
+      "successBody": "A confirmation link has been sent to {email}."
+    },
+    "reset": {
+      "title": "Forgot password",
+      "subtitle": "Get a reset link by email.",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Send link",
+      "loading": "Sending…",
+      "sent": "If an account exists for {email}, a reset email has just been sent. Remember to check your spam folder.",
+      "backToLogin": "← Back to sign in"
+    },
+    "resetUpdate": {
+      "title": "New password",
+      "subtitle": "Choose a new password for your account.",
+      "newPassword": "New password",
+      "confirm": "Confirm",
+      "submit": "Update password",
+      "loading": "Updating…",
+      "done": "Password updated ✓ Redirecting to your dashboard…",
+      "tooShort": "Password must be at least 8 characters.",
+      "mismatch": "Passwords do not match.",
+      "backToLogin": "← Back to sign in"
+    }
   },
   "landing": {
-    "meta": { "title": "TijaraFlow — Sync your e-commerce stores, automatically", "description": "TijaraFlow connects WooCommerce and Shopify to a single dashboard: real-time stock, orders, customers and invoices synced automatically. Request a demo." },
-    "hero": { "badge": "WooCommerce · Shopify · and more", "title1": "Your stock, orders and invoices.", "title2": "Synced on their own.", "subtitle": "TijaraFlow connects your e-commerce stores to a single dashboard. A sale, a return, an order? Your stock, customers and invoices update in real time, with no manual entry.", "ctaDemo": "Request a free demo", "ctaFeatures": "See features", "trust1": "Set up in minutes", "trust2": "No commitment" },
-    "mockup": { "revenue": "Revenue", "orders": "Orders", "lowStock": "Low stock", "latest": "Latest orders", "liveSync": "Live sync", "paid": "Paid", "prepared": "Prepared", "delivered": "Delivered" },
-    "platforms": { "compatible": "Compatible with:", "soonPresta": "PrestaShop (soon)", "soonMagento": "Magento (soon)", "apiOpen": "+ Open API for any site" },
-    "problems": { "kicker": "Sound familiar?", "title": "Managing stock across several tools costs time and money", "items": [
-      { "title": "Stockouts you don’t see coming", "body": "One sale on a store, and stock is out of date everywhere else. The result: overselling, disappointed customers, cancelled orders." },
-      { "title": "Manual entry wears you out", "body": "Re-typing every order, every customer, every product from one tool to another. Wasted time and errors guaranteed." },
-      { "title": "Fragmented visibility", "body": "Your sales are on WooCommerce, your stats elsewhere, your invoices in a third tool. Impossible to steer with confidence." },
-      { "title": "Invoices that slip through the cracks", "body": "An order delivered without an invoice sent means delayed cash flow and messy follow-up." }
-    ] },
-    "solution": { "kicker": "The solution", "title": "Your whole e-commerce, synced and automated", "items": [
-      { "title": "Multi-platform sync", "body": "Connect WooCommerce, Shopify and soon others. Your products and orders come through automatically." },
-      { "title": "Real-time stock, both ways", "body": "A sale decrements stock; a cancellation or refund increments it back. Always accurate." },
-      { "title": "Automatic customers & orders", "body": "Every order creates the customer, the lines and updates the status with no intervention." },
-      { "title": "Automatic invoicing", "body": "Order delivered = invoice generated and e-mailed to the customer, automatically." },
-      { "title": "Secure by design", "body": "Webhook signing, per-customer API keys, anti-abuse protection. Your data stays protected." },
-      { "title": "Open API", "body": "A custom site or a not-yet-supported platform? Plug it in through our API." }
-    ] },
-    "how": { "kicker": "In 3 steps", "title": "Operational the same day", "steps": [
-      { "title": "Connect your store", "body": "Add your key in WooCommerce or Shopify in a few clicks. No development required." },
-      { "title": "Everything syncs", "body": "Products, orders, customers and stock come through in real time into your dashboard." },
-      { "title": "Steer from one place", "body": "Track your sales, stock and invoices — automated — all in one place." }
-    ] },
+    "meta": {
+      "title": "TijaraFlow — Sync your e-commerce stores, automatically",
+      "description": "TijaraFlow connects WooCommerce and Shopify to a single dashboard: real-time stock, orders, customers and invoices synced automatically. Request a demo."
+    },
+    "hero": {
+      "badge": "WooCommerce · Shopify · and more",
+      "title1": "Your stock, orders and invoices.",
+      "title2": "Synced on their own.",
+      "subtitle": "TijaraFlow connects your e-commerce stores to a single dashboard. A sale, a return, an order? Your stock, customers and invoices update in real time, with no manual entry.",
+      "ctaDemo": "Request a free demo",
+      "ctaFeatures": "See features",
+      "trust1": "Set up in minutes",
+      "trust2": "No commitment"
+    },
+    "mockup": {
+      "revenue": "Revenue",
+      "orders": "Orders",
+      "lowStock": "Low stock",
+      "latest": "Latest orders",
+      "liveSync": "Live sync",
+      "paid": "Paid",
+      "prepared": "Prepared",
+      "delivered": "Delivered"
+    },
+    "platforms": {
+      "compatible": "Compatible with:",
+      "soonPresta": "PrestaShop (soon)",
+      "soonMagento": "Magento (soon)",
+      "apiOpen": "+ Open API for any site"
+    },
+    "problems": {
+      "kicker": "Sound familiar?",
+      "title": "Managing stock across several tools costs time and money",
+      "items": [
+        {
+          "title": "Stockouts you don’t see coming",
+          "body": "One sale on a store, and stock is out of date everywhere else. The result: overselling, disappointed customers, cancelled orders."
+        },
+        {
+          "title": "Manual entry wears you out",
+          "body": "Re-typing every order, every customer, every product from one tool to another. Wasted time and errors guaranteed."
+        },
+        {
+          "title": "Fragmented visibility",
+          "body": "Your sales are on WooCommerce, your stats elsewhere, your invoices in a third tool. Impossible to steer with confidence."
+        },
+        {
+          "title": "Invoices that slip through the cracks",
+          "body": "An order delivered without an invoice sent means delayed cash flow and messy follow-up."
+        }
+      ]
+    },
+    "solution": {
+      "kicker": "The solution",
+      "title": "Your whole e-commerce, synced and automated",
+      "items": [
+        {
+          "title": "Multi-platform sync",
+          "body": "Connect WooCommerce, Shopify and soon others. Your products and orders come through automatically."
+        },
+        {
+          "title": "Real-time stock, both ways",
+          "body": "A sale decrements stock; a cancellation or refund increments it back. Always accurate."
+        },
+        {
+          "title": "Automatic customers & orders",
+          "body": "Every order creates the customer, the lines and updates the status with no intervention."
+        },
+        {
+          "title": "Automatic invoicing",
+          "body": "Order delivered = invoice generated and e-mailed to the customer, automatically."
+        },
+        {
+          "title": "Secure by design",
+          "body": "Webhook signing, per-customer API keys, anti-abuse protection. Your data stays protected."
+        },
+        {
+          "title": "Open API",
+          "body": "A custom site or a not-yet-supported platform? Plug it in through our API."
+        }
+      ]
+    },
+    "how": {
+      "kicker": "In 3 steps",
+      "title": "Operational the same day",
+      "steps": [
+        {
+          "title": "Connect your store",
+          "body": "Add your key in WooCommerce or Shopify in a few clicks. No development required."
+        },
+        {
+          "title": "Everything syncs",
+          "body": "Products, orders, customers and stock come through in real time into your dashboard."
+        },
+        {
+          "title": "Steer from one place",
+          "body": "Track your sales, stock and invoices — automated — all in one place."
+        }
+      ]
+    },
     "values": [
-      { "value": "Real time", "label": "Instant sync" },
-      { "value": "0", "label": "Manual entry" },
-      { "value": "Both ways", "label": "Stock sale & return" },
-      { "value": "No", "label": "Commitment" }
+      {
+        "value": "Real time",
+        "label": "Instant sync"
+      },
+      {
+        "value": "0",
+        "label": "Manual entry"
+      },
+      {
+        "value": "Both ways",
+        "label": "Stock sale & return"
+      },
+      {
+        "value": "No",
+        "label": "Commitment"
+      }
     ],
-    "faq": { "title": "Frequently asked questions", "items": [
-      { "q": "Which platforms are supported?", "a": "WooCommerce and Shopify today, PrestaShop and Magento soon. And for any other site, an open API lets you connect." },
-      { "q": "How long to connect my store?", "a": "A few minutes: you generate a key, paste it into your store, and synchronization starts immediately." },
-      { "q": "Is my data secure?", "a": "Yes. Every exchange is signed (HMAC), each customer has their own key, and anti-abuse protection is in place." },
-      { "q": "Do I need technical skills?", "a": "No. Connecting is just pasting a key, with no development." },
-      { "q": "Does stock update both ways?", "a": "Yes: a sale decrements stock, and a cancellation or refund restores it automatically." }
-    ] },
-    "demo": { "title": "See TijaraFlow on your own data", "subtitle": "Book a 20-minute demo. We connect your store live and you leave with a clear view of what automation can save you.", "bullets": ["Demo on your real case", "Answers to all your questions", "No credit card required"] }
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": [
+        {
+          "q": "Which platforms are supported?",
+          "a": "WooCommerce and Shopify today, PrestaShop and Magento soon. And for any other site, an open API lets you connect."
+        },
+        {
+          "q": "How long to connect my store?",
+          "a": "A few minutes: you generate a key, paste it into your store, and synchronization starts immediately."
+        },
+        {
+          "q": "Is my data secure?",
+          "a": "Yes. Every exchange is signed (HMAC), each customer has their own key, and anti-abuse protection is in place."
+        },
+        {
+          "q": "Do I need technical skills?",
+          "a": "No. Connecting is just pasting a key, with no development."
+        },
+        {
+          "q": "Does stock update both ways?",
+          "a": "Yes: a sale decrements stock, and a cancellation or refund restores it automatically."
+        }
+      ]
+    },
+    "demo": {
+      "title": "See TijaraFlow on your own data",
+      "subtitle": "Book a 20-minute demo. We connect your store live and you leave with a clear view of what automation can save you.",
+      "bullets": [
+        "Demo on your real case",
+        "Answers to all your questions",
+        "No credit card required"
+      ]
+    }
   },
-  "demoForm": { "name": "Name *", "email": "Work email *", "company": "Company / store", "message": "Your need (optional)", "namePh": "Your name", "emailPh": "you@company.com", "companyPh": "Your store name", "messagePh": "Which platforms do you use? How many products/orders?", "submit": "Request my free demo", "sending": "Sending…", "successTitle": "Request sent!", "successBody": "Thanks, we’ll get back to you shortly to schedule your demo.", "error": "An error occurred", "footnote": "Reply within 24 business hours · No commitment" },
+  "demoForm": {
+    "name": "Name *",
+    "email": "Work email *",
+    "company": "Company / store",
+    "message": "Your need (optional)",
+    "namePh": "Your name",
+    "emailPh": "you@company.com",
+    "companyPh": "Your store name",
+    "messagePh": "Which platforms do you use? How many products/orders?",
+    "submit": "Request my free demo",
+    "sending": "Sending…",
+    "successTitle": "Request sent!",
+    "successBody": "Thanks, we’ll get back to you shortly to schedule your demo.",
+    "error": "An error occurred",
+    "footnote": "Reply within 24 business hours · No commitment"
+  },
   "pricing": {
-    "meta": { "title": "Pricing — TijaraFlow", "description": "Simple, transparent plans to sync and automate your e-commerce with TijaraFlow." },
-    "kicker": "Pricing", "title": "Simple pricing that grows with you", "subtitle": "Start for free. Move to a higher plan as your volumes grow. No commitment, cancel anytime.", "popular": "Most popular", "note": "Need custom volume or hands-on support?", "noteLink": "Let’s talk →",
+    "meta": {
+      "title": "Pricing — TijaraFlow",
+      "description": "Simple, transparent plans to sync and automate your e-commerce with TijaraFlow."
+    },
+    "kicker": "Pricing",
+    "title": "Simple pricing that grows with you",
+    "subtitle": "Start for free. Move to a higher plan as your volumes grow. No commitment, cancel anytime.",
+    "popular": "Most popular",
+    "note": "Need custom volume or hands-on support?",
+    "noteLink": "Let’s talk →",
     "plans": {
-      "starter": { "name": "Starter", "price": "Free", "cta": "Start for free", "highlights": ["500 products", "500 orders / month", "1 store", "Real-time sync"] },
-      "pro": { "name": "Pro", "price": "€29/mo", "cta": "Choose Pro", "highlights": ["5,000 products", "5,000 orders / month", "Automations", "Stock alerts"] },
-      "business": { "name": "Business", "price": "€99/mo", "cta": "Contact us", "highlights": ["Unlimited products & orders", "Multi-store", "Predictive AI", "Public API"] }
+      "starter": {
+        "name": "Starter",
+        "price": "Free",
+        "cta": "Start for free",
+        "highlights": [
+          "500 products",
+          "500 orders / month",
+          "1 store",
+          "Real-time sync"
+        ]
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "€29/mo",
+        "cta": "Choose Pro",
+        "highlights": [
+          "5,000 products",
+          "5,000 orders / month",
+          "Automations",
+          "Stock alerts"
+        ]
+      },
+      "business": {
+        "name": "Business",
+        "price": "€99/mo",
+        "cta": "Contact us",
+        "highlights": [
+          "Unlimited products & orders",
+          "Multi-store",
+          "Predictive AI",
+          "Public API"
+        ]
+      }
     }
   },
   "features": {
-    "meta": { "title": "Features — TijaraFlow", "description": "Multi-store sync, real-time stock, orders, automatic invoicing, forecasts, reports and API. Discover everything TijaraFlow automates." },
-    "kicker": "Features", "title": "Your whole e-commerce, automated", "subtitle": "TijaraFlow connects your stores and handles the repetitive tasks, so you can focus on selling.",
+    "meta": {
+      "title": "Features — TijaraFlow",
+      "description": "Multi-store sync, real-time stock, orders, automatic invoicing, forecasts, reports and API. Discover everything TijaraFlow automates."
+    },
+    "kicker": "Features",
+    "title": "Your whole e-commerce, automated",
+    "subtitle": "TijaraFlow connects your stores and handles the repetitive tasks, so you can focus on selling.",
     "items": [
-      { "title": "Multi-store synchronization", "desc": "WooCommerce and Shopify connected to a single dashboard. A sale, a return, a cancellation? Everything updates in real time, no entry." },
-      { "title": "Real-time stock", "desc": "Automatic decrement on every order, restock on cancellation/refund, and alerts as soon as a product drops below its threshold." },
-      { "title": "Centralized orders & customers", "desc": "All your orders and customer records in one place, whatever the source store, with full history." },
-      { "title": "Automatic invoicing", "desc": "Invoice (PDF) generated as soon as an order is delivered, and e-mailed to the customer — with nothing to do." },
-      { "title": "Stock forecasts", "desc": "Sales velocity calculation, estimated stockout date and suggested reorder quantities per product." },
-      { "title": "Reports & exports", "desc": "Revenue, top products, top customers and stock value over the period of your choice. CSV export in one click." },
-      { "title": "Automations", "desc": "Auto-invoicing, stock alerts, overdue reminders and weekly report: enable what you want, in one toggle." },
-      { "title": "Public API & webhooks", "desc": "A REST API and webhooks to connect any site or in-house tool. Custom integration possible." },
-      { "title": "Integrations hub", "desc": "Connection status, guided webhook setup and a real-time synchronization log." }
+      {
+        "title": "Multi-store synchronization",
+        "desc": "WooCommerce and Shopify connected to a single dashboard. A sale, a return, a cancellation? Everything updates in real time, no entry."
+      },
+      {
+        "title": "Real-time stock",
+        "desc": "Automatic decrement on every order, restock on cancellation/refund, and alerts as soon as a product drops below its threshold."
+      },
+      {
+        "title": "Centralized orders & customers",
+        "desc": "All your orders and customer records in one place, whatever the source store, with full history."
+      },
+      {
+        "title": "Automatic invoicing",
+        "desc": "Invoice (PDF) generated as soon as an order is delivered, and e-mailed to the customer — with nothing to do."
+      },
+      {
+        "title": "Stock forecasts",
+        "desc": "Sales velocity calculation, estimated stockout date and suggested reorder quantities per product."
+      },
+      {
+        "title": "Reports & exports",
+        "desc": "Revenue, top products, top customers and stock value over the period of your choice. CSV export in one click."
+      },
+      {
+        "title": "Automations",
+        "desc": "Auto-invoicing, stock alerts, overdue reminders and weekly report: enable what you want, in one toggle."
+      },
+      {
+        "title": "Public API & webhooks",
+        "desc": "A REST API and webhooks to connect any site or in-house tool. Custom integration possible."
+      },
+      {
+        "title": "Integrations hub",
+        "desc": "Connection status, guided webhook setup and a real-time synchronization log."
+      }
     ],
-    "cta": { "title": "Ready to stop double data entry?", "subtitle": "See TijaraFlow in action on your own store.", "demo": "Request a demo", "pricing": "See pricing" }
+    "cta": {
+      "title": "Ready to stop double data entry?",
+      "subtitle": "See TijaraFlow in action on your own store.",
+      "demo": "Request a demo",
+      "pricing": "See pricing"
+    }
   },
   "contact": {
-    "meta": { "title": "Contact — TijaraFlow", "description": "A question, a demo request or an integration project? Contact the TijaraFlow team." },
-    "kicker": "Contact", "title": "Let’s talk about your e-commerce", "subtitle": "Personalized demo, pricing question, or custom integration: write to us, we reply within 24 business hours.",
+    "meta": {
+      "title": "Contact — TijaraFlow",
+      "description": "A question, a demo request or an integration project? Contact the TijaraFlow team."
+    },
+    "kicker": "Contact",
+    "title": "Let’s talk about your e-commerce",
+    "subtitle": "Personalized demo, pricing question, or custom integration: write to us, we reply within 24 business hours.",
     "info": [
-      { "title": "Live demo", "body": "We show you TijaraFlow connected to your store." },
-      { "title": "Custom integration", "body": "An in-house site? Our open API connects to it." },
-      { "title": "Fast reply", "body": "Within 24 business hours, by a real person." }
+      {
+        "title": "Live demo",
+        "body": "We show you TijaraFlow connected to your store."
+      },
+      {
+        "title": "Custom integration",
+        "body": "An in-house site? Our open API connects to it."
+      },
+      {
+        "title": "Fast reply",
+        "body": "Within 24 business hours, by a real person."
+      }
     ]
   },
-  "contactForm": { "name": "Name *", "email": "Email *", "company": "Company / store", "subject": "Subject", "message": "Message *", "namePh": "Your name", "emailPh": "you@company.com", "companyPh": "Your store name", "subjectPh": "Demo, question, partnership…", "messagePh": "How can we help you?", "submit": "Send message", "sending": "Sending…", "successTitle": "Message sent!", "successBody": "Thanks, we’ll get back to you within 24 business hours.", "error": "An error occurred", "footnote": "Reply within 24 business hours · No commitment" }
+  "contactForm": {
+    "name": "Name *",
+    "email": "Email *",
+    "company": "Company / store",
+    "subject": "Subject",
+    "message": "Message *",
+    "namePh": "Your name",
+    "emailPh": "you@company.com",
+    "companyPh": "Your store name",
+    "subjectPh": "Demo, question, partnership…",
+    "messagePh": "How can we help you?",
+    "submit": "Send message",
+    "sending": "Sending…",
+    "successTitle": "Message sent!",
+    "successBody": "Thanks, we’ll get back to you within 24 business hours.",
+    "error": "An error occurred",
+    "footnote": "Reply within 24 business hours · No commitment"
+  },
+  "app": {
+    "nav": {
+      "overview": "Overview",
+      "onboarding": "Get started",
+      "stocks": "Stock",
+      "forecast": "Forecasts",
+      "reports": "Reports",
+      "orders": "Orders",
+      "customers": "Customers",
+      "invoices": "Invoices",
+      "billing": "Billing",
+      "integrations": "Integrations",
+      "automations": "Automations",
+      "settings": "Settings",
+      "api": "API"
+    },
+    "sidebar": {
+      "close": "Close",
+      "logout": "Sign out"
+    }
+  }
 }
