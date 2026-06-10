@@ -7,6 +7,7 @@ import { useState } from 'react'
 const navItems = [
   { href: '/dashboard', label: "Vue d'ensemble", icon: '📊', exact: true },
   { href: '/dashboard/stocks', label: 'Stocks', icon: '📦', exact: false },
+  { href: '/dashboard/forecast', label: 'Prévisions', icon: '📈', exact: false },
   { href: '/dashboard/orders', label: 'Commandes', icon: '🛒', exact: false },
   { href: '/dashboard/customers', label: 'Clients', icon: '👥', exact: false },
   { href: '/dashboard/invoices', label: 'Factures', icon: '🧾', exact: false },
