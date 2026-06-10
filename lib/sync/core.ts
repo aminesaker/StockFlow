@@ -5,6 +5,7 @@
 // ============================================================
 import { createClient } from '@supabase/supabase-js'
 import { sendInvoiceEmail, sendStockAlert } from '@/lib/email/send'
+import type { Locale } from '@/i18n/locales'
 import { hasAutomations } from '@/lib/entitlements'
 import type {
   NormalizedCustomer,
@@ -306,12 +307,12 @@ async function notifyStockAlerts(
 ) {
   const { data: us } = await supabase
     .from('user_settings')
-    .select('notify_email')
+    .select('notify_email, locale')
     .eq('user_id', userId)
     .maybeSingle()
   const { data: authUser } = await supabase.auth.admin.getUserById(userId)
   const email = us?.notify_email ?? authUser?.user?.email
-  if (email) await sendStockAlert(email, { products }).catch(console.error)
+  if (email) await sendStockAlert(email, { products }, (us?.locale as Locale) ?? 'fr').catch(console.error)
 }
 
 async function triggerAutoInvoice(
@@ -362,12 +363,13 @@ async function triggerAutoInvoice(
     .single()
 
   if (invoice && cData?.email) {
+    const { data: usInv } = await supabase.from('user_settings').select('locale').eq('user_id', userId).maybeSingle()
     await sendInvoiceEmail(cData.email, {
       invoiceNumber: numData,
       invoiceId: invoice.id,
       customerName: cData.full_name,
       amount: amt ?? 0,
       dueDate: dueDate.toISOString().split('T')[0],
-    }).catch(console.error)
+    }, (usInv?.locale as Locale) ?? 'fr').catch(console.error)
   }
 }

@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { sendWeeklyReport } from '@/lib/email/send'
 import { usersWithAutomations } from '@/lib/entitlements'
+import type { Locale } from '@/i18n/locales'
 
 function getServiceClient() {
   return createServiceClient(
@@ -33,7 +34,7 @@ export async function GET(req: NextRequest) {
   // Récupérer tous les utilisateurs avec weekly_report activé
   const { data: settingsList } = await supabase
     .from('user_settings')
-    .select('user_id, notify_email, weekly_report')
+    .select('user_id, notify_email, weekly_report, locale')
     .eq('weekly_report', true)
 
   if (!settingsList?.length) {
@@ -91,7 +92,7 @@ export async function GET(req: NextRequest) {
         overdueInvoices: overdueInvoices?.length ?? 0,
         overdueAmount,
         lowStockProducts,
-      })
+      }, (settings.locale as Locale) ?? 'fr')
 
       sent++
     } catch (e) {

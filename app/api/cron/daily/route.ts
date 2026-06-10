@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { sendReminderEmail } from '@/lib/email/send'
 import { usersWithAutomations } from '@/lib/entitlements'
+import type { Locale } from '@/i18n/locales'
 
 // Client avec service_role pour contourner RLS dans les crons
 function getServiceClient() {
@@ -92,7 +93,7 @@ export async function GET(req: NextRequest) {
     // Vérifier les settings utilisateur
     const { data: settings } = await supabase
       .from('user_settings')
-      .select('overdue_reminders')
+      .select('overdue_reminders, locale')
       .eq('user_id', inv.user_id)
       .maybeSingle()
 
@@ -107,7 +108,7 @@ export async function GET(req: NextRequest) {
         dueDate: inv.due_date,
         daysOverdue,
         reminderCount,
-      })
+      }, (settings?.locale as Locale) ?? 'fr')
 
       await supabase
         .from('invoices')

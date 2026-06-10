@@ -1,10 +1,9 @@
 /**
- * Fonctions d'envoi email centralisées.
- * Resend ne lève PAS d'exception sur erreur API (domaine non vérifié, etc.) :
- * il renvoie { data, error }. On inspecte donc `error` et on le logue, et on
- * saute proprement l'envoi si aucune clé API n'est configurée.
+ * Fonctions d'envoi email centralisées (FR / EN).
  */
 import { resend, FROM_EMAIL, EMAILS_ENABLED } from './resend'
+import { BRAND } from '@/lib/brand'
+import type { Locale } from '@/i18n/locales'
 import {
   stockAlertEmail, StockAlertData,
   invoiceEmail, InvoiceEmailData,
@@ -14,9 +13,9 @@ import {
 
 type SendResult = { sent: boolean; id?: string; error?: string }
 
-async function deliver(payload: {
-  to: string; subject: string; html: string
-}): Promise<SendResult> {
+const cur = (n: number, l: Locale) => new Intl.NumberFormat(l === 'en' ? 'en-US' : 'fr-FR', { style: 'currency', currency: 'EUR' }).format(n)
+
+async function deliver(payload: { to: string; subject: string; html: string }): Promise<SendResult> {
   if (!EMAILS_ENABLED) {
     console.warn(`[email] envoi ignoré (RESEND_API_KEY manquant) → ${payload.to}`)
     return { sent: false, error: 'RESEND_API_KEY manquant' }
@@ -34,36 +33,31 @@ async function deliver(payload: {
   }
 }
 
-export async function sendStockAlert(to: string, data: StockAlertData) {
-  return deliver({
-    to,
-    subject: `⚠️ ${data.products.length} produit${data.products.length > 1 ? 's' : ''} en stock bas — StockFlow`,
-    html: stockAlertEmail(data),
-  })
+export async function sendStockAlert(to: string, data: StockAlertData, locale: Locale = 'fr') {
+  const n = data.products.length
+  const subject = locale === 'en'
+    ? `⚠️ ${n} product${n > 1 ? 's' : ''} low in stock — ${BRAND}`
+    : `⚠️ ${n} produit${n > 1 ? 's' : ''} en stock bas — ${BRAND}`
+  return deliver({ to, subject, html: stockAlertEmail(data, locale) })
 }
 
-export async function sendInvoiceEmail(to: string, data: InvoiceEmailData) {
-  return deliver({
-    to,
-    subject: `🧾 Facture ${data.invoiceNumber} — ${data.amount.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €`,
-    html: invoiceEmail(data),
-  })
+export async function sendInvoiceEmail(to: string, data: InvoiceEmailData, locale: Locale = 'fr') {
+  const subject = locale === 'en'
+    ? `🧾 Invoice ${data.invoiceNumber} — ${cur(data.amount, locale)}`
+    : `🧾 Facture ${data.invoiceNumber} — ${cur(data.amount, locale)}`
+  return deliver({ to, subject, html: invoiceEmail(data, locale) })
 }
 
-export async function sendReminderEmail(to: string, data: ReminderEmailData) {
-  const subjects = ['Rappel de paiement', '2e rappel — paiement en attente', 'Dernier rappel avant procédure']
-  const subject = subjects[Math.min(data.reminderCount - 1, 2)]
-  return deliver({
-    to,
-    subject: `🔔 ${subject} — ${data.invoiceNumber}`,
-    html: reminderEmail(data),
-  })
+export async function sendReminderEmail(to: string, data: ReminderEmailData, locale: Locale = 'fr') {
+  const fr = ['Rappel de paiement', '2e rappel — paiement en attente', 'Dernier rappel avant procédure']
+  const en = ['Payment reminder', '2nd reminder — payment pending', 'Final reminder before collection']
+  const label = (locale === 'en' ? en : fr)[Math.min(data.reminderCount - 1, 2)]
+  return deliver({ to, subject: `🔔 ${label} — ${data.invoiceNumber}`, html: reminderEmail(data, locale) })
 }
 
-export async function sendWeeklyReport(to: string, data: WeeklyReportData) {
-  return deliver({
-    to,
-    subject: `📊 Rapport hebdomadaire StockFlow — ${data.weekLabel}`,
-    html: weeklyReportEmail(data),
-  })
+export async function sendWeeklyReport(to: string, data: WeeklyReportData, locale: Locale = 'fr') {
+  const subject = locale === 'en'
+    ? `📊 ${BRAND} weekly report — ${data.weekLabel}`
+    : `📊 Rapport hebdomadaire ${BRAND} — ${data.weekLabel}`
+  return deliver({ to, subject, html: weeklyReportEmail(data, locale) })
 }

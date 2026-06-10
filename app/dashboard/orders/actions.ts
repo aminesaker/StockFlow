@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { sendStockAlert, sendInvoiceEmail } from '@/lib/email/send'
 import { createInvoiceFromOrder } from '@/app/dashboard/invoices/actions'
 import { canCreate, limitMessage, hasAutomations } from '@/lib/entitlements'
+import type { Locale } from '@/i18n/locales'
 
 const createOrderSchema = z.object({
   customer_id: z.string().uuid('Client requis'),
@@ -130,7 +131,7 @@ export async function createOrder(formData: FormData) {
     if (settings?.stock_alerts !== false) {
       const notifyEmail = settings?.notify_email ?? user.email
       if (notifyEmail) {
-        await sendStockAlert(notifyEmail, { products: stockAlerts }).catch(console.error)
+        await sendStockAlert(notifyEmail, { products: stockAlerts }, (settings?.locale as Locale) ?? 'fr').catch(console.error)
       }
     }
   }
@@ -176,7 +177,7 @@ export async function updateOrderStatus(id: string, status: string) {
             customerName: customer.full_name,
             amount: 0, // sera récupéré depuis la DB dans une amélioration future
             dueDate: dueDate.toISOString().split('T')[0],
-          }).catch(console.error)
+          }, (settings?.locale as Locale) ?? 'fr').catch(console.error)
         }
       }
     }
