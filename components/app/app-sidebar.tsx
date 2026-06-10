@@ -12,6 +12,7 @@ const nav = [
   { href: '/dashboard/onboarding', label: 'Bien démarrer', icon: '🚀' },
   { href: '/dashboard/stocks', label: 'Stocks', icon: '📦' },
   { href: '/dashboard/forecast', label: 'Prévisions', icon: '📈' },
+  { href: '/dashboard/reports', label: 'Rapports', icon: '📑' },
   { href: '/dashboard/orders', label: 'Commandes', icon: '🛒' },
   { href: '/dashboard/customers', label: 'Clients', icon: '👥' },
   { href: '/dashboard/invoices', label: 'Factures', icon: '🧾' },
