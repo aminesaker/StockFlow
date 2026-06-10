@@ -23,7 +23,7 @@ const nav = [
   { href: '/dashboard/automations', key: 'automations', icon: '⚡' },
   { href: '/dashboard/settings', key: 'settings', icon: '⚙️' },
   { href: '/dashboard/api-docs', key: 'api', icon: '🔌' },
-] as const
+]
 
 export function AppSidebar({ userEmail }: { userEmail: string }) {
   const pathname = usePathname()
