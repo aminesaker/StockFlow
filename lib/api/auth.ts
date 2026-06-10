@@ -2,6 +2,8 @@ import { createClient } from '@supabase/supabase-js'
 import { createHash, randomBytes } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { checkRateLimit, RATE_LIMITS } from '@/lib/rate-limit'
+import { getUserPlan } from '@/lib/entitlements'
+import { PLANS } from '@/lib/plans'
 
 // ── Service client (bypass RLS pour les lookups de clés) ──────────────────
 
@@ -89,6 +91,15 @@ export function withApiAuth(handler: ApiHandler) {
       RATE_LIMITS.api.windowSeconds
     )
     if (!allowed) return apiError('Trop de requêtes — réessayez dans un instant', 429)
+
+    // Gating : l'API publique est réservée aux plans qui ont la feature `api` (Business)
+    const plan = await getUserPlan(supabase, auth.userId)
+    if (!PLANS[plan].features.api) {
+      return apiError(
+        "L'API publique est réservée au plan Business. Passez à Business pour activer l'accès API.",
+        403,
+      )
+    }
 
     return handler(req, { userId: auth.userId, supabase })
   }
