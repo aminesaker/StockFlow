@@ -4,6 +4,7 @@ import { StatCard } from '@/components/shared/stat-card'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import ReportsRevenueChart from '@/components/dashboard/ReportsRevenueChart'
 import PeriodFilter from '@/components/dashboard/PeriodFilter'
+import { Button } from '@/components/ui/button'
 
 export const dynamic = 'force-dynamic'
 
@@ -63,6 +64,13 @@ export default async function ReportsPage({ searchParams }: Props) {
         description="Performance commerciale, produits, stock et clients"
         actions={<PeriodFilter current={periodKey} />}
       />
+
+      <div className="mb-6 flex flex-wrap items-center gap-2">
+        <span className="text-xs font-medium text-muted-foreground">Exporter (CSV) :</span>
+        <Button asChild variant="outline" size="sm"><a href={`/api/export/report-revenue?days=${days}`}>Chiffre d&apos;affaires</a></Button>
+        <Button asChild variant="outline" size="sm"><a href={`/api/export/report-products?days=${days}`}>Top produits</a></Button>
+        <Button asChild variant="outline" size="sm"><a href={`/api/export/report-customers?days=${days}`}>Clients</a></Button>
+      </div>
 
       {/* KPIs */}
       <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

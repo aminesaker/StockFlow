@@ -17,8 +17,18 @@ function toCsv(rows: Record<string, unknown>[]): string {
   return lines.join('\n')
 }
 
+const ALLOWED_DAYS = [7, 30, 90, 365]
+
+type ReportRevenue = { series: { bucket: string; amount: number }[] }
+type ReportTop = { id: string; name: string; sku?: string; qty?: number; revenue: number; orders?: number }
+type Report = {
+  revenue: ReportRevenue
+  top_products: ReportTop[]
+  customers: { top: ReportTop[] }
+}
+
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ entity: string }> }
 ) {
   const { entity } = await params
@@ -83,6 +93,33 @@ export async function GET(
     })
     csv = toCsv(rows)
     filename = 'factures.csv'
+
+  } else if (entity.startsWith('report-')) {
+    // Exports de rapports : période via ?days=
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
+
+    const daysParam = Number(req.nextUrl.searchParams.get('days'))
+    const days = ALLOWED_DAYS.includes(daysParam) ? daysParam : 30
+
+    const { data } = await supabase.rpc('reports_overview', { p_user_id: user.id, p_days: days })
+    const r = (data as Report | null) ?? null
+
+    if (entity === 'report-revenue') {
+      const rows = (r?.revenue.series ?? []).map((s) => ({ date: s.bucket, chiffre_affaires: s.amount }))
+      csv = toCsv(rows)
+      filename = `rapport-ca-${days}j.csv`
+    } else if (entity === 'report-products') {
+      const rows = (r?.top_products ?? []).map((p) => ({ produit: p.name, sku: p.sku ?? '', quantite: p.qty ?? 0, chiffre_affaires: p.revenue }))
+      csv = toCsv(rows)
+      filename = `rapport-top-produits-${days}j.csv`
+    } else if (entity === 'report-customers') {
+      const rows = (r?.customers.top ?? []).map((c) => ({ client: c.name, chiffre_affaires: c.revenue, commandes: c.orders ?? 0 }))
+      csv = toCsv(rows)
+      filename = `rapport-clients-${days}j.csv`
+    } else {
+      return NextResponse.json({ error: 'Rapport inconnu' }, { status: 400 })
+    }
 
   } else {
     return NextResponse.json({ error: 'Entité inconnue' }, { status: 400 })
