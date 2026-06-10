@@ -51,10 +51,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: 'Erreur serveur' }, { status: 500 })
   }
 
-  // Notification email (best-effort)
+  // Notification email — AWAIT obligatoire (sinon le serverless gèle la
+  // fonction avant que l'envoi parte réellement).
   if (EMAILS_ENABLED) {
-    resend.emails
-      .send({
+    try {
+      const { error: emailErr } = await resend.emails.send({
         from: FROM_EMAIL,
         to: NOTIFY_TO,
         subject: `🎯 Nouvelle demande de démo — ${name}${company ? ' (' + company + ')' : ''}`,
@@ -66,8 +67,10 @@ export async function POST(req: NextRequest) {
           <p><strong>Message :</strong><br/>${escapeHtml(message || '—').replace(/\n/g, '<br/>')}</p>
         `,
       })
-      .then((r) => { if (r.error) console.error('[demo-request] email error', r.error) })
-      .catch((e) => console.error('[demo-request] email exception', e))
+      if (emailErr) console.error('[demo-request] email error', emailErr)
+    } catch (e) {
+      console.error('[demo-request] email exception', e)
+    }
   }
 
   return NextResponse.json({ ok: true })
