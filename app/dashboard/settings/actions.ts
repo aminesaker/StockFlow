@@ -8,18 +8,14 @@ export async function saveSettings(formData: FormData) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Non authentifié' }
 
-  const settings = {
-    user_id: user.id,
-    notify_email: (formData.get('notify_email') as string) || user.email,
-    auto_invoice:       formData.get('auto_invoice') === 'on',
-    stock_alerts:       formData.get('stock_alerts') === 'on',
-    overdue_reminders:  formData.get('overdue_reminders') === 'on',
-    weekly_report:      formData.get('weekly_report') === 'on',
-  }
-
+  // Les automatisations sont gérées sur /dashboard/automations.
+  // Ici on ne touche qu'à l'email de notification (upsert partiel : les autres colonnes restent inchangées).
   const { error } = await supabase
     .from('user_settings')
-    .upsert(settings, { onConflict: 'user_id' })
+    .upsert(
+      { user_id: user.id, notify_email: (formData.get('notify_email') as string) || user.email },
+      { onConflict: 'user_id' },
+    )
 
   if (error) return { error: error.message }
 

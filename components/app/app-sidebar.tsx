@@ -18,6 +18,7 @@ const nav = [
   { href: '/dashboard/invoices', label: 'Factures', icon: '🧾' },
   { href: '/dashboard/billing', label: 'Facturation', icon: '💳' },
   { href: '/dashboard/integrations', label: 'Intégrations', icon: '🔗' },
+  { href: '/dashboard/automations', label: 'Automatisations', icon: '⚡' },
   { href: '/dashboard/settings', label: 'Paramètres', icon: '⚙️' },
   { href: '/dashboard/api-docs', label: 'API', icon: '🔌' },
 ]

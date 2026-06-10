@@ -17,11 +17,7 @@ export default async function SettingsPage() {
   ])
 
   const defaults = {
-    notify_email:       settings?.notify_email      ?? null,
-    auto_invoice:       settings?.auto_invoice       ?? true,
-    stock_alerts:       settings?.stock_alerts        ?? true,
-    overdue_reminders:  settings?.overdue_reminders   ?? true,
-    weekly_report:      settings?.weekly_report       ?? true,
+    notify_email: settings?.notify_email ?? null,
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://votreapp.vercel.app'
