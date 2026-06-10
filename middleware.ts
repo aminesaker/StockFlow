@@ -41,6 +41,8 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/api/contact') ||
     pathname.startsWith('/login') ||
     pathname.startsWith('/register') ||
+    pathname.startsWith('/reset') ||
+    pathname.startsWith('/auth') ||
     pathname.startsWith('/payment') ||
     pathname.startsWith('/api/webhooks') ||
     pathname.startsWith('/api/v1') ||

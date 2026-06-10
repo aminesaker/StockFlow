@@ -81,7 +81,11 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-muted-foreground">
+        <p className="mt-4 text-center text-sm">
+          <Link href="/reset" className="text-primary hover:underline">Mot de passe oublié ?</Link>
+        </p>
+
+        <p className="mt-2 text-center text-sm text-muted-foreground">
           Pas encore de compte ?{' '}
           <Link href="/register" className="text-primary hover:underline font-medium">
             S&apos;inscrire
