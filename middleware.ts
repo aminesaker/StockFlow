@@ -33,6 +33,8 @@ export async function middleware(request: NextRequest) {
 
   // Routes publiques — pas d'auth requise
   const isPublic =
+    pathname === '/' ||
+    pathname.startsWith('/api/demo-request') ||
     pathname.startsWith('/login') ||
     pathname.startsWith('/register') ||
     pathname.startsWith('/payment') ||
