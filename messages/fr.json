@@ -473,5 +473,71 @@
         "import": "Import"
       }
     }
+  },
+  "orderStatus": {
+    "pending": "En attente",
+    "confirmed": "Confirmée",
+    "shipped": "Expédiée",
+    "delivered": "Livrée",
+    "cancelled": "Annulée"
+  },
+  "orders": {
+    "title": "Commandes",
+    "count": "{count, plural, one {# commande} other {# commandes}}",
+    "search": "Rechercher par client…",
+    "filterAllStatus": "Tous statuts",
+    "exportCsv": "⬇ Exporter CSV",
+    "newOrder": "+ Nouvelle commande",
+    "colId": "ID",
+    "colCustomer": "Client",
+    "colTotal": "Total",
+    "colStatus": "Statut",
+    "colDate": "Date",
+    "invoiceBtn": "🧾 Facturer",
+    "deleteBtn": "Supprimer",
+    "empty": "Aucune commande — créez-en une !",
+    "confirmDelete": "Supprimer cette commande ?",
+    "toastDeleted": "Commande supprimée",
+    "toastInvoice": "Facture {number} créée !",
+    "form": {
+      "title": "Nouvelle commande",
+      "customer": "Client *",
+      "selectCustomer": "— Sélectionner un client —",
+      "items": "Articles *",
+      "addLine": "+ Ajouter une ligne",
+      "selectProduct": "— Produit —",
+      "stock": "stock",
+      "qty": "Qté",
+      "price": "Prix €",
+      "total": "Total",
+      "notes": "Notes",
+      "creating": "Création…",
+      "create": "Créer la commande"
+    }
+  },
+  "customers": {
+    "title": "Clients",
+    "count": "{count, plural, one {# client} other {# clients}}",
+    "search": "Rechercher nom, email, ville…",
+    "exportCsv": "⬇ Exporter CSV",
+    "newCustomer": "+ Nouveau client",
+    "colName": "Nom",
+    "colEmail": "Email",
+    "colPhone": "Téléphone",
+    "colCity": "Ville",
+    "colSince": "Depuis",
+    "empty": "Aucun client — ajoutez-en un !",
+    "confirmDelete": "Supprimer ce client ?",
+    "toastDeleted": "Client supprimé",
+    "form": {
+      "addTitle": "Nouveau client",
+      "editTitle": "Modifier le client",
+      "fullName": "Nom complet *",
+      "email": "Email *",
+      "phone": "Téléphone",
+      "address": "Adresse",
+      "city": "Ville",
+      "country": "Pays"
+    }
   }
 }

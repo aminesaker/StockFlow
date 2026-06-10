@@ -473,5 +473,71 @@
         "import": "Import"
       }
     }
+  },
+  "orderStatus": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
+  "orders": {
+    "title": "Orders",
+    "count": "{count, plural, one {# order} other {# orders}}",
+    "search": "Search by customer…",
+    "filterAllStatus": "All statuses",
+    "exportCsv": "⬇ Export CSV",
+    "newOrder": "+ New order",
+    "colId": "ID",
+    "colCustomer": "Customer",
+    "colTotal": "Total",
+    "colStatus": "Status",
+    "colDate": "Date",
+    "invoiceBtn": "🧾 Invoice",
+    "deleteBtn": "Delete",
+    "empty": "No orders — create one!",
+    "confirmDelete": "Delete this order?",
+    "toastDeleted": "Order deleted",
+    "toastInvoice": "Invoice {number} created!",
+    "form": {
+      "title": "New order",
+      "customer": "Customer *",
+      "selectCustomer": "— Select a customer —",
+      "items": "Items *",
+      "addLine": "+ Add a line",
+      "selectProduct": "— Product —",
+      "stock": "stock",
+      "qty": "Qty",
+      "price": "Price €",
+      "total": "Total",
+      "notes": "Notes",
+      "creating": "Creating…",
+      "create": "Create order"
+    }
+  },
+  "customers": {
+    "title": "Customers",
+    "count": "{count, plural, one {# customer} other {# customers}}",
+    "search": "Search name, email, city…",
+    "exportCsv": "⬇ Export CSV",
+    "newCustomer": "+ New customer",
+    "colName": "Name",
+    "colEmail": "Email",
+    "colPhone": "Phone",
+    "colCity": "City",
+    "colSince": "Since",
+    "empty": "No customers — add one!",
+    "confirmDelete": "Delete this customer?",
+    "toastDeleted": "Customer deleted",
+    "form": {
+      "addTitle": "New customer",
+      "editTitle": "Edit customer",
+      "fullName": "Full name *",
+      "email": "Email *",
+      "phone": "Phone",
+      "address": "Address",
+      "city": "City",
+      "country": "Country"
+    }
   }
 }
