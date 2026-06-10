@@ -6,11 +6,14 @@ import { PageHeader } from '@/components/shared/page-header'
 import { StatusBadge } from '@/components/shared/status-badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import { getOnboardingState } from '@/lib/onboarding'
 
 const MONTHS_FR = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc']
 
 export default async function DashboardPage() {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const onboarding = user ? await getOnboardingState(supabase, user.id) : null
 
   const [
     { count: productsCount },
@@ -77,6 +80,22 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       <PageHeader title="Vue d'ensemble" />
+
+      {onboarding && !onboarding.complete && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-semibold text-foreground">🚀 Terminez votre installation</p>
+              <p className="text-sm text-muted-foreground">
+                {onboarding.hasApiKey ? 'Connectez votre boutique pour voir vos données affluer.' : 'Générez votre clé et connectez votre boutique en 2 minutes.'}
+              </p>
+            </div>
+            <Link href="/dashboard/onboarding" className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
+              Bien démarrer →
+            </Link>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {kpis.map((s) => (

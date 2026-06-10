@@ -9,6 +9,7 @@ import { ThemeToggle } from '@/components/theme-toggle'
 
 const nav = [
   { href: '/dashboard', label: "Vue d'ensemble", icon: '📊', exact: true },
+  { href: '/dashboard/onboarding', label: 'Bien démarrer', icon: '🚀' },
   { href: '/dashboard/stocks', label: 'Stocks', icon: '📦' },
   { href: '/dashboard/forecast', label: 'Prévisions', icon: '📈' },
   { href: '/dashboard/orders', label: 'Commandes', icon: '🛒' },
