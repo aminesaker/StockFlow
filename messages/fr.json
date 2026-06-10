@@ -4,7 +4,17 @@
     "email": "Email",
     "password": "Mot de passe",
     "back": "Retour",
-    "loading": "Chargement…"
+    "loading": "Chargement…",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "create": "Créer",
+    "update": "Mettre à jour",
+    "saving": "Enregistrement…",
+    "all": "Tous",
+    "actions": "Actions",
+    "close": "Fermer"
   },
   "nav": {
     "features": "Fonctionnalités",
@@ -392,6 +402,76 @@
     "sidebar": {
       "close": "Fermer",
       "logout": "Déconnexion"
+    }
+  },
+  "stocks": {
+    "title": "Stocks",
+    "count": "{count, plural, one {# produit} other {# produits}}",
+    "search": "Rechercher nom, SKU, catégorie…",
+    "filterLow": "⚠️ Stock bas",
+    "filterOk": "✓ En stock",
+    "movementsBtn": "📊 Mouvements",
+    "exportCsv": "⬇ Exporter CSV",
+    "addProduct": "+ Ajouter un produit",
+    "colProduct": "Produit",
+    "colSku": "SKU",
+    "colPrice": "Prix",
+    "colStock": "Stock",
+    "colStatus": "Statut",
+    "statusLow": "Stock bas",
+    "statusOk": "En stock",
+    "actionEdit": "Modifier",
+    "actionView": "Voir les mouvements",
+    "actionDelete": "Supprimer",
+    "empty": "Aucun produit — ajoutez-en un !",
+    "confirmDelete": "Supprimer ce produit ?",
+    "toastDeleted": "Produit supprimé",
+    "form": {
+      "addTitle": "Ajouter un produit",
+      "editTitle": "Modifier le produit",
+      "name": "Nom *",
+      "sku": "SKU *",
+      "description": "Description",
+      "price": "Prix de vente (€) *",
+      "cost": "Coût (€)",
+      "quantity": "Quantité en stock",
+      "threshold": "Seuil alerte stock",
+      "category": "Catégorie",
+      "imageUrl": "URL image"
+    },
+    "import": {
+      "btn": "⬆ Importer CSV",
+      "title": "Importer des produits",
+      "intro": "Le fichier CSV doit contenir les colonnes :",
+      "required": "(obligatoires). Les produits existants (même SKU) seront mis à jour.",
+      "template": "⬇ Télécharger le template CSV",
+      "dropHere": "Glissez un fichier CSV ici",
+      "orClick": "ou cliquez pour sélectionner",
+      "import": "Importer",
+      "importing": "Importation…",
+      "onlyCsv": "Seuls les fichiers .csv sont acceptés",
+      "success": "{count} produit(s) importé(s) / mis à jour"
+    },
+    "movements": {
+      "title": "Mouvements de stock",
+      "descFor": "Historique pour « {name} »",
+      "descAll": "Historique de toutes les variations de stock",
+      "back": "← Retour aux stocks",
+      "colWhen": "Date",
+      "colProduct": "Produit",
+      "colType": "Type",
+      "colChange": "Variation",
+      "colBalance": "Solde après",
+      "colRef": "Référence",
+      "empty": "Aucun mouvement enregistré. Les ventes, réapprovisionnements et ajustements apparaîtront ici.",
+      "reasons": {
+        "sale": "Vente",
+        "restock": "Réapprovisionnement",
+        "cancellation": "Annulation",
+        "initial": "Stock initial",
+        "adjustment": "Ajustement",
+        "import": "Import"
+      }
     }
   }
 }

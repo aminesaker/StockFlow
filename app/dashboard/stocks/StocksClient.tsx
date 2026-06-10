@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 import type { Product } from '@/types'
 import ProductForm from '@/components/products/ProductForm'
 import { deleteProduct } from './actions'
@@ -14,37 +15,39 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 type Props = { products: Product[] }
 
 export default function StocksClient({ products }: Props) {
+  const t = useTranslations('stocks')
+  const tc = useTranslations('common')
   const [modal, setModal] = useState<'create' | Product | null>(null)
   const [isPending, startTransition] = useTransition()
 
   function handleDelete(id: string) {
-    if (!confirm('Supprimer ce produit ?')) return
+    if (!confirm(t('confirmDelete'))) return
     startTransition(async () => {
       const r = await deleteProduct(id)
       if (r.error) toast.error(r.error)
-      else toast.success('Produit supprimé')
+      else toast.success(t('toastDeleted'))
     })
   }
 
   return (
     <div>
       <div className="mb-4 flex items-center justify-end gap-2">
-        <Button asChild variant="outline" size="sm"><a href="/dashboard/stocks/movements">📊 Mouvements</a></Button>
-        <Button asChild variant="outline" size="sm"><a href="/api/export/products">⬇ Exporter CSV</a></Button>
+        <Button asChild variant="outline" size="sm"><a href="/dashboard/stocks/movements">{t('movementsBtn')}</a></Button>
+        <Button asChild variant="outline" size="sm"><a href="/api/export/products">{t('exportCsv')}</a></Button>
         <ImportProducts />
-        <Button size="sm" onClick={() => setModal('create')}>+ Ajouter un produit</Button>
+        <Button size="sm" onClick={() => setModal('create')}>{t('addProduct')}</Button>
       </div>
 
       <div className="overflow-hidden rounded-xl border bg-card">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/40 hover:bg-muted/40">
-              <TableHead>Produit</TableHead>
-              <TableHead>SKU</TableHead>
-              <TableHead className="text-right">Prix</TableHead>
-              <TableHead className="text-right">Stock</TableHead>
-              <TableHead>Statut</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t('colProduct')}</TableHead>
+              <TableHead>{t('colSku')}</TableHead>
+              <TableHead className="text-right">{t('colPrice')}</TableHead>
+              <TableHead className="text-right">{t('colStock')}</TableHead>
+              <TableHead>{t('colStatus')}</TableHead>
+              <TableHead className="text-right">{tc('actions')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -56,17 +59,17 @@ export default function StocksClient({ products }: Props) {
                   <TableCell className="text-muted-foreground">{product.sku}</TableCell>
                   <TableCell className="text-right tabular-nums">{product.price.toFixed(2)} €</TableCell>
                   <TableCell className="text-right tabular-nums">{product.stock_quantity}</TableCell>
-                  <TableCell><Badge variant={low ? 'danger' : 'success'}>{low ? 'Stock bas' : 'En stock'}</Badge></TableCell>
+                  <TableCell><Badge variant={low ? 'danger' : 'success'}>{low ? t('statusLow') : t('statusOk')}</Badge></TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
-                      <DropdownMenuTrigger className="rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none" aria-label="Actions">⋯</DropdownMenuTrigger>
+                      <DropdownMenuTrigger className="rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none" aria-label={tc('actions')}>⋯</DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onSelect={() => setModal(product)}>Modifier</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => setModal(product)}>{t('actionEdit')}</DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <a href={`/dashboard/stocks/movements?product=${product.id}`}>Voir les mouvements</a>
+                          <a href={`/dashboard/stocks/movements?product=${product.id}`}>{t('actionView')}</a>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem variant="danger" disabled={isPending} onSelect={() => handleDelete(product.id)}>Supprimer</DropdownMenuItem>
+                        <DropdownMenuItem variant="danger" disabled={isPending} onSelect={() => handleDelete(product.id)}>{t('actionDelete')}</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -74,9 +77,7 @@ export default function StocksClient({ products }: Props) {
               )
             })}
             {products.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={6} className="py-10 text-center text-muted-foreground">Aucun produit — ajoutez-en un !</TableCell>
-              </TableRow>
+              <TableRow><TableCell colSpan={6} className="py-10 text-center text-muted-foreground">{t('empty')}</TableCell></TableRow>
             )}
           </TableBody>
         </Table>

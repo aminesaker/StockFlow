@@ -4,7 +4,17 @@
     "email": "Email",
     "password": "Password",
     "back": "Back",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "update": "Update",
+    "saving": "Saving…",
+    "all": "All",
+    "actions": "Actions",
+    "close": "Close"
   },
   "nav": {
     "features": "Features",
@@ -392,6 +402,76 @@
     "sidebar": {
       "close": "Close",
       "logout": "Sign out"
+    }
+  },
+  "stocks": {
+    "title": "Stock",
+    "count": "{count, plural, one {# product} other {# products}}",
+    "search": "Search name, SKU, category…",
+    "filterLow": "⚠️ Low stock",
+    "filterOk": "✓ In stock",
+    "movementsBtn": "📊 Movements",
+    "exportCsv": "⬇ Export CSV",
+    "addProduct": "+ Add a product",
+    "colProduct": "Product",
+    "colSku": "SKU",
+    "colPrice": "Price",
+    "colStock": "Stock",
+    "colStatus": "Status",
+    "statusLow": "Low stock",
+    "statusOk": "In stock",
+    "actionEdit": "Edit",
+    "actionView": "View movements",
+    "actionDelete": "Delete",
+    "empty": "No products — add one!",
+    "confirmDelete": "Delete this product?",
+    "toastDeleted": "Product deleted",
+    "form": {
+      "addTitle": "Add a product",
+      "editTitle": "Edit product",
+      "name": "Name *",
+      "sku": "SKU *",
+      "description": "Description",
+      "price": "Selling price (€) *",
+      "cost": "Cost (€)",
+      "quantity": "Stock quantity",
+      "threshold": "Low-stock threshold",
+      "category": "Category",
+      "imageUrl": "Image URL"
+    },
+    "import": {
+      "btn": "⬆ Import CSV",
+      "title": "Import products",
+      "intro": "The CSV file must contain the columns:",
+      "required": "(required). Existing products (same SKU) will be updated.",
+      "template": "⬇ Download CSV template",
+      "dropHere": "Drop a CSV file here",
+      "orClick": "or click to select",
+      "import": "Import",
+      "importing": "Importing…",
+      "onlyCsv": "Only .csv files are accepted",
+      "success": "{count} product(s) imported / updated"
+    },
+    "movements": {
+      "title": "Stock movements",
+      "descFor": "History for “{name}”",
+      "descAll": "History of all stock changes",
+      "back": "← Back to stock",
+      "colWhen": "Date",
+      "colProduct": "Product",
+      "colType": "Type",
+      "colChange": "Change",
+      "colBalance": "Balance after",
+      "colRef": "Reference",
+      "empty": "No movements recorded. Sales, restocks and adjustments will appear here.",
+      "reasons": {
+        "sale": "Sale",
+        "restock": "Restock",
+        "cancellation": "Cancellation",
+        "initial": "Initial stock",
+        "adjustment": "Adjustment",
+        "import": "Import"
+      }
     }
   }
 }
