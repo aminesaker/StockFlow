@@ -9,6 +9,7 @@ import ImportProducts from './ImportProducts'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 
 type Props = { products: Product[] }
 
@@ -56,9 +57,18 @@ export default function StocksClient({ products }: Props) {
                   <TableCell className="text-right tabular-nums">{product.price.toFixed(2)} €</TableCell>
                   <TableCell className="text-right tabular-nums">{product.stock_quantity}</TableCell>
                   <TableCell><Badge variant={low ? 'danger' : 'success'}>{low ? 'Stock bas' : 'En stock'}</Badge></TableCell>
-                  <TableCell className="space-x-3 text-right">
-                    <button onClick={() => setModal(product)} className="text-xs text-primary hover:underline">Modifier</button>
-                    <button onClick={() => handleDelete(product.id)} disabled={isPending} className="text-xs text-destructive hover:underline disabled:opacity-50">Supprimer</button>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none" aria-label="Actions">⋯</DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onSelect={() => setModal(product)}>Modifier</DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <a href={`/dashboard/stocks/movements?product=${product.id}`}>Voir les mouvements</a>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem variant="danger" disabled={isPending} onSelect={() => handleDelete(product.id)}>Supprimer</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               )

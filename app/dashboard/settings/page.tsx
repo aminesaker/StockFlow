@@ -5,6 +5,7 @@ import SettingsForm from './SettingsForm'
 import ApiKeysSection from './ApiKeysSection'
 import WooCommerceSection from './WooCommerceSection'
 import { PageHeader } from '@/components/shared/page-header'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -30,26 +31,29 @@ export default async function SettingsPage() {
         actions={<Link href="/dashboard/api-docs" className="text-sm text-primary hover:underline">Documentation API →</Link>}
       />
 
-      <div className="space-y-6 max-w-2xl">
-        {/* Automatisations */}
-        <SettingsForm settings={defaults} userEmail={user.email ?? ''} />
+      <Tabs defaultValue="notifications" className="max-w-2xl">
+        <TabsList>
+          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+          <TabsTrigger value="integrations">Intégrations</TabsTrigger>
+          <TabsTrigger value="apikeys">Clés API</TabsTrigger>
+        </TabsList>
 
-        {/* Intégrations */}
-        <div>
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Intégrations</h3>
+        <TabsContent value="notifications">
+          <SettingsForm settings={defaults} userEmail={user.email ?? ''} />
+        </TabsContent>
+
+        <TabsContent value="integrations">
           <WooCommerceSection
             apiKeyPrefix={(apiKeys ?? [])[0]?.key_prefix ?? null}
             webhookSecret={settings?.wc_webhook_secret ?? null}
             appUrl={appUrl}
           />
-        </div>
+        </TabsContent>
 
-        {/* Clés API */}
-        <div>
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Clés API</h3>
+        <TabsContent value="apikeys">
           <ApiKeysSection apiKeys={(apiKeys ?? []) as unknown as Parameters<typeof ApiKeysSection>[0]['apiKeys']} />
-        </div>
-      </div>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }
