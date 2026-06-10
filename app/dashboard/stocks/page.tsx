@@ -5,6 +5,7 @@ import StocksClient from './StocksClient'
 import SearchBar from '@/components/ui/SearchBar'
 import StatusFilter from '@/components/ui/StatusFilter'
 import Pagination from '@/components/ui/Pagination'
+import { PageHeader } from '@/components/shared/page-header'
 
 const PAGE_SIZE = 15
 
@@ -50,12 +51,7 @@ export default async function StocksPage({ searchParams }: Props) {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Stocks</h2>
-          <p className="text-sm text-gray-400 mt-0.5">{total} produit{total !== 1 ? 's' : ''}</p>
-        </div>
-      </div>
+      <PageHeader title="Stocks" description={`${total} produit${total !== 1 ? 's' : ''}`} />
 
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
