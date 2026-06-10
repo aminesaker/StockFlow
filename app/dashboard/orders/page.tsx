@@ -6,6 +6,8 @@ import SearchBar from '@/components/ui/SearchBar'
 import StatusFilter from '@/components/ui/StatusFilter'
 import Pagination from '@/components/ui/Pagination'
 import { PageHeader } from '@/components/shared/page-header'
+import { LimitBanner } from '@/components/shared/limit-banner'
+import { canCreate } from '@/lib/entitlements'
 
 const PAGE_SIZE = 15
 
@@ -57,9 +59,14 @@ export default async function OrdersPage({ searchParams }: Props) {
   const total = count ?? 0
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE))
 
+  const { data: { user } } = await supabase.auth.getUser()
+  const limitCheck = user ? await canCreate(supabase, user.id, 'orders', 0) : null
+
   return (
     <div>
       <PageHeader title="Commandes" description={`${total} commande${total !== 1 ? 's' : ''}`} />
+
+      {limitCheck && <LimitBanner check={limitCheck} resourceLabel="commandes" />}
 
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="flex-1 max-w-xs">

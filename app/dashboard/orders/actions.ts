@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { z } from 'zod'
 import { sendStockAlert, sendInvoiceEmail } from '@/lib/email/send'
 import { createInvoiceFromOrder } from '@/app/dashboard/invoices/actions'
+import { canCreate, limitMessage } from '@/lib/entitlements'
 
 const createOrderSchema = z.object({
   customer_id: z.string().uuid('Client requis'),
@@ -56,6 +57,10 @@ export async function createOrder(formData: FormData) {
   const total_amount = orderItems.reduce((s, i) => s + i.quantity * i.unit_price, 0)
 
   const { supabase, user } = await getAuth()
+
+  // Enforcement de la limite du plan
+  const limit = await canCreate(supabase, user.id, 'orders')
+  if (!limit.allowed) return { error: { _root: [limitMessage('orders', limit)] } }
 
   // Vérifier le stock disponible
   for (const item of orderItems) {

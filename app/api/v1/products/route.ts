@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { withApiAuth, apiError } from '@/lib/api/auth'
+import { canCreate, limitMessage } from '@/lib/entitlements'
 
 const productSchema = z.object({
   name:                z.string().min(1),
@@ -36,6 +37,20 @@ export const POST = withApiAuth(async (req: NextRequest, { userId, supabase }) =
 
   const parsed = productSchema.safeParse(body)
   if (!parsed.success) return apiError('Validation error', 422, parsed.error.flatten().fieldErrors)
+
+  // Enforcement : ne bloque que la création d'un NOUVEAU SKU.
+  // Si le SKU existe déjà, c'est une mise à jour → toujours autorisée.
+  const { data: existing } = await supabase
+    .from('products')
+    .select('id')
+    .eq('user_id', userId)
+    .eq('sku', parsed.data.sku)
+    .maybeSingle()
+
+  if (!existing) {
+    const limit = await canCreate(supabase, userId, 'products')
+    if (!limit.allowed) return apiError(limitMessage('products', limit), 403)
+  }
 
   // Upsert sur SKU (crée ou met à jour)
   const { data, error } = await supabase

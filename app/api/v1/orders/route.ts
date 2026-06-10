@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { withApiAuth, apiError } from '@/lib/api/auth'
+import { canCreate, limitMessage } from '@/lib/entitlements'
 
 const orderSchema = z.object({
   // Identifier le client par email OU par id
@@ -42,6 +43,10 @@ export const POST = withApiAuth(async (req: NextRequest, { userId, supabase }) =
 
   const parsed = orderSchema.safeParse(body)
   if (!parsed.success) return apiError('Validation error', 422, parsed.error.flatten())
+
+  // Enforcement de la limite du plan (toute commande API est une création)
+  const limit = await canCreate(supabase, userId, 'orders')
+  if (!limit.allowed) return apiError(limitMessage('orders', limit), 403)
 
   const { customer_email, customer_id, notes, items } = parsed.data
 

@@ -6,6 +6,8 @@ import SearchBar from '@/components/ui/SearchBar'
 import StatusFilter from '@/components/ui/StatusFilter'
 import Pagination from '@/components/ui/Pagination'
 import { PageHeader } from '@/components/shared/page-header'
+import { LimitBanner } from '@/components/shared/limit-banner'
+import { canCreate } from '@/lib/entitlements'
 
 const PAGE_SIZE = 15
 
@@ -25,6 +27,9 @@ export default async function StocksPage({ searchParams }: Props) {
   const to = from + PAGE_SIZE - 1
 
   const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  const limitCheck = user ? await canCreate(supabase, user.id, 'products', 0) : null
 
   let query = supabase.from('products').select('*', { count: 'exact' })
 
@@ -52,6 +57,8 @@ export default async function StocksPage({ searchParams }: Props) {
   return (
     <div>
       <PageHeader title="Stocks" description={`${total} produit${total !== 1 ? 's' : ''}`} />
+
+      {limitCheck && <LimitBanner check={limitCheck} resourceLabel="produits" />}
 
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">

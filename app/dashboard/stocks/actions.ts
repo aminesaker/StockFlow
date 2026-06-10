@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { productSchema } from '@/lib/validations'
+import { canCreate, limitMessage } from '@/lib/entitlements'
 
 async function getUserId() {
   const supabase = await createClient()
@@ -28,6 +29,10 @@ export async function createProduct(formData: FormData) {
   if (!parsed.success) return { error: parsed.error.flatten().fieldErrors }
 
   const { supabase, userId } = await getUserId()
+
+  const limit = await canCreate(supabase, userId, 'products')
+  if (!limit.allowed) return { error: { _root: [limitMessage('products', limit)] } }
+
   const { error } = await supabase.from('products').insert({ ...parsed.data, user_id: userId })
 
   if (error) return { error: { _root: [error.message] } }
@@ -142,6 +147,17 @@ export async function importProductsCsv(formData: FormData) {
   if (!rows.length) return { error: 'Aucune ligne à importer.' }
 
   const { supabase, userId } = await getUserId()
+
+  // Enforcement : refuse l'import s'il fait dépasser la limite du plan.
+  // Estimation prudente : on compte chaque ligne comme un nouveau produit
+  // (les SKU déjà existants seront en réalité des mises à jour).
+  const limit = await canCreate(supabase, userId, 'products', rows.length)
+  if (!limit.allowed) {
+    const cap = limit.remaining ?? 0
+    return {
+      error: `${limitMessage('products', limit)} (${rows.length} lignes à importer, ${cap} emplacement(s) restant(s)).`,
+    }
+  }
 
   const rowsWithUser = rows.map((r) => ({ ...r, user_id: userId }))
 
