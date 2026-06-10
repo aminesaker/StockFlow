@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { getUserPlan } from '@/lib/entitlements'
 import { PLANS } from '@/lib/plans'
+import type { TablesInsert } from '@/lib/supabase/database.types'
 
 const ALLOWED = ['auto_invoice', 'stock_alerts', 'overdue_reminders', 'weekly_report'] as const
 export type AutomationKey = (typeof ALLOWED)[number]
@@ -22,7 +23,7 @@ export async function setAutomation(key: AutomationKey, enabled: boolean) {
 
   const { error } = await supabase
     .from('user_settings')
-    .upsert({ user_id: user.id, [key]: enabled }, { onConflict: 'user_id' })
+    .upsert({ user_id: user.id, [key]: enabled } as unknown as TablesInsert<'user_settings'>, { onConflict: 'user_id' })
 
   if (error) return { error: error.message }
 

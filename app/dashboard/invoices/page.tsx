@@ -73,7 +73,7 @@ export default async function InvoicesPage({ searchParams }: Props) {
       </div>
 
       <InvoicesClient
-        invoices={filtered}
+        invoices={filtered as unknown as Parameters<typeof InvoicesClient>[0]['invoices']}
         customers={(customers as Customer[]) ?? []}
         orders={(orders as Order[]) ?? []}
       />

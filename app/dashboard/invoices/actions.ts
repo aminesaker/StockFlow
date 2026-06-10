@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import type { TablesUpdate } from '@/lib/supabase/database.types'
 import { invoiceSchema } from '@/lib/validations'
 
 async function getUserId() {
@@ -90,7 +91,7 @@ export async function updateInvoiceStatus(
 ) {
   const { supabase } = await getUserId()
 
-  const update: Record<string, unknown> = { status }
+  const update: TablesUpdate<'invoices'> = { status }
   if (status === 'paid') update.paid_at = new Date().toISOString()
 
   const { error } = await supabase.from('invoices').update(update).eq('id', id)

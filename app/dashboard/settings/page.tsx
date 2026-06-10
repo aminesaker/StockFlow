@@ -47,7 +47,7 @@ export default async function SettingsPage() {
         {/* Clés API */}
         <div>
           <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Clés API</h3>
-          <ApiKeysSection apiKeys={apiKeys ?? []} />
+          <ApiKeysSection apiKeys={(apiKeys ?? []) as unknown as Parameters<typeof ApiKeysSection>[0]['apiKeys']} />
         </div>
       </div>
     </div>

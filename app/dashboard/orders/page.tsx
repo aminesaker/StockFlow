@@ -78,7 +78,7 @@ export default async function OrdersPage({ searchParams }: Props) {
       </div>
 
       <OrdersClient
-        orders={filteredOrders}
+        orders={filteredOrders as unknown as Parameters<typeof OrdersClient>[0]['orders']}
         customers={(customers as Customer[]) ?? []}
         products={(products as Product[]) ?? []}
       />

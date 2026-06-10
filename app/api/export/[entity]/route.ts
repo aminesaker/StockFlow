@@ -48,7 +48,7 @@ export async function GET(
   } else if (entity === 'customers') {
     const { data } = await supabase
       .from('customers')
-      .select('full_name,email,phone,address,city,country,notes')
+      .select('full_name,email,phone,address,city,country')
       .order('full_name')
     csv = toCsv((data ?? []) as Record<string, unknown>[])
     filename = 'clients.csv'

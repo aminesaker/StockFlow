@@ -34,7 +34,7 @@ export default async function ForecastPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   const { data, error } = await supabase.rpc('forecast_stock', {
-    p_user_id: user?.id, p_history_days: HISTORY, p_lead_time_days: LEAD, p_cover_days: COVER,
+    p_user_id: user?.id ?? '', p_history_days: HISTORY, p_lead_time_days: LEAD, p_cover_days: COVER,
   })
 
   const rows = (error ? [] : (data as Row[])) ?? []
