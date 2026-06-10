@@ -42,7 +42,7 @@ export default function WooCommerceSection({ apiKeyPrefix, webhookSecret, appUrl
           <h3 className="font-semibold text-foreground">WooCommerce</h3>
           <p className="text-xs text-muted-foreground">Synchronisation automatique commandes, clients, produits</p>
         </div>
-        <span className="ml-auto text-xs bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400 px-2.5 py-1 rounded-full font-medium">
+        <span className="ml-auto text-xs bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400 dark:bg-green-500/15 dark:text-green-400 px-2.5 py-1 rounded-full font-medium">
           Disponible
         </span>
       </div>

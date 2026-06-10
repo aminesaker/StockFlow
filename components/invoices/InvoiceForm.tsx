@@ -36,23 +36,23 @@ export default function InvoiceForm({ customers, orders, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="font-semibold text-gray-900">Nouvelle facture</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-background rounded-2xl w-full max-w-lg shadow-xl overflow-hidden">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+          <h2 className="font-semibold text-foreground">Nouvelle facture</h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-muted-foreground text-xl">×</button>
         </div>
 
         <form ref={formRef} onSubmit={handleSubmit} className="p-6 space-y-4">
           {/* Client */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Client *</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Client *</label>
             <select
               name="customer_id"
               required
               value={selectedCustomerId}
               onChange={(e) => setSelectedCustomerId(e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.customer_id ? 'border-red-400' : 'border-gray-300'}`}
+              className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 ${errors.customer_id ? 'border-red-400' : 'border-input'}`}
             >
               <option value="">— Sélectionner —</option>
               {customers.map((c) => (
@@ -64,13 +64,13 @@ export default function InvoiceForm({ customers, orders, onClose }: Props) {
 
           {/* Commande liée (optionnel) */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
-              Commande liée <span className="text-gray-400">(optionnel)</span>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">
+              Commande liée <span className="text-muted-foreground">(optionnel)</span>
             </label>
             <select
               name="order_id"
               disabled={!selectedCustomerId}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-50 disabled:text-gray-400"
+              className="w-full px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 disabled:bg-muted/40 disabled:text-muted-foreground"
             >
               <option value="">— Aucune —</option>
               {customerOrders.map((o) => (
@@ -83,38 +83,38 @@ export default function InvoiceForm({ customers, orders, onClose }: Props) {
 
           {/* Montant */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Montant (€) *</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Montant (€) *</label>
             <input
               type="number"
               name="amount"
               step="0.01"
               min="0"
               required
-              className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.amount ? 'border-red-400' : 'border-gray-300'}`}
+              className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 ${errors.amount ? 'border-red-400' : 'border-input'}`}
             />
             {errors.amount && <p className="text-xs text-red-500 mt-1">{errors.amount[0]}</p>}
           </div>
 
           {/* Échéance */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Date d&apos;échéance *</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Date d&apos;échéance *</label>
             <input
               type="date"
               name="due_date"
               required
               defaultValue={defaultDueStr}
-              className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.due_date ? 'border-red-400' : 'border-gray-300'}`}
+              className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 ${errors.due_date ? 'border-red-400' : 'border-input'}`}
             />
             {errors.due_date && <p className="text-xs text-red-500 mt-1">{errors.due_date[0]}</p>}
           </div>
 
           {/* Statut */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Statut</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Statut</label>
             <select
               name="status"
               defaultValue="draft"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50"
             >
               <option value="draft">Brouillon</option>
               <option value="sent">Envoyée</option>
@@ -126,14 +126,14 @@ export default function InvoiceForm({ customers, orders, onClose }: Props) {
           )}
         </form>
 
-        <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
-          <button type="button" onClick={onClose} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">
+        <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+          <button type="button" onClick={onClose} className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground">
             Annuler
           </button>
           <button
             onClick={() => formRef.current?.requestSubmit()}
             disabled={isPending}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white text-sm font-medium rounded-lg transition-colors"
+            className="px-4 py-2 bg-primary hover:bg-primary/90 disabled:bg-blue-400 text-white text-sm font-medium rounded-lg transition-colors"
           >
             {isPending ? 'Création...' : 'Créer la facture'}
           </button>

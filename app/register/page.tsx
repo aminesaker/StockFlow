@@ -33,11 +33,11 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-200 p-8 text-center">
+      <div className="min-h-screen flex items-center justify-center bg-muted/40">
+        <div className="w-full max-w-md bg-background rounded-2xl shadow-sm border border-border p-8 text-center">
           <div className="text-4xl mb-4">✉️</div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Vérifiez votre email</h2>
-          <p className="text-gray-500">
+          <h2 className="text-xl font-bold text-foreground mb-2">Vérifiez votre email</h2>
+          <p className="text-muted-foreground">
             Un lien de confirmation a été envoyé à <strong>{email}</strong>.
           </p>
         </div>
@@ -46,35 +46,35 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+    <div className="min-h-screen flex items-center justify-center bg-muted/40">
+      <div className="w-full max-w-md bg-background rounded-2xl shadow-sm border border-border p-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">StockFlow</h1>
-          <p className="text-gray-500 mt-1">Créer votre compte</p>
+          <h1 className="text-2xl font-bold text-foreground">StockFlow</h1>
+          <p className="text-muted-foreground mt-1">Créer votre compte</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-foreground mb-1">Email</label>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-transparent"
               placeholder="vous@example.com"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+            <label className="block text-sm font-medium text-foreground mb-1">Mot de passe</label>
             <input
               type="password"
               required
               minLength={8}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-ring/50 focus:border-transparent"
               placeholder="8 caractères minimum"
             />
           </div>
@@ -86,15 +86,15 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium rounded-lg transition-colors"
+            className="w-full py-2.5 px-4 bg-primary hover:bg-primary/90 disabled:bg-blue-400 text-white font-medium rounded-lg transition-colors"
           >
             {loading ? 'Création...' : 'Créer le compte'}
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-gray-500">
+        <p className="mt-6 text-center text-sm text-muted-foreground">
           Déjà un compte ?{' '}
-          <Link href="/login" className="text-blue-600 hover:underline font-medium">
+          <Link href="/login" className="text-primary hover:underline font-medium">
             Se connecter
           </Link>
         </p>

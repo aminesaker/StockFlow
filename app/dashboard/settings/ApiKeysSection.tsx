@@ -77,7 +77,7 @@ export default function ApiKeysSection({ apiKeys }: { apiKeys: ApiKey[] }) {
 
       {/* Liste des clés existantes */}
       {apiKeys.length > 0 && (
-        <div className="divide-y divide-gray-50 px-6 mt-4">
+        <div className="divide-y divide-border px-6 mt-4">
           {apiKeys.map((key) => (
             <div key={key.id} className="py-4 flex items-center justify-between gap-4">
               <div>

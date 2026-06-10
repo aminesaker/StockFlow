@@ -31,9 +31,9 @@ const STATUS_LABELS: Record<Invoice['status'], string> = {
 
 const STATUS_COLORS: Record<Invoice['status'], string> = {
   draft: 'bg-muted text-muted-foreground',
-  sent: 'bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400',
-  paid: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400',
-  overdue: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400',
+  sent: 'bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400 dark:bg-blue-500/15 dark:text-blue-400',
+  paid: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400 dark:bg-green-500/15 dark:text-green-400',
+  overdue: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400 dark:bg-red-500/15 dark:text-red-400',
   cancelled: 'bg-muted text-muted-foreground',
 }
 
@@ -157,7 +157,7 @@ export default function InvoicesClient({ invoices, customers, orders }: Props) {
                         href={`/api/invoices/${inv.id}/pdf`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs text-gray-600 hover:text-foreground hover:underline"
+                        className="text-xs text-muted-foreground hover:text-foreground hover:underline"
                       >
                         ⬇ PDF
                       </a>

@@ -71,7 +71,7 @@ export default function SettingsForm({ settings, userEmail }: Props) {
       </div>
 
       {/* Automatisations */}
-      <div className="rounded-xl border bg-card divide-y divide-gray-100">
+      <div className="rounded-xl border bg-card divide-y divide-border">
         <div className="px-6 py-4">
           <h3 className="font-semibold text-foreground">Automatisations</h3>
           <p className="text-sm text-muted-foreground mt-0.5">Activez ce que StockFlow doit faire sans intervention.</p>

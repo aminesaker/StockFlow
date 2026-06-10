@@ -12,7 +12,7 @@ const fmt = (n: number) =>
 export default function RevenueChart({ data }: { data: DataPoint[] }) {
   if (!data.length) {
     return (
-      <div className="h-48 flex items-center justify-center text-sm text-gray-400">
+      <div className="h-48 flex items-center justify-center text-sm text-muted-foreground">
         Aucune donnée disponible
       </div>
     )

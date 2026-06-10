@@ -69,7 +69,7 @@ export default async function DashboardPage() {
   ]
   const revenue = [
     { label: 'Encaissé', value: fmt(paid), color: 'text-emerald-600 dark:text-emerald-400' },
-    { label: 'En attente', value: fmt(pending), color: 'text-blue-600 dark:text-blue-400' },
+    { label: 'En attente', value: fmt(pending), color: 'text-primary dark:text-blue-400' },
     { label: 'En retard', value: fmt(overdue), color: 'text-red-600 dark:text-red-400' },
     { label: 'Taux de recouvrement', value: `${recoveryRate}%`, color: recoveryRate >= 80 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400' },
   ]
@@ -108,7 +108,7 @@ export default async function DashboardPage() {
           <CardHeader className="flex-row items-center justify-between">
             <CardTitle className="text-sm">Revenus 6 derniers mois</CardTitle>
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-blue-600" />Encaissé</span>
+              <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-primary" />Encaissé</span>
               <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-amber-400" />En attente</span>
             </div>
           </CardHeader>

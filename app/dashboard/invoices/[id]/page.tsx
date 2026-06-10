@@ -7,9 +7,9 @@ const STATUS_LABELS: Record<string, string> = {
   draft: 'Brouillon', sent: 'Envoyée', paid: 'Payée', overdue: 'En retard', cancelled: 'Annulée',
 }
 const STATUS_COLORS: Record<string, string> = {
-  draft: 'bg-gray-100 text-gray-600', sent: 'bg-blue-100 text-blue-700',
-  paid: 'bg-green-100 text-green-700', overdue: 'bg-red-100 text-red-700',
-  cancelled: 'bg-gray-100 text-gray-400',
+  draft: 'bg-muted text-muted-foreground', sent: 'bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400',
+  paid: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400', overdue: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400',
+  cancelled: 'bg-muted text-muted-foreground',
 }
 
 export default async function InvoiceDetailPage({
@@ -51,17 +51,17 @@ export default async function InvoiceDetailPage({
   return (
     <div className="max-w-4xl">
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-        <Link href="/dashboard/invoices" className="hover:text-gray-600">Factures</Link>
+      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
+        <Link href="/dashboard/invoices" className="hover:text-muted-foreground">Factures</Link>
         <span>/</span>
-        <span className="text-gray-700 font-medium">{invoice.invoice_number}</span>
+        <span className="text-foreground font-medium">{invoice.invoice_number}</span>
       </div>
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{invoice.invoice_number}</h2>
-          <p className="text-sm text-gray-400 mt-1">
+          <h2 className="text-2xl font-bold text-foreground">{invoice.invoice_number}</h2>
+          <p className="text-sm text-muted-foreground mt-1">
             Émise le {new Date(invoice.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
           </p>
         </div>
@@ -80,13 +80,13 @@ export default async function InvoiceDetailPage({
 
           {/* Lignes articles (si commande liée) */}
           {order?.items?.length ? (
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-              <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 className="font-semibold text-gray-800 text-sm">Détail</h3>
+            <div className="overflow-hidden rounded-xl border bg-card">
+              <div className="px-5 py-4 border-b border-border flex items-center justify-between">
+                <h3 className="font-semibold text-foreground text-sm">Détail</h3>
                 {order && (
                   <Link
                     href={`/dashboard/orders/${order.id}`}
-                    className="text-xs text-blue-600 hover:underline"
+                    className="text-xs text-primary hover:underline"
                   >
                     Voir la commande →
                   </Link>
@@ -94,19 +94,19 @@ export default async function InvoiceDetailPage({
               </div>
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-gray-50 border-b border-gray-100">
-                    <th className="px-5 py-3 text-left font-medium text-gray-500">Produit</th>
-                    <th className="px-5 py-3 text-right font-medium text-gray-500">Qté</th>
-                    <th className="px-5 py-3 text-right font-medium text-gray-500">Prix unit.</th>
-                    <th className="px-5 py-3 text-right font-medium text-gray-500">Total</th>
+                  <tr className="bg-muted/40 border-b border-border">
+                    <th className="px-5 py-3 text-left font-medium text-muted-foreground">Produit</th>
+                    <th className="px-5 py-3 text-right font-medium text-muted-foreground">Qté</th>
+                    <th className="px-5 py-3 text-right font-medium text-muted-foreground">Prix unit.</th>
+                    <th className="px-5 py-3 text-right font-medium text-muted-foreground">Total</th>
                   </tr>
                 </thead>
                 <tbody>
                   {order.items.map((item, i) => (
-                    <tr key={i} className="border-b border-gray-50">
+                    <tr key={i} className="border-b border-border">
                       <td className="px-5 py-3">
-                        <p className="font-medium text-gray-900">{item.product.name}</p>
-                        <p className="text-xs text-gray-400">SKU : {item.product.sku}</p>
+                        <p className="font-medium text-foreground">{item.product.name}</p>
+                        <p className="text-xs text-muted-foreground">SKU : {item.product.sku}</p>
                       </td>
                       <td className="px-5 py-3 text-right">{item.quantity}</td>
                       <td className="px-5 py-3 text-right">{item.unit_price.toFixed(2)} €</td>
@@ -117,27 +117,27 @@ export default async function InvoiceDetailPage({
               </table>
             </div>
           ) : (
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <h3 className="font-semibold text-gray-800 mb-3 text-sm">Détail</h3>
+            <div className="rounded-xl border bg-card p-5">
+              <h3 className="font-semibold text-foreground mb-3 text-sm">Détail</h3>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Prestation</span>
+                <span className="text-muted-foreground">Prestation</span>
                 <span className="font-semibold">{invoice.amount.toFixed(2)} €</span>
               </div>
             </div>
           )}
 
           {/* Récapitulatif montant */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <div className="rounded-xl border bg-card p-5">
             <div className="space-y-2 text-sm">
-              <div className="flex justify-between text-gray-500">
+              <div className="flex justify-between text-muted-foreground">
                 <span>Sous-total HT</span>
                 <span>{invoice.amount.toFixed(2)} €</span>
               </div>
-              <div className="flex justify-between text-gray-500">
+              <div className="flex justify-between text-muted-foreground">
                 <span>TVA (0%)</span>
                 <span>0,00 €</span>
               </div>
-              <div className="flex justify-between border-t border-gray-200 pt-2 font-bold text-gray-900 text-base">
+              <div className="flex justify-between border-t border-border pt-2 font-bold text-foreground text-base">
                 <span>Total TTC</span>
                 <span>{invoice.amount.toFixed(2)} €</span>
               </div>
@@ -153,22 +153,22 @@ export default async function InvoiceDetailPage({
 
         {/* Sidebar */}
         <div className="space-y-4">
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="font-semibold text-gray-800 mb-3 text-sm">Facturé à</h3>
-            <p className="font-medium text-gray-900">{customer.full_name}</p>
-            <p className="text-sm text-gray-500 mt-1">{customer.email}</p>
-            {customer.phone && <p className="text-sm text-gray-500">{customer.phone}</p>}
+          <div className="rounded-xl border bg-card p-5">
+            <h3 className="font-semibold text-foreground mb-3 text-sm">Facturé à</h3>
+            <p className="font-medium text-foreground">{customer.full_name}</p>
+            <p className="text-sm text-muted-foreground mt-1">{customer.email}</p>
+            {customer.phone && <p className="text-sm text-muted-foreground">{customer.phone}</p>}
             {customer.address && (
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-muted-foreground mt-2">
                 {customer.address}<br />
                 {customer.city}{customer.country ? `, ${customer.country}` : ''}
               </p>
             )}
           </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="font-semibold text-gray-800 mb-3 text-sm">Échéance</h3>
-            <p className="text-base font-semibold text-gray-900">
+          <div className="rounded-xl border bg-card p-5">
+            <h3 className="font-semibold text-foreground mb-3 text-sm">Échéance</h3>
+            <p className="text-base font-semibold text-foreground">
               {new Date(invoice.due_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
             {new Date(invoice.due_date) < new Date() && invoice.status !== 'paid' && (
@@ -177,9 +177,9 @@ export default async function InvoiceDetailPage({
           </div>
 
           {invoice.stripe_payment_intent_id && (
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <h3 className="font-semibold text-gray-800 mb-2 text-sm">Paiement Stripe</h3>
-              <p className="text-xs text-gray-400 font-mono break-all">{invoice.stripe_payment_intent_id}</p>
+            <div className="rounded-xl border bg-card p-5">
+              <h3 className="font-semibold text-foreground mb-2 text-sm">Paiement Stripe</h3>
+              <p className="text-xs text-muted-foreground font-mono break-all">{invoice.stripe_payment_intent_id}</p>
             </div>
           )}
         </div>

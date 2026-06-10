@@ -56,21 +56,21 @@ export default function OrderForm({ customers, products, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-2xl shadow-xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="font-semibold text-gray-900">Nouvelle commande</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-background rounded-2xl w-full max-w-2xl shadow-xl overflow-hidden">
+        <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+          <h2 className="font-semibold text-foreground">Nouvelle commande</h2>
+          <button onClick={onClose} className="text-muted-foreground hover:text-muted-foreground text-xl">×</button>
         </div>
 
         <form ref={formRef} onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
           {/* Client */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Client *</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Client *</label>
             <select
               name="customer_id"
               required
-              className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${errors.customer_id ? 'border-red-400' : 'border-gray-300'}`}
+              className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 ${errors.customer_id ? 'border-red-400' : 'border-input'}`}
             >
               <option value="">— Sélectionner un client —</option>
               {customers.map((c) => (
@@ -83,11 +83,11 @@ export default function OrderForm({ customers, products, onClose }: Props) {
           {/* Articles */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-medium text-gray-600">Articles *</label>
+              <label className="text-xs font-medium text-muted-foreground">Articles *</label>
               <button
                 type="button"
                 onClick={addItem}
-                className="text-xs text-blue-600 hover:underline"
+                className="text-xs text-primary hover:underline"
               >
                 + Ajouter une ligne
               </button>
@@ -100,7 +100,7 @@ export default function OrderForm({ customers, products, onClose }: Props) {
                     value={item.product_id}
                     onChange={(e) => updateItem(index, 'product_id', e.target.value)}
                     required
-                    className="px-2 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-2 py-1.5 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50"
                   >
                     <option value="">— Produit —</option>
                     {products.map((p) => (
@@ -114,7 +114,7 @@ export default function OrderForm({ customers, products, onClose }: Props) {
                     min="1"
                     value={item.quantity}
                     onChange={(e) => updateItem(index, 'quantity', Number(e.target.value))}
-                    className="px-2 py-1.5 border border-gray-300 rounded-lg text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-2 py-1.5 border border-input rounded-lg text-sm text-right focus:outline-none focus:ring-2 focus:ring-ring/50"
                     placeholder="Qté"
                   />
                   <input
@@ -123,7 +123,7 @@ export default function OrderForm({ customers, products, onClose }: Props) {
                     min="0"
                     value={item.unit_price}
                     onChange={(e) => updateItem(index, 'unit_price', Number(e.target.value))}
-                    className="px-2 py-1.5 border border-gray-300 rounded-lg text-sm text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-2 py-1.5 border border-input rounded-lg text-sm text-right focus:outline-none focus:ring-2 focus:ring-ring/50"
                     placeholder="Prix €"
                   />
                   <button
@@ -138,18 +138,18 @@ export default function OrderForm({ customers, products, onClose }: Props) {
               ))}
             </div>
 
-            <div className="mt-3 text-right text-sm font-semibold text-gray-900">
+            <div className="mt-3 text-right text-sm font-semibold text-foreground">
               Total : {total.toFixed(2)} €
             </div>
           </div>
 
           {/* Notes */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Notes</label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">Notes</label>
             <textarea
               name="notes"
               rows={2}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50"
             />
           </div>
 
@@ -158,14 +158,14 @@ export default function OrderForm({ customers, products, onClose }: Props) {
           )}
         </form>
 
-        <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
-          <button type="button" onClick={onClose} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">
+        <div className="px-6 py-4 border-t border-border flex justify-end gap-3">
+          <button type="button" onClick={onClose} className="px-4 py-2 text-sm text-muted-foreground hover:text-foreground">
             Annuler
           </button>
           <button
             onClick={() => formRef.current?.requestSubmit()}
             disabled={isPending}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white text-sm font-medium rounded-lg transition-colors"
+            className="px-4 py-2 bg-primary hover:bg-primary/90 disabled:bg-blue-400 text-white text-sm font-medium rounded-lg transition-colors"
           >
             {isPending ? 'Création...' : 'Créer la commande'}
           </button>

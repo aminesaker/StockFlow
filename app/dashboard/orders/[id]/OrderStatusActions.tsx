@@ -52,7 +52,7 @@ export default function OrderStatusActions({ orderId, currentStatus, canCancel }
         <button
           onClick={handleNext}
           disabled={isPending}
-          className="px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          className="px-3 py-1.5 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-colors"
         >
           {STATUS_NEXT_LABEL[currentStatus]}
         </button>
@@ -69,7 +69,7 @@ export default function OrderStatusActions({ orderId, currentStatus, canCancel }
       <button
         onClick={handleDelete}
         disabled={isPending}
-        className="px-3 py-1.5 border border-gray-200 text-gray-500 text-sm rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
+        className="px-3 py-1.5 border border-border text-muted-foreground text-sm rounded-lg hover:bg-muted/40 disabled:opacity-50 transition-colors"
       >
         Supprimer
       </button>

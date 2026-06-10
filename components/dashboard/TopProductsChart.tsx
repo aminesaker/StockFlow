@@ -9,7 +9,7 @@ const COLORS = ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe']
 export default function TopProductsChart({ data }: { data: DataPoint[] }) {
   if (!data.length) {
     return (
-      <div className="h-48 flex items-center justify-center text-sm text-gray-400">
+      <div className="h-48 flex items-center justify-center text-sm text-muted-foreground">
         Aucune vente enregistrée
       </div>
     )

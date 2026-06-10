@@ -48,7 +48,7 @@ export default function InvoiceActions({ invoiceId, status, isPayable }: Props) 
         <button
           onClick={() => handleStatus(next.status, next.label)}
           disabled={isPending}
-          className="px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          className="px-3 py-1.5 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-colors"
         >
           {next.label}
         </button>
@@ -69,7 +69,7 @@ export default function InvoiceActions({ invoiceId, status, isPayable }: Props) 
         href={`/api/invoices/${invoiceId}/pdf`}
         target="_blank"
         rel="noopener noreferrer"
-        className="px-3 py-1.5 border border-gray-200 text-gray-600 text-sm rounded-lg hover:bg-gray-50 transition-colors"
+        className="px-3 py-1.5 border border-border text-muted-foreground text-sm rounded-lg hover:bg-muted/40 transition-colors"
       >
         ⬇ PDF
       </a>
@@ -89,7 +89,7 @@ export default function InvoiceActions({ invoiceId, status, isPayable }: Props) 
       <button
         onClick={handleDelete}
         disabled={isPending}
-        className="px-3 py-1.5 border border-gray-200 text-gray-500 text-sm rounded-lg hover:bg-gray-50 disabled:opacity-50 transition-colors"
+        className="px-3 py-1.5 border border-border text-muted-foreground text-sm rounded-lg hover:bg-muted/40 disabled:opacity-50 transition-colors"
       >
         Supprimer
       </button>

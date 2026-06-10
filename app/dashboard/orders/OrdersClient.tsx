@@ -17,11 +17,11 @@ const STATUS_LABELS: Record<Order['status'], string> = {
 }
 
 const STATUS_COLORS: Record<Order['status'], string> = {
-  pending: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/15 dark:text-yellow-400',
-  confirmed: 'bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400',
-  shipped: 'bg-purple-100 text-purple-700 dark:bg-purple-500/15 dark:text-purple-400',
-  delivered: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400',
-  cancelled: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400',
+  pending: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/15 dark:text-yellow-400 dark:bg-yellow-500/15 dark:text-yellow-400',
+  confirmed: 'bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400 dark:bg-blue-500/15 dark:text-blue-400',
+  shipped: 'bg-primary/10 text-purple-700 dark:bg-purple-500/15 dark:text-purple-400 dark:bg-purple-500/15 dark:text-purple-400',
+  delivered: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400 dark:bg-green-500/15 dark:text-green-400',
+  cancelled: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400 dark:bg-red-500/15 dark:text-red-400',
 }
 
 const STATUS_FLOW: Order['status'][] = ['pending', 'confirmed', 'shipped', 'delivered']
