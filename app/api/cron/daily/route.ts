@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { sendReminderEmail } from '@/lib/email/send'
+import { usersWithAutomations } from '@/lib/entitlements'
 
 // Client avec service_role pour contourner RLS dans les crons
 function getServiceClient() {
@@ -65,7 +66,11 @@ export async function GET(req: NextRequest) {
     `)
     .eq('status', 'overdue')
 
+  // Gating : relances uniquement pour les plans avec automatisations (Pro+)
+  const autoUsers = await usersWithAutomations(supabase, [...new Set((overdueList ?? []).map((i) => i.user_id as string))])
+
   for (const inv of (overdueList ?? [])) {
+    if (!autoUsers.has(inv.user_id as string)) continue
     const customer = (inv.customer as { email: string; full_name: string }[] | null)?.[0]
     if (!customer?.email) continue
 

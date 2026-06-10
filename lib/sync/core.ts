@@ -5,6 +5,7 @@
 // ============================================================
 import { createClient } from '@supabase/supabase-js'
 import { sendInvoiceEmail, sendStockAlert } from '@/lib/email/send'
+import { hasAutomations } from '@/lib/entitlements'
 import type {
   NormalizedCustomer,
   NormalizedOrder,
@@ -192,13 +193,16 @@ export async function createOrder(
     resolvedItems.map((i) => ({ order_id: order.id, ...i }))
   )
 
+  // Automatisations : actives uniquement si le plan les inclut (Pro+)
+  const autom = await hasAutomations(supabase, userId)
+
   // 5. Auto-facturation si déjà livrée
-  if (status === 'delivered' && settings?.auto_invoice !== false) {
+  if (autom && status === 'delivered' && settings?.auto_invoice !== false) {
     await triggerAutoInvoice(supabase, userId, order.id, customer.id, total_amount, customerData)
   }
 
   // 6. Alertes stock
-  if (stockAlerts.length > 0 && settings?.stock_alerts !== false) {
+  if (autom && stockAlerts.length > 0 && settings?.stock_alerts !== false) {
     await notifyStockAlerts(supabase, userId, stockAlerts)
   }
 }
@@ -231,7 +235,7 @@ export async function updateOrder(
   if (status === 'cancelled' && existing.status !== 'cancelled') {
     await restockOrder(supabase, existing.id)
   }
-  if (status === 'delivered' && settings?.auto_invoice !== false) {
+  if (status === 'delivered' && settings?.auto_invoice !== false && (await hasAutomations(supabase, userId))) {
     await triggerAutoInvoice(supabase, userId, existing.id)
   }
 }

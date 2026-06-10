@@ -17,6 +17,7 @@ import {
 import { checkRateLimit, RATE_LIMITS } from '@/lib/rate-limit'
 import { logError } from '@/lib/observability'
 import { logSyncEvent } from './sync-log'
+import { canUseStore } from '@/lib/entitlements'
 import type { PlatformAdapter } from './types'
 
 function ok(message: string) {
@@ -79,6 +80,16 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
 
   const action = adapter.parse(req.headers, payload)
   const src = adapter.source
+
+  // 5bis. Gating boutiques : refuser une NOUVELLE boutique au-delà de la limite du plan
+  const STORE_KINDS = new Set(['product.upsert', 'order.created', 'order.updated'])
+  if (STORE_KINDS.has(action.kind)) {
+    const store = await canUseStore(supabase, userId, src)
+    if (!store.allowed) {
+      await logSyncEvent(supabase, { userId, source: src, action: action.kind, status: 'error', detail: `boutique refusée — limite de ${store.limit} boutique(s) atteinte` })
+      return err(`Limite de boutiques du plan atteinte (${store.limit}). Passez à Business pour connecter plusieurs boutiques.`, 403)
+    }
+  }
 
   // 6. Dispatch vers le cœur (avec capture d'erreurs + journal de synchro)
   let summary: string

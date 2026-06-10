@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { sendWeeklyReport } from '@/lib/email/send'
+import { usersWithAutomations } from '@/lib/entitlements'
 
 function getServiceClient() {
   return createServiceClient(
@@ -42,7 +43,11 @@ export async function GET(req: NextRequest) {
   let sent = 0
   const errors: string[] = []
 
+  // Gating : rapport hebdo uniquement pour les plans avec automatisations (Pro+)
+  const autoUsers = await usersWithAutomations(supabase, settingsList.map((s) => s.user_id as string))
+
   for (const settings of settingsList) {
+    if (!autoUsers.has(settings.user_id as string)) continue
     try {
       // Récupérer l'email utilisateur depuis auth
       const { data: authUser } = await supabase.auth.admin.getUserById(settings.user_id)

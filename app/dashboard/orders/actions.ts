@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { z } from 'zod'
 import { sendStockAlert, sendInvoiceEmail } from '@/lib/email/send'
 import { createInvoiceFromOrder } from '@/app/dashboard/invoices/actions'
-import { canCreate, limitMessage } from '@/lib/entitlements'
+import { canCreate, limitMessage, hasAutomations } from '@/lib/entitlements'
 
 const createOrderSchema = z.object({
   customer_id: z.string().uuid('Client requis'),
@@ -152,7 +152,7 @@ export async function updateOrderStatus(id: string, status: string) {
   // 🔥 Auto-facturation quand la commande passe en "delivered"
   if (status === 'delivered') {
     const settings = await getUserSettings(supabase, user.id)
-    if (settings?.auto_invoice !== false) {
+    if (settings?.auto_invoice !== false && (await hasAutomations(supabase, user.id))) {
       const result = await createInvoiceFromOrder(id)
 
       if (!result.error && result.invoiceNumber) {
