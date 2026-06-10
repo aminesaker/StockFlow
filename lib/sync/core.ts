@@ -295,7 +295,7 @@ async function restockOrder(supabase: DB, orderId: string) {
     .eq('order_id', orderId)
   if (!items) return
   for (const it of items) {
-    await supabase.rpc('increment_stock', { p_product_id: it.product_id, p_quantity: it.quantity })
+    await supabase.rpc('increment_stock', { p_product_id: it.product_id, p_quantity: it.quantity, p_reason: 'cancellation' })
   }
 }
 

@@ -28,6 +28,7 @@ export default function StocksClient({ products }: Props) {
   return (
     <div>
       <div className="mb-4 flex items-center justify-end gap-2">
+        <Button asChild variant="outline" size="sm"><a href="/dashboard/stocks/movements">📊 Mouvements</a></Button>
         <Button asChild variant="outline" size="sm"><a href="/api/export/products">⬇ Exporter CSV</a></Button>
         <ImportProducts />
         <Button size="sm" onClick={() => setModal('create')}>+ Ajouter un produit</Button>

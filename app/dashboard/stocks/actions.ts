@@ -33,9 +33,24 @@ export async function createProduct(formData: FormData) {
   const limit = await canCreate(supabase, userId, 'products')
   if (!limit.allowed) return { error: { _root: [limitMessage('products', limit)] } }
 
-  const { error } = await supabase.from('products').insert({ ...parsed.data, user_id: userId })
+  const { data: created, error } = await supabase
+    .from('products')
+    .insert({ ...parsed.data, user_id: userId })
+    .select('id, stock_quantity')
+    .single()
 
   if (error) return { error: { _root: [error.message] } }
+
+  // Mouvement de stock initial
+  if (created && created.stock_quantity > 0) {
+    await supabase.from('stock_movements').insert({
+      user_id: userId,
+      product_id: created.id,
+      delta: created.stock_quantity,
+      reason: 'initial',
+      balance_after: created.stock_quantity,
+    })
+  }
 
   revalidatePath('/dashboard/stocks')
   revalidatePath('/dashboard')
@@ -58,11 +73,24 @@ export async function updateProduct(id: string, formData: FormData) {
   const parsed = productSchema.safeParse(raw)
   if (!parsed.success) return { error: parsed.error.flatten().fieldErrors }
 
-  const { supabase } = await getUserId()
+  const { supabase, userId } = await getUserId()
   // RLS filtre automatiquement par user_id
+  const { data: before } = await supabase.from('products').select('stock_quantity').eq('id', id).single()
   const { error } = await supabase.from('products').update(parsed.data).eq('id', id)
 
   if (error) return { error: { _root: [error.message] } }
+
+  // Mouvement d'ajustement manuel si le stock a changé
+  const newQty = parsed.data.stock_quantity
+  if (before && typeof newQty === 'number' && newQty !== before.stock_quantity) {
+    await supabase.from('stock_movements').insert({
+      user_id: userId,
+      product_id: id,
+      delta: newQty - before.stock_quantity,
+      reason: 'adjustment',
+      balance_after: newQty,
+    })
+  }
 
   revalidatePath('/dashboard/stocks')
   return { success: true }
