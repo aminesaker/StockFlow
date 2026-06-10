@@ -1,0 +1,65 @@
+{
+  "common": {
+    "appName": "TijaraFlow",
+    "email": "Email",
+    "password": "Mot de passe",
+    "back": "Retour",
+    "loading": "Chargement…"
+  },
+  "nav": {
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "contact": "Contact",
+    "login": "Connexion",
+    "requestDemo": "Demander une démo"
+  },
+  "footer": {
+    "rights": "Tous droits réservés.",
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "contact": "Contact",
+    "login": "Connexion"
+  },
+  "auth": {
+    "login": {
+      "subtitle": "Connectez-vous à votre compte",
+      "emailPlaceholder": "vous@example.com",
+      "submit": "Se connecter",
+      "loading": "Connexion…",
+      "forgot": "Mot de passe oublié ?",
+      "noAccount": "Pas encore de compte ?",
+      "signupLink": "S’inscrire"
+    },
+    "register": {
+      "subtitle": "Créer votre compte",
+      "passwordPlaceholder": "8 caractères minimum",
+      "submit": "Créer le compte",
+      "loading": "Création…",
+      "haveAccount": "Déjà un compte ?",
+      "loginLink": "Se connecter",
+      "successTitle": "Vérifiez votre email",
+      "successBody": "Un lien de confirmation a été envoyé à {email}."
+    },
+    "reset": {
+      "title": "Mot de passe oublié",
+      "subtitle": "Recevez un lien de réinitialisation par email.",
+      "emailPlaceholder": "vous@example.com",
+      "submit": "Envoyer le lien",
+      "loading": "Envoi…",
+      "sent": "Si un compte existe pour {email}, un email de réinitialisation vient d’être envoyé. Pensez à vérifier vos spams.",
+      "backToLogin": "← Retour à la connexion"
+    },
+    "resetUpdate": {
+      "title": "Nouveau mot de passe",
+      "subtitle": "Choisissez un nouveau mot de passe pour votre compte.",
+      "newPassword": "Nouveau mot de passe",
+      "confirm": "Confirmer",
+      "submit": "Mettre à jour le mot de passe",
+      "loading": "Mise à jour…",
+      "done": "Mot de passe mis à jour ✓ Redirection vers votre tableau de bord…",
+      "tooShort": "Le mot de passe doit faire au moins 8 caractères.",
+      "mismatch": "Les mots de passe ne correspondent pas.",
+      "backToLogin": "← Retour à la connexion"
+    }
+  }
+}

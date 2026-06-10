@@ -471,6 +471,7 @@ export type Database = {
           auto_invoice: boolean | null
           created_at: string | null
           id: string
+          locale: string
           notify_email: string | null
           overdue_reminders: boolean | null
           stock_alerts: boolean | null
@@ -483,6 +484,7 @@ export type Database = {
           auto_invoice?: boolean | null
           created_at?: string | null
           id?: string
+          locale?: string
           notify_email?: string | null
           overdue_reminders?: boolean | null
           stock_alerts?: boolean | null
@@ -495,6 +497,7 @@ export type Database = {
           auto_invoice?: boolean | null
           created_at?: string | null
           id?: string
+          locale?: string
           notify_email?: string | null
           overdue_reminders?: boolean | null
           stock_alerts?: boolean | null

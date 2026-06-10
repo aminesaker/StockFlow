@@ -1,0 +1,65 @@
+{
+  "common": {
+    "appName": "TijaraFlow",
+    "email": "Email",
+    "password": "Password",
+    "back": "Back",
+    "loading": "Loading…"
+  },
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "login": "Sign in",
+    "requestDemo": "Request a demo"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "features": "Features",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "login": "Sign in"
+  },
+  "auth": {
+    "login": {
+      "subtitle": "Sign in to your account",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Sign in",
+      "loading": "Signing in…",
+      "forgot": "Forgot password?",
+      "noAccount": "No account yet?",
+      "signupLink": "Sign up"
+    },
+    "register": {
+      "subtitle": "Create your account",
+      "passwordPlaceholder": "8 characters minimum",
+      "submit": "Create account",
+      "loading": "Creating…",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Sign in",
+      "successTitle": "Check your email",
+      "successBody": "A confirmation link has been sent to {email}."
+    },
+    "reset": {
+      "title": "Forgot password",
+      "subtitle": "Get a reset link by email.",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Send link",
+      "loading": "Sending…",
+      "sent": "If an account exists for {email}, a reset email has just been sent. Remember to check your spam folder.",
+      "backToLogin": "← Back to sign in"
+    },
+    "resetUpdate": {
+      "title": "New password",
+      "subtitle": "Choose a new password for your account.",
+      "newPassword": "New password",
+      "confirm": "Confirm",
+      "submit": "Update password",
+      "loading": "Updating…",
+      "done": "Password updated ✓ Redirecting to your dashboard…",
+      "tooShort": "Password must be at least 8 characters.",
+      "mismatch": "Passwords do not match.",
+      "backToLogin": "← Back to sign in"
+    }
+  }
+}
