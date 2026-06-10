@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import DemoForm from '@/components/landing/DemoForm'
+import { BRAND } from '@/lib/brand'
 
 export const metadata = {
-  title: 'TijaraFlow — Synchronisez vos boutiques e-commerce, automatiquement',
+  title: `${BRAND} — Synchronisez vos boutiques e-commerce, automatiquement`,
   description:
-    "TijaraFlow connecte WooCommerce et Shopify à un tableau de bord unique : stock en temps réel, commandes, clients et factures synchronisés automatiquement. Demandez une démo.",
+    `${BRAND} connecte WooCommerce et Shopify à un tableau de bord unique : stock en temps réel, commandes, clients et factures synchronisés automatiquement. Demandez une démo.`,
 }
 
 function Icon({ d }: { d: string }) {
@@ -22,8 +23,8 @@ export default function Landing() {
       <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/80 backdrop-blur">
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
           <a href="#" className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold">T</span>
-            <span className="text-lg font-bold tracking-tight">Tijara<span className="text-indigo-600">Flow</span></span>
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold">{BRAND.charAt(0)}</span>
+            <span className="text-lg font-bold tracking-tight">{BRAND}</span>
           </a>
           <div className="hidden items-center gap-8 text-sm font-medium text-gray-600 md:flex">
             <a href="#features" className="hover:text-gray-900">Fonctionnalités</a>
@@ -50,7 +51,7 @@ export default function Landing() {
               <span className="text-indigo-600">Synchronisés tout seuls.</span>
             </h1>
             <p className="mt-5 max-w-lg text-lg text-gray-600">
-              TijaraFlow connecte vos boutiques e-commerce à un seul tableau de bord. Une vente, un retour, une commande&nbsp;? Votre stock, vos clients et vos factures se mettent à jour <strong>en temps réel</strong>, sans aucune saisie manuelle.
+              {BRAND} connecte vos boutiques e-commerce à un seul tableau de bord. Une vente, un retour, une commande&nbsp;? Votre stock, vos clients et vos factures se mettent à jour <strong>en temps réel</strong>, sans aucune saisie manuelle.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a href="#demo" className="rounded-lg bg-indigo-600 px-6 py-3 font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700">Demander une démo gratuite</a>
@@ -214,7 +215,7 @@ export default function Landing() {
       <section id="demo" className="relative overflow-hidden bg-gradient-to-br from-indigo-700 to-indigo-900 py-20">
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 lg:grid-cols-2">
           <div className="text-white">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Voyez TijaraFlow sur vos propres données</h2>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Voyez {BRAND} sur vos propres données</h2>
             <p className="mt-4 max-w-md text-lg text-indigo-100">
               Réservez une démo de 20 minutes. On connecte votre boutique en direct et vous repartez avec une vision claire de ce que l’automatisation peut vous faire gagner.
             </p>
@@ -235,10 +236,10 @@ export default function Landing() {
       <footer className="border-t border-gray-100 bg-white">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-5 py-8 sm:flex-row">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">T</span>
-            <span className="font-bold">Tijara<span className="text-indigo-600">Flow</span></span>
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600 text-sm font-bold text-white">{BRAND.charAt(0)}</span>
+            <span className="font-bold">{BRAND}</span>
           </div>
-          <p className="text-sm text-gray-400">© {new Date().getFullYear()} TijaraFlow. Tous droits réservés.</p>
+          <p className="text-sm text-gray-400">© {new Date().getFullYear()} {BRAND}. Tous droits réservés.</p>
           <div className="flex gap-6 text-sm text-gray-500">
             <a href="#features" className="hover:text-gray-900">Fonctionnalités</a>
             <a href="#demo" className="hover:text-gray-900">Démo</a>

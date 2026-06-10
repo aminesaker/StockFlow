@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { resend, FROM_EMAIL, EMAILS_ENABLED } from '@/lib/email/resend'
 import { checkRateLimit } from '@/lib/rate-limit'
+import { BRAND } from '@/lib/brand'
 
 const NOTIFY_TO = 'aminesaker@outlook.com'
 
@@ -58,7 +59,7 @@ export async function POST(req: NextRequest) {
         to: NOTIFY_TO,
         subject: `🎯 Nouvelle demande de démo — ${name}${company ? ' (' + company + ')' : ''}`,
         html: `
-          <h2>Nouvelle demande de démo TijaraFlow</h2>
+          <h2>Nouvelle demande de démo ${BRAND}</h2>
           <p><strong>Nom :</strong> ${escapeHtml(name)}</p>
           <p><strong>Email :</strong> ${escapeHtml(email)}</p>
           <p><strong>Entreprise :</strong> ${escapeHtml(company || '—')}</p>
