@@ -16,6 +16,7 @@ import {
 } from './core'
 import { checkRateLimit, RATE_LIMITS } from '@/lib/rate-limit'
 import { logError } from '@/lib/observability'
+import { logSyncEvent } from './sync-log'
 import type { PlatformAdapter } from './types'
 
 function ok(message: string) {
@@ -79,7 +80,8 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
   const action = adapter.parse(req.headers, payload)
   const src = adapter.source
 
-  // 6. Dispatch vers le cœur (avec capture d'erreurs)
+  // 6. Dispatch vers le cœur (avec capture d'erreurs + journal de synchro)
+  let summary: string
   try {
     switch (action.kind) {
       case 'ping':
@@ -88,23 +90,29 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
         return ok(`ignoré (${action.reason})`)
       case 'product.upsert': {
         const r = await upsertProduct(supabase, userId, src, action.product)
-        return ok(`product ${r} — ${src}#${action.product.externalId}`)
+        summary = `produit ${r} — ${src}#${action.product.externalId}`
+        break
       }
       case 'product.delete':
         await deleteProduct(supabase, userId, src, { externalId: action.externalId, sku: action.sku })
-        return ok(`product deleted — ${src}`)
+        summary = `produit supprimé — ${src}`
+        break
       case 'order.created':
         await createOrder(supabase, userId, src, action.order, settings)
-        return ok(`order created — ${src}#${action.order.externalId}`)
+        summary = `commande créée — ${src}#${action.order.externalId}`
+        break
       case 'order.updated':
         await updateOrder(supabase, userId, src, action.order, settings)
-        return ok(`order updated — ${src}#${action.order.externalId}`)
+        summary = `commande mise à jour — ${src}#${action.order.externalId}`
+        break
       case 'order.deleted':
         await deleteOrder(supabase, userId, src, action.externalId)
-        return ok(`order deleted — ${src}#${action.externalId}`)
+        summary = `commande supprimée — ${src}#${action.externalId}`
+        break
       case 'customer.upsert':
         await upsertCustomer(supabase, userId, action.customer)
-        return ok(`customer upserted — ${src}`)
+        summary = `client synchronisé — ${src}`
+        break
       default:
         return ok('ignoré')
     }
@@ -115,6 +123,17 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
       context: action.kind,
       message: e,
     })
+    await logSyncEvent(supabase, {
+      userId,
+      source: src,
+      action: action.kind,
+      status: 'error',
+      detail: e instanceof Error ? e.message : String(e),
+    })
     return err('Erreur interne de synchronisation', 500)
   }
+
+  // Succès : enregistrer dans le journal de synchro
+  await logSyncEvent(supabase, { userId, source: src, action: action.kind, status: 'ok', detail: summary })
+  return ok(summary)
 }
