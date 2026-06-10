@@ -17,11 +17,11 @@ const STATUS_LABELS: Record<Order['status'], string> = {
 }
 
 const STATUS_COLORS: Record<Order['status'], string> = {
-  pending: 'bg-yellow-100 text-yellow-700',
-  confirmed: 'bg-blue-100 text-blue-700',
-  shipped: 'bg-purple-100 text-purple-700',
-  delivered: 'bg-green-100 text-green-700',
-  cancelled: 'bg-red-100 text-red-700',
+  pending: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/15 dark:text-yellow-400',
+  confirmed: 'bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400',
+  shipped: 'bg-purple-100 text-purple-700 dark:bg-purple-500/15 dark:text-purple-400',
+  delivered: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400',
+  cancelled: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400',
 }
 
 const STATUS_FLOW: Order['status'][] = ['pending', 'confirmed', 'shipped', 'delivered']
@@ -67,28 +67,28 @@ export default function OrdersClient({ orders, customers, products }: Props) {
       <div className="flex items-center justify-end gap-2 mb-4">
         <a
           href="/api/export/orders"
-          className="px-3 py-2 border border-gray-200 text-gray-600 text-sm rounded-lg hover:bg-gray-50 transition-colors"
+          className="rounded-lg border px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent"
         >
           ⬇ Exporter CSV
         </a>
         <button
           onClick={() => setShowCreate(true)}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
         >
           + Nouvelle commande
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="overflow-hidden rounded-xl border bg-card">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 text-left font-medium text-gray-600">ID</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Client</th>
-              <th className="px-4 py-3 text-right font-medium text-gray-600">Total</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Statut</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Date</th>
-              <th className="px-4 py-3 text-right font-medium text-gray-600">Actions</th>
+            <tr className="border-b bg-muted/40">
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">ID</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Client</th>
+              <th className="px-4 py-3 text-right font-medium text-muted-foreground">Total</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Statut</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Date</th>
+              <th className="px-4 py-3 text-right font-medium text-muted-foreground">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -96,23 +96,23 @@ export default function OrdersClient({ orders, customers, products }: Props) {
               const statusIdx = STATUS_FLOW.indexOf(order.status as Order['status'])
               const canAdvance = statusIdx !== -1 && statusIdx < STATUS_FLOW.length - 1
               return (
-                <tr key={order.id} className="border-b border-gray-100 hover:bg-gray-50">
+                <tr key={order.id} className="border-b hover:bg-muted/50">
                   <td className="px-4 py-3 font-mono text-xs">
                     <Link
                       href={`/dashboard/orders/${order.id}`}
-                      className="text-blue-600 hover:underline"
+                      className="text-primary hover:underline"
                     >
                       {order.id.slice(0, 8)}…
                     </Link>
                   </td>
-                  <td className="px-4 py-3 text-gray-900">{order.customer?.full_name ?? '—'}</td>
+                  <td className="px-4 py-3 text-foreground">{order.customer?.full_name ?? '—'}</td>
                   <td className="px-4 py-3 text-right font-medium">{order.total_amount.toFixed(2)} €</td>
                   <td className="px-4 py-3">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[order.status as Order['status']]}`}>
                       {STATUS_LABELS[order.status as Order['status']]}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-gray-500">
+                  <td className="px-4 py-3 text-muted-foreground">
                     {new Date(order.created_at).toLocaleDateString('fr-FR')}
                   </td>
                   <td className="px-4 py-3 text-right">
@@ -121,7 +121,7 @@ export default function OrdersClient({ orders, customers, products }: Props) {
                         <button
                           onClick={() => handleNextStatus(order)}
                           disabled={isPending}
-                          className="text-xs text-blue-600 hover:underline disabled:opacity-50"
+                          className="text-xs text-primary hover:underline disabled:opacity-50"
                         >
                           → {STATUS_LABELS[STATUS_FLOW[statusIdx + 1]]}
                         </button>
@@ -129,14 +129,14 @@ export default function OrdersClient({ orders, customers, products }: Props) {
                       <button
                         onClick={() => handleGenerateInvoice(order.id)}
                         disabled={isPending}
-                        className="text-xs text-purple-600 hover:underline disabled:opacity-50"
+                        className="text-xs text-primary hover:underline disabled:opacity-50"
                       >
                         🧾 Facturer
                       </button>
                       <button
                         onClick={() => handleDelete(order.id)}
                         disabled={isPending}
-                        className="text-xs text-red-500 hover:underline disabled:opacity-50"
+                        className="text-xs text-destructive hover:underline disabled:opacity-50"
                       >
                         Supprimer
                       </button>
@@ -147,7 +147,7 @@ export default function OrdersClient({ orders, customers, products }: Props) {
             })}
             {orders.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
                   Aucune commande — créez-en une !
                 </td>
               </tr>

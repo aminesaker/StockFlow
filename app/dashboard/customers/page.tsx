@@ -4,6 +4,7 @@ import { Suspense } from 'react'
 import CustomersClient from './CustomersClient'
 import SearchBar from '@/components/ui/SearchBar'
 import Pagination from '@/components/ui/Pagination'
+import { PageHeader } from '@/components/shared/page-header'
 
 const PAGE_SIZE = 15
 
@@ -36,12 +37,7 @@ export default async function CustomersPage({ searchParams }: Props) {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Clients</h2>
-          <p className="text-sm text-gray-400 mt-0.5">{total} client{total !== 1 ? 's' : ''}</p>
-        </div>
-      </div>
+      <PageHeader title="Clients" description={`${total} client${total !== 1 ? 's' : ''}`} />
 
       <div className="mb-4 max-w-xs">
         <Suspense><SearchBar placeholder="Rechercher nom, email, ville…" /></Suspense>

@@ -24,48 +24,48 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
       <div className="flex items-center justify-end gap-2 mb-4">
         <a
           href="/api/export/customers"
-          className="px-3 py-2 border border-gray-200 text-gray-600 text-sm rounded-lg hover:bg-gray-50 transition-colors"
+          className="rounded-lg border px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent"
         >
           ⬇ Exporter CSV
         </a>
         <button
           onClick={() => setModal('create')}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
         >
           + Nouveau client
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="overflow-hidden rounded-xl border bg-card">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Nom</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Email</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Téléphone</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Ville</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Depuis</th>
-              <th className="px-4 py-3 text-right font-medium text-gray-600">Actions</th>
+            <tr className="border-b bg-muted/40">
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Nom</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Email</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Téléphone</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Ville</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Depuis</th>
+              <th className="px-4 py-3 text-right font-medium text-muted-foreground">Actions</th>
             </tr>
           </thead>
           <tbody>
             {customers.map((c) => (
-              <tr key={c.id} className="border-b border-gray-100 hover:bg-gray-50">
-                <td className="px-4 py-3 font-medium text-gray-900">{c.full_name}</td>
-                <td className="px-4 py-3 text-gray-500">{c.email}</td>
-                <td className="px-4 py-3 text-gray-500">{c.phone ?? '—'}</td>
-                <td className="px-4 py-3 text-gray-500">{c.city ?? '—'}</td>
-                <td className="px-4 py-3 text-gray-500">
+              <tr key={c.id} className="border-b hover:bg-muted/50">
+                <td className="px-4 py-3 font-medium text-foreground">{c.full_name}</td>
+                <td className="px-4 py-3 text-muted-foreground">{c.email}</td>
+                <td className="px-4 py-3 text-muted-foreground">{c.phone ?? '—'}</td>
+                <td className="px-4 py-3 text-muted-foreground">{c.city ?? '—'}</td>
+                <td className="px-4 py-3 text-muted-foreground">
                   {new Date(c.created_at).toLocaleDateString('fr-FR')}
                 </td>
                 <td className="px-4 py-3 text-right space-x-2">
-                  <button onClick={() => setModal(c)} className="text-xs text-blue-600 hover:underline">
+                  <button onClick={() => setModal(c)} className="text-xs text-primary hover:underline">
                     Modifier
                   </button>
                   <button
                     onClick={() => handleDelete(c.id)}
                     disabled={isPending}
-                    className="text-xs text-red-500 hover:underline disabled:opacity-50"
+                    className="text-xs text-destructive hover:underline disabled:opacity-50"
                   >
                     Supprimer
                   </button>
@@ -74,7 +74,7 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
             ))}
             {customers.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
                   Aucun client — ajoutez-en un !
                 </td>
               </tr>

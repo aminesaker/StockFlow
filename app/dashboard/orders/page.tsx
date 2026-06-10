@@ -5,6 +5,7 @@ import OrdersClient from './OrdersClient'
 import SearchBar from '@/components/ui/SearchBar'
 import StatusFilter from '@/components/ui/StatusFilter'
 import Pagination from '@/components/ui/Pagination'
+import { PageHeader } from '@/components/shared/page-header'
 
 const PAGE_SIZE = 15
 
@@ -58,10 +59,7 @@ export default async function OrdersPage({ searchParams }: Props) {
 
   return (
     <div>
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Commandes</h2>
-        <p className="text-sm text-gray-400 mt-0.5">{total} commande{total !== 1 ? 's' : ''}</p>
-      </div>
+      <PageHeader title="Commandes" description={`${total} commande${total !== 1 ? 's' : ''}`} />
 
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="flex-1 max-w-xs">

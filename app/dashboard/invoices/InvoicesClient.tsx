@@ -30,11 +30,11 @@ const STATUS_LABELS: Record<Invoice['status'], string> = {
 }
 
 const STATUS_COLORS: Record<Invoice['status'], string> = {
-  draft: 'bg-gray-100 text-gray-600',
-  sent: 'bg-blue-100 text-blue-700',
-  paid: 'bg-green-100 text-green-700',
-  overdue: 'bg-red-100 text-red-700',
-  cancelled: 'bg-gray-100 text-gray-400',
+  draft: 'bg-muted text-muted-foreground',
+  sent: 'bg-blue-100 text-blue-700 dark:bg-blue-500/15 dark:text-blue-400',
+  paid: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-400',
+  overdue: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400',
+  cancelled: 'bg-muted text-muted-foreground',
 }
 
 // Transitions de statut possibles
@@ -82,28 +82,28 @@ export default function InvoicesClient({ invoices, customers, orders }: Props) {
       <div className="flex items-center justify-end gap-2 mb-4">
         <a
           href="/api/export/invoices"
-          className="px-3 py-2 border border-gray-200 text-gray-600 text-sm rounded-lg hover:bg-gray-50 transition-colors"
+          className="rounded-lg border px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent"
         >
           ⬇ Exporter CSV
         </a>
         <button
           onClick={() => setShowCreate(true)}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
         >
           + Nouvelle facture
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="overflow-hidden rounded-xl border bg-card">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 text-left font-medium text-gray-600">N° Facture</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Client</th>
-              <th className="px-4 py-3 text-right font-medium text-gray-600">Montant</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Échéance</th>
-              <th className="px-4 py-3 text-left font-medium text-gray-600">Statut</th>
-              <th className="px-4 py-3 text-right font-medium text-gray-600">Actions</th>
+            <tr className="border-b bg-muted/40">
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">N° Facture</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Client</th>
+              <th className="px-4 py-3 text-right font-medium text-muted-foreground">Montant</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Échéance</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">Statut</th>
+              <th className="px-4 py-3 text-right font-medium text-muted-foreground">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -111,18 +111,18 @@ export default function InvoicesClient({ invoices, customers, orders }: Props) {
               const nextStatus = STATUS_NEXT[inv.status as Invoice['status']]
               const nextLabel = STATUS_NEXT_LABEL[inv.status as Invoice['status']]
               return (
-                <tr key={inv.id} className="border-b border-gray-100 hover:bg-gray-50">
+                <tr key={inv.id} className="border-b hover:bg-muted/50">
                   <td className="px-4 py-3 font-medium">
                     <Link
                       href={`/dashboard/invoices/${inv.id}`}
-                      className="text-blue-600 hover:underline font-medium"
+                      className="text-primary hover:underline font-medium"
                     >
                       {inv.invoice_number}
                     </Link>
                   </td>
-                  <td className="px-4 py-3 text-gray-500">{inv.customer?.full_name ?? '—'}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{inv.customer?.full_name ?? '—'}</td>
                   <td className="px-4 py-3 text-right font-medium">{inv.amount.toFixed(2)} €</td>
-                  <td className="px-4 py-3 text-gray-500">
+                  <td className="px-4 py-3 text-muted-foreground">
                     {new Date(inv.due_date).toLocaleDateString('fr-FR')}
                   </td>
                   <td className="px-4 py-3">
@@ -147,7 +147,7 @@ export default function InvoicesClient({ invoices, customers, orders }: Props) {
                         <button
                           onClick={() => handleStatusChange(inv.id, nextStatus)}
                           disabled={isPending}
-                          className="text-xs text-blue-600 hover:underline disabled:opacity-50"
+                          className="text-xs text-primary hover:underline disabled:opacity-50"
                         >
                           {nextLabel}
                         </button>
@@ -157,7 +157,7 @@ export default function InvoicesClient({ invoices, customers, orders }: Props) {
                         href={`/api/invoices/${inv.id}/pdf`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xs text-gray-600 hover:text-gray-900 hover:underline"
+                        className="text-xs text-gray-600 hover:text-foreground hover:underline"
                       >
                         ⬇ PDF
                       </a>
@@ -165,7 +165,7 @@ export default function InvoicesClient({ invoices, customers, orders }: Props) {
                       <button
                         onClick={() => handleDelete(inv.id)}
                         disabled={isPending}
-                        className="text-xs text-red-500 hover:underline disabled:opacity-50"
+                        className="text-xs text-destructive hover:underline disabled:opacity-50"
                       >
                         Supprimer
                       </button>
@@ -176,7 +176,7 @@ export default function InvoicesClient({ invoices, customers, orders }: Props) {
             })}
             {invoices.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
+                <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
                   Aucune facture — créez-en une ou générez-en depuis une commande
                 </td>
               </tr>
