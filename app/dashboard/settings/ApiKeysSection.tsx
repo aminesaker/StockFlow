@@ -41,10 +41,10 @@ export default function ApiKeysSection({ apiKeys }: { apiKeys: ApiKey[] }) {
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-      <div className="px-6 py-5 border-b border-gray-100">
-        <h3 className="font-semibold text-gray-900">Clés API</h3>
-        <p className="text-sm text-gray-400 mt-0.5">
+    <div className="overflow-hidden rounded-xl border bg-card">
+      <div className="px-6 py-5 border-b border-border">
+        <h3 className="font-semibold text-foreground">Clés API</h3>
+        <p className="text-sm text-muted-foreground mt-0.5">
           Utilisez ces clés pour connecter WooCommerce, Shopify ou vos propres scripts.
         </p>
       </div>
@@ -56,7 +56,7 @@ export default function ApiKeysSection({ apiKeys }: { apiKeys: ApiKey[] }) {
             ⚠️ Copiez cette clé maintenant — elle ne sera plus affichée.
           </p>
           <div className="flex items-center gap-2">
-            <code className="flex-1 bg-white border border-amber-200 rounded px-3 py-2 text-xs font-mono text-gray-800 break-all">
+            <code className="flex-1 bg-background border border-amber-200 rounded px-3 py-2 text-xs font-mono text-foreground break-all">
               {newKey}
             </code>
             <button
@@ -81,8 +81,8 @@ export default function ApiKeysSection({ apiKeys }: { apiKeys: ApiKey[] }) {
           {apiKeys.map((key) => (
             <div key={key.id} className="py-4 flex items-center justify-between gap-4">
               <div>
-                <p className="text-sm font-medium text-gray-900">{key.name}</p>
-                <p className="text-xs text-gray-400 mt-0.5 font-mono">
+                <p className="text-sm font-medium text-foreground">{key.name}</p>
+                <p className="text-xs text-muted-foreground mt-0.5 font-mono">
                   {key.key_prefix}••••••••••••••••••••••
                   {key.last_used_at
                     ? ` · dernière utilisation ${new Date(key.last_used_at).toLocaleDateString('fr-FR')}`
@@ -102,22 +102,22 @@ export default function ApiKeysSection({ apiKeys }: { apiKeys: ApiKey[] }) {
       )}
 
       {apiKeys.length === 0 && !newKey && (
-        <p className="px-6 py-4 text-sm text-gray-400">Aucune clé API — créez-en une ci-dessous.</p>
+        <p className="px-6 py-4 text-sm text-muted-foreground">Aucune clé API — créez-en une ci-dessous.</p>
       )}
 
       {/* Formulaire de création */}
-      <form ref={formRef} onSubmit={handleCreate} className="px-6 py-5 border-t border-gray-100 flex gap-3">
+      <form ref={formRef} onSubmit={handleCreate} className="px-6 py-5 border-t border-border flex gap-3">
         <input
           type="text"
           name="name"
           placeholder="Nom de la clé (ex: WooCommerce boutique)"
           required
-          className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50"
         />
         <button
           type="submit"
           disabled={isPending}
-          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors whitespace-nowrap"
+          className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-colors whitespace-nowrap"
         >
           + Générer
         </button>

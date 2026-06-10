@@ -58,33 +58,33 @@ export default function SettingsForm({ settings, userEmail }: Props) {
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
 
       {/* Email de notification */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h3 className="font-semibold text-gray-900 mb-1">Email de notification</h3>
-        <p className="text-sm text-gray-400 mb-4">Adresse qui reçoit tous les emails automatiques.</p>
+      <div className="rounded-xl border bg-card p-6">
+        <h3 className="font-semibold text-foreground mb-1">Email de notification</h3>
+        <p className="text-sm text-muted-foreground mb-4">Adresse qui reçoit tous les emails automatiques.</p>
         <input
           type="email"
           name="notify_email"
           defaultValue={settings.notify_email ?? userEmail}
           placeholder={userEmail}
-          className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50"
         />
       </div>
 
       {/* Automatisations */}
-      <div className="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
+      <div className="rounded-xl border bg-card divide-y divide-gray-100">
         <div className="px-6 py-4">
-          <h3 className="font-semibold text-gray-900">Automatisations</h3>
-          <p className="text-sm text-gray-400 mt-0.5">Activez ce que StockFlow doit faire sans intervention.</p>
+          <h3 className="font-semibold text-foreground">Automatisations</h3>
+          <p className="text-sm text-muted-foreground mt-0.5">Activez ce que StockFlow doit faire sans intervention.</p>
         </div>
 
         {AUTOMATIONS.map((a) => (
-          <label key={a.key} className="flex items-start gap-4 px-6 py-5 cursor-pointer hover:bg-gray-50 transition-colors">
+          <label key={a.key} className="flex items-start gap-4 px-6 py-5 cursor-pointer hover:bg-muted/40 transition-colors">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-0.5">
                 <span className="text-xl">{a.icon}</span>
-                <span className="font-medium text-gray-900 text-sm">{a.title}</span>
+                <span className="font-medium text-foreground text-sm">{a.title}</span>
               </div>
-              <p className="text-sm text-gray-400 ml-7">{a.description}</p>
+              <p className="text-sm text-muted-foreground ml-7">{a.description}</p>
             </div>
             {/* Toggle switch */}
             <div className="relative mt-0.5 flex-shrink-0">
@@ -94,8 +94,8 @@ export default function SettingsForm({ settings, userEmail }: Props) {
                 defaultChecked={settings[a.key] ?? true}
                 className="sr-only peer"
               />
-              <div className="w-11 h-6 bg-gray-200 peer-checked:bg-blue-600 rounded-full transition-colors peer-focus:ring-2 peer-focus:ring-blue-300" />
-              <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5" />
+              <div className="w-11 h-6 bg-muted peer-checked:bg-primary rounded-full transition-colors peer-focus:ring-2 peer-focus:ring-blue-300" />
+              <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-background rounded-full shadow transition-transform peer-checked:translate-x-5" />
             </div>
           </label>
         ))}
@@ -105,7 +105,7 @@ export default function SettingsForm({ settings, userEmail }: Props) {
         <button
           type="submit"
           disabled={isPending}
-          className="px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          className="px-5 py-2.5 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-colors"
         >
           {isPending ? 'Enregistrement…' : 'Enregistrer les paramètres'}
         </button>

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import SettingsForm from './SettingsForm'
 import ApiKeysSection from './ApiKeysSection'
 import WooCommerceSection from './WooCommerceSection'
+import { PageHeader } from '@/components/shared/page-header'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -27,15 +28,11 @@ export default async function SettingsPage() {
 
   return (
     <div>
-      <div className="mb-6 flex items-start justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Paramètres</h2>
-          <p className="text-sm text-gray-400 mt-1">Automatisations et intégrations de votre espace StockFlow.</p>
-        </div>
-        <Link href="/dashboard/api-docs" className="text-sm text-blue-600 hover:underline">
-          Documentation API →
-        </Link>
-      </div>
+      <PageHeader
+        title="Paramètres"
+        description="Automatisations et intégrations de votre espace."
+        actions={<Link href="/dashboard/api-docs" className="text-sm text-primary hover:underline">Documentation API →</Link>}
+      />
 
       <div className="space-y-6 max-w-2xl">
         {/* Automatisations */}
@@ -43,7 +40,7 @@ export default async function SettingsPage() {
 
         {/* Intégrations */}
         <div>
-          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Intégrations</h3>
+          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Intégrations</h3>
           <WooCommerceSection
             apiKeyPrefix={(apiKeys ?? [])[0]?.key_prefix ?? null}
             webhookSecret={settings?.wc_webhook_secret ?? null}
@@ -53,7 +50,7 @@ export default async function SettingsPage() {
 
         {/* Clés API */}
         <div>
-          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Clés API</h3>
+          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">Clés API</h3>
           <ApiKeysSection apiKeys={apiKeys ?? []} />
         </div>
       </div>
