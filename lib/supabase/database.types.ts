@@ -51,7 +51,9 @@ export type Database = {
           country: string
           created_at: string
           default_vat_rate: number
+          credit_prefix: string
           invoice_prefix: string
+          next_credit_seq: number
           legal_footer: string | null
           logo_url: string | null
           next_invoice_seq: number
@@ -71,7 +73,9 @@ export type Database = {
           country?: string
           created_at?: string
           default_vat_rate?: number
+          credit_prefix?: string
           invoice_prefix?: string
+          next_credit_seq?: number
           legal_footer?: string | null
           logo_url?: string | null
           next_invoice_seq?: number
@@ -91,7 +95,9 @@ export type Database = {
           country?: string
           created_at?: string
           default_vat_rate?: number
+          credit_prefix?: string
           invoice_prefix?: string
+          next_credit_seq?: number
           legal_footer?: string | null
           logo_url?: string | null
           next_invoice_seq?: number
@@ -132,6 +138,48 @@ export type Database = {
           message?: string | null
           name?: string
           subject?: string | null
+        }
+        Relationships: []
+      }
+      credit_notes: {
+        Row: {
+          amount: number
+          created_at: string
+          credit_number: string
+          customer_id: string
+          id: string
+          invoice_id: string | null
+          reason: string | null
+          subtotal: number | null
+          user_id: string
+          vat_amount: number | null
+          vat_rate: number | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          credit_number: string
+          customer_id: string
+          id?: string
+          invoice_id?: string | null
+          reason?: string | null
+          subtotal?: number | null
+          user_id: string
+          vat_amount?: number | null
+          vat_rate?: number | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          credit_number?: string
+          customer_id?: string
+          id?: string
+          invoice_id?: string | null
+          reason?: string | null
+          subtotal?: number | null
+          user_id?: string
+          vat_amount?: number | null
+          vat_rate?: number | null
         }
         Relationships: []
       }
@@ -650,6 +698,7 @@ export type Database = {
       }
       generate_invoice_number: { Args: Record<PropertyKey, never>; Returns: string }
       next_invoice_number: { Args: { p_user_id: string }; Returns: string }
+      next_credit_number: { Args: { p_user_id: string }; Returns: string }
       increment_stock: {
         Args: {
           p_product_id: string

@@ -995,7 +995,14 @@
     "confirmDelete": "Delete this invoice?",
     "toastCancelled": "Invoice cancelled",
     "toastSent": "Invoice marked as sent",
-    "toastPaid": "Invoice marked as paid"
+    "toastPaid": "Invoice marked as paid",
+    "creditCreate": "Create credit note",
+    "creditConfirm": "Create a credit note for this invoice? The items' stock will be restocked.",
+    "creditCreatedToast": "Credit note {number} created",
+    "creditNotFound": "Invoice not found",
+    "creditExists": "A credit note already exists ({number})",
+    "creditedBanner": "Credit note issued: {number}",
+    "creditPdf": "⬇ Credit note PDF"
   },
   "limitBanner": {
     "reachedTitle": "Limit reached.",

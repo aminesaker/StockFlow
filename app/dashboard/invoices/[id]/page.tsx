@@ -50,6 +50,12 @@ export default async function InvoiceDetailPage({
     items: { quantity: number; unit_price: number; total_price: number; product: { name: string; sku: string } }[]
   } | null
 
+  const { data: creditNote } = await supabase
+    .from('credit_notes')
+    .select('id, credit_number')
+    .eq('invoice_id', invoice.id)
+    .maybeSingle()
+
   const isPayable = ['sent', 'overdue'].includes(invoice.status)
 
   return (
@@ -73,9 +79,16 @@ export default async function InvoiceDetailPage({
           <span className={`px-3 py-1.5 rounded-full text-sm font-medium ${STATUS_COLORS[invoice.status]}`}>
             {ts(invoice.status)}
           </span>
-          <InvoiceActions invoiceId={invoice.id} status={invoice.status} isPayable={isPayable} />
+          <InvoiceActions invoiceId={invoice.id} status={invoice.status} isPayable={isPayable} credited={!!creditNote} />
         </div>
       </div>
+
+      {creditNote && (
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-300/60 bg-amber-50 px-4 py-3 text-sm dark:bg-amber-500/10">
+          <span className="font-medium text-amber-800 dark:text-amber-300">{t('creditedBanner', { number: creditNote.credit_number })}</span>
+          <a href={`/api/credit-notes/${creditNote.id}/pdf`} target="_blank" rel="noopener noreferrer" className="text-amber-700 hover:underline dark:text-amber-300">{t('creditPdf')}</a>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 

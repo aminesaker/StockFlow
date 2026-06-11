@@ -189,20 +189,20 @@ const STATUS_LABELS: Record<Locale, Record<string, string>> = {
 
 const DICT: Record<Locale, Record<string, string>> = {
   fr: {
-    brandSub: 'Plateforme de gestion e-commerce', invoice: 'FACTURE', issuedOn: 'Émise le', due: 'Échéance :',
+    brandSub: 'Plateforme de gestion e-commerce', invoice: 'FACTURE', creditTitle: 'AVOIR', issuedOn: 'Émise le', due: 'Échéance :',
     issuer: 'Émetteur', billedTo: 'Facturé à', description: 'Description', qty: 'Qté', unit: 'Prix unit.', total: 'Total',
     serviceProduct: 'Prestation / Produit', subtotal: 'Sous-total HT', vat: 'TVA (0%)', totalIncl: 'Total TTC',
     paidOn: '✓ Payée le', thanks: 'Merci pour votre confiance', sku: 'SKU :', siret: 'SIRET', vatNo: 'N° TVA', vatExemptMention: 'TVA non applicable, art. 293 B du CGI',
   },
   en: {
-    brandSub: 'E-commerce management platform', invoice: 'INVOICE', issuedOn: 'Issued on', due: 'Due:',
+    brandSub: 'E-commerce management platform', invoice: 'INVOICE', creditTitle: 'CREDIT NOTE', issuedOn: 'Issued on', due: 'Due:',
     issuer: 'From', billedTo: 'Billed to', description: 'Description', qty: 'Qty', unit: 'Unit price', total: 'Total',
     serviceProduct: 'Service / Product', subtotal: 'Subtotal (excl. tax)', vat: 'VAT (0%)', totalIncl: 'Total (incl. tax)',
     paidOn: '✓ Paid on', thanks: 'Thank you for your business', sku: 'SKU:', siret: 'SIRET', vatNo: 'VAT No.', vatExemptMention: 'VAT not applicable, art. 293 B of the French CGI',
   },
 }
 
-export default function InvoicePDF({ data, locale = 'fr', seller }: { data: InvoiceData; locale?: Locale; seller?: Seller }) {
+export default function InvoicePDF({ data, locale = 'fr', seller, docType = 'invoice', creditRef }: { data: InvoiceData; locale?: Locale; seller?: Seller; docType?: 'invoice' | 'credit_note'; creditRef?: string | null }) {
   const L = locale === 'en' ? 'en' : 'fr'
   const dl = L === 'en' ? 'en-US' : 'fr-FR'
   const d = DICT[L]
@@ -215,6 +215,7 @@ export default function InvoicePDF({ data, locale = 'fr', seller }: { data: Invo
   const vatAmount = data.vat_amount ?? 0
   const sellerName = seller?.company_name || 'TijaraFlow'
   const vatLabel = L === 'fr' ? `TVA (${vatRate} %)` : `VAT (${vatRate}%)`
+  const isCredit = docType === 'credit_note'
 
   return (
     <Document>
@@ -226,17 +227,24 @@ export default function InvoicePDF({ data, locale = 'fr', seller }: { data: Invo
             <Text style={styles.brandSub}>{d.brandSub}</Text>
           </View>
           <View>
-            <Text style={styles.invoiceTitle}>{d.invoice}</Text>
+            <Text style={styles.invoiceTitle}>{isCredit ? d.creditTitle : d.invoice}</Text>
             <Text style={styles.invoiceMeta}>{data.invoice_number}</Text>
             <Text style={styles.invoiceMeta}>
               {d.issuedOn} {fmtDate(data.created_at)}
             </Text>
-            <Text style={styles.invoiceMeta}>
-              {d.due} {fmtDate(data.due_date)}
-            </Text>
-            <Text style={[styles.invoiceMeta, { marginTop: 4, fontFamily: 'Helvetica-Bold' }]}>
-              {STATUS_LABELS[L][data.status] ?? data.status}
-            </Text>
+            {!isCredit && (
+              <Text style={styles.invoiceMeta}>
+                {d.due} {fmtDate(data.due_date)}
+              </Text>
+            )}
+            {isCredit && creditRef ? (
+              <Text style={styles.invoiceMeta}>{L === 'fr' ? `Avoir sur facture ${creditRef}` : `Credit note for invoice ${creditRef}`}</Text>
+            ) : null}
+            {!isCredit && (
+              <Text style={[styles.invoiceMeta, { marginTop: 4, fontFamily: 'Helvetica-Bold' }]}>
+                {STATUS_LABELS[L][data.status] ?? data.status}
+              </Text>
+            )}
           </View>
         </View>
 
@@ -328,6 +336,7 @@ export default function InvoicePDF({ data, locale = 'fr', seller }: { data: Invo
         </View>
 
         {/* Mentions légales */}
+        {!isCredit && (
         <View style={{ marginTop: 18 }}>
           <Text style={{ fontSize: 8, color: '#6b7280', marginBottom: 3 }}>
             {L === 'fr' ? `Conditions de règlement : paiement à ${seller?.payment_terms_days ?? 30} jours.` : `Payment terms: due within ${seller?.payment_terms_days ?? 30} days.`}
@@ -338,6 +347,7 @@ export default function InvoicePDF({ data, locale = 'fr', seller }: { data: Invo
               : 'Late payment incurs penalties at three times the legal interest rate plus a flat 40 EUR recovery fee (art. L441-10 French Commercial Code).')}
           </Text>
         </View>
+        )}
 
         {/* Footer */}
         <View style={styles.footer} fixed>

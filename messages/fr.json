@@ -995,7 +995,14 @@
     "confirmDelete": "Supprimer cette facture ?",
     "toastCancelled": "Facture annulée",
     "toastSent": "Facture marquée envoyée",
-    "toastPaid": "Facture marquée payée"
+    "toastPaid": "Facture marquée payée",
+    "creditCreate": "Créer un avoir",
+    "creditConfirm": "Créer un avoir pour cette facture ? Le stock des articles sera réapprovisionné.",
+    "creditCreatedToast": "Avoir {number} créé",
+    "creditNotFound": "Facture introuvable",
+    "creditExists": "Un avoir existe déjà ({number})",
+    "creditedBanner": "Avoir émis : {number}",
+    "creditPdf": "⬇ PDF de l'avoir"
   },
   "limitBanner": {
     "reachedTitle": "Limite atteinte.",

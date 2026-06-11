@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
-import { updateInvoiceStatus, deleteInvoice } from '../actions'
+import { updateInvoiceStatus, deleteInvoice, createCreditNote } from '../actions'
 
 const NEXT_STATUS: Record<string, { status: string; labelKey: string; toastKey: string }> = {
   draft:   { status: 'sent', labelKey: 'markSent', toastKey: 'toastSent' },
@@ -17,9 +17,10 @@ type Props = {
   invoiceId: string
   status: string
   isPayable: boolean
+  credited?: boolean
 }
 
-export default function InvoiceActions({ invoiceId, status, isPayable }: Props) {
+export default function InvoiceActions({ invoiceId, status, isPayable, credited }: Props) {
   const t = useTranslations('invoiceDetail')
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -31,6 +32,15 @@ export default function InvoiceActions({ invoiceId, status, isPayable }: Props) 
       const r = await updateInvoiceStatus(invoiceId, newStatus as 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled')
       if (r.error) toast.error(r.error)
       else { toast.success(toastMsg); router.refresh() }
+    })
+  }
+
+  function handleCredit() {
+    if (!confirm(t('creditConfirm'))) return
+    startTransition(async () => {
+      const r = await createCreditNote(invoiceId)
+      if (r.error) toast.error(r.error)
+      else { toast.success(t('creditCreatedToast', { number: r.creditNumber ?? '' })); router.refresh() }
     })
   }
 
@@ -84,6 +94,17 @@ export default function InvoiceActions({ invoiceId, status, isPayable }: Props) 
           className="px-3 py-1.5 border border-red-200 text-red-600 text-sm rounded-lg hover:bg-red-50 disabled:opacity-50 transition-colors"
         >
           {t('cancel')}
+        </button>
+      )}
+
+      {/* Créer un avoir */}
+      {!credited && status !== 'cancelled' && (
+        <button
+          onClick={handleCredit}
+          disabled={isPending}
+          className="px-3 py-1.5 border border-amber-300 text-amber-700 text-sm rounded-lg hover:bg-amber-50 disabled:opacity-50 transition-colors"
+        >
+          {t('creditCreate')}
         </button>
       )}
 

@@ -1,5 +1,7 @@
 'use server'
 
+import { getTranslations } from 'next-intl/server'
+
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import type { TablesUpdate } from '@/lib/supabase/database.types'
@@ -124,4 +126,60 @@ export async function deleteInvoice(id: string) {
   revalidatePath('/dashboard/invoices')
   revalidatePath('/dashboard')
   return { success: true }
+}
+
+export async function createCreditNote(invoiceId: string) {
+  const t = await getTranslations('invoiceDetail')
+  const { supabase, userId } = await getUserId()
+
+  const { data: invoice, error: invErr } = await supabase
+    .from('invoices')
+    .select('id, customer_id, order_id, amount, subtotal, vat_rate, vat_amount, invoice_number')
+    .eq('id', invoiceId)
+    .single()
+  if (invErr || !invoice) return { error: t('creditNotFound') }
+
+  const { data: existing } = await supabase
+    .from('credit_notes')
+    .select('credit_number')
+    .eq('invoice_id', invoiceId)
+    .maybeSingle()
+  if (existing) return { error: t('creditExists', { number: existing.credit_number }) }
+
+  const { data: creditNumber, error: numErr } = await supabase.rpc('next_credit_number', { p_user_id: userId })
+  if (numErr || !creditNumber) return { error: numErr?.message ?? 'numbering error' }
+
+  const { error: insErr } = await supabase.from('credit_notes').insert({
+    user_id: userId,
+    invoice_id: invoice.id,
+    customer_id: invoice.customer_id,
+    credit_number: creditNumber,
+    amount: invoice.amount,
+    subtotal: invoice.subtotal ?? invoice.amount,
+    vat_rate: invoice.vat_rate ?? 0,
+    vat_amount: invoice.vat_amount ?? 0,
+  })
+  if (insErr) return { error: insErr.message }
+
+  // Réapprovisionnement du stock des articles de la commande liée
+  if (invoice.order_id) {
+    const { data: items } = await supabase
+      .from('order_items')
+      .select('product_id, quantity')
+      .eq('order_id', invoice.order_id)
+    for (const it of items ?? []) {
+      await supabase.rpc('increment_stock', {
+        p_product_id: it.product_id,
+        p_quantity: it.quantity,
+        p_reason: 'return',
+        p_reference: creditNumber,
+      })
+    }
+  }
+
+  revalidatePath('/dashboard/invoices')
+  revalidatePath(`/dashboard/invoices/${invoiceId}`)
+  revalidatePath('/dashboard/stocks')
+  revalidatePath('/dashboard')
+  return { success: true, creditNumber }
 }
