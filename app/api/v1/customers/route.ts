@@ -38,7 +38,7 @@ export const POST = withApiAuth(async (req: NextRequest, { userId, supabase }) =
   // Upsert sur email (évite les doublons si la boutique envoie le même client)
   const { data, error } = await supabase
     .from('customers')
-    .upsert({ ...parsed.data, user_id: userId }, { onConflict: 'email' })
+    .upsert({ ...parsed.data, user_id: userId }, { onConflict: 'user_id,email' })
     .select()
     .single()
 

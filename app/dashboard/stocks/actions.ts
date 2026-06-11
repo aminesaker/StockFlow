@@ -296,7 +296,7 @@ export async function importProductsCsv(formData: FormData) {
 
   const { error, count } = await supabase
     .from('products')
-    .upsert(rowsWithUser, { onConflict: 'sku', ignoreDuplicates: false })
+    .upsert(rowsWithUser, { onConflict: 'user_id,sku', ignoreDuplicates: false })
     .select('id')
 
   if (error) return { error: error.message }

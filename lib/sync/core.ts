@@ -145,7 +145,7 @@ export async function createOrder(
   const customerData = mapCustomerRow(o.customer)
   const { data: customer } = await supabase
     .from('customers')
-    .upsert({ ...customerData, user_id: userId, store_id: storeId ?? null }, { onConflict: 'email' })
+    .upsert({ ...customerData, user_id: userId, store_id: storeId ?? null }, { onConflict: 'user_id,email' })
     .select('id')
     .single()
   if (!customer) return
@@ -270,7 +270,7 @@ export async function upsertCustomer(
   if (!c.email) return
   const { error } = await supabase
     .from('customers')
-    .upsert({ ...mapCustomerRow(c), user_id: userId, store_id: storeId ?? null }, { onConflict: 'email' })
+    .upsert({ ...mapCustomerRow(c), user_id: userId, store_id: storeId ?? null }, { onConflict: 'user_id,email' })
   if (error) console.error('[sync] customer upsert error', error)
 }
 

@@ -55,7 +55,7 @@ export const POST = withApiAuth(async (req: NextRequest, { userId, supabase }) =
   // Upsert sur SKU (crée ou met à jour)
   const { data, error } = await supabase
     .from('products')
-    .upsert({ ...parsed.data, user_id: userId }, { onConflict: 'sku' })
+    .upsert({ ...parsed.data, user_id: userId }, { onConflict: 'user_id,sku' })
     .select()
     .single()
 
