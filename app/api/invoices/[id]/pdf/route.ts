@@ -41,4 +41,17 @@ export async function GET(
     .single()
 
   if (error || !invoice) {
-    return NextResponse.json({ error: locale === 'en' ? 'Invoice not found' : 'Fac
+    const msg = locale === 'en' ? 'Invoice not found' : 'Facture introuvable'
+    return NextResponse.json({ error: msg }, { status: 404 })
+  }
+
+  const buffer = await renderToBuffer(
+    createElement(InvoicePDF as any, { data: invoice, locale }) as any
+  )
+  return new NextResponse(new Uint8Array(buffer), {
+    headers: {
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename="${invoice.invoice_number}.pdf"`,
+    },
+  })
+}
