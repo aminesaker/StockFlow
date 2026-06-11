@@ -17,6 +17,8 @@ export const DEFAULT_BILLING: Omit<BillingProfile, 'user_id' | 'created_at' | 'u
   default_vat_rate: 20,
   invoice_prefix: 'F',
   next_invoice_seq: 0,
+  credit_prefix: 'A',
+  next_credit_seq: 0,
   payment_terms_days: 30,
   legal_footer: null,
   logo_url: null,
