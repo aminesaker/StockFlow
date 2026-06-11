@@ -206,7 +206,7 @@ export default function InvoicePDF({ data, locale = 'fr', seller }: { data: Invo
   const L = locale === 'en' ? 'en' : 'fr'
   const dl = L === 'en' ? 'en-US' : 'fr-FR'
   const d = DICT[L]
-  const fmt = (n: number) => new Intl.NumberFormat(dl, { style: 'currency', currency: 'EUR' }).format(n || 0)
+  const fmt = (n: number) => new Intl.NumberFormat(dl, { style: 'currency', currency: 'EUR' }).format(n || 0).replace(/[\u202f\u00a0]/g, ' ')
   const fmtDate = (s: string) => new Date(s).toLocaleDateString(dl)
   const items = data.order?.items ?? []
   const ttc = data.amount || 0
