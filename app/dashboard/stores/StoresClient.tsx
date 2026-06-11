@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 import type { Tables } from '@/lib/supabase/database.types'
 import { createStore, updateStore, deleteStore } from './actions'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 
 type Store = Tables<'stores'>
 const inputCls = 'w-full rounded-lg border border-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/50'
@@ -15,6 +16,7 @@ function StoreForm({ store, onDone }: { store?: Store; onDone: () => void }) {
   const tc = useTranslations('common')
   const [pending, start] = useTransition()
   const router = useRouter()
+  const [platform, setPlatform] = useState(store?.platform ?? 'woocommerce')
 
   function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -35,11 +37,15 @@ function StoreForm({ store, onDone }: { store?: Store; onDone: () => void }) {
         </label>
         <label className="block">
           <span className="mb-1 block text-xs font-medium text-muted-foreground">{t('platform')}</span>
-          <select name="platform" defaultValue={store?.platform ?? 'woocommerce'} className={inputCls}>
-            <option value="woocommerce">{t('platformWoo')}</option>
-            <option value="shopify">{t('platformShopify')}</option>
-            <option value="other">{t('platformOther')}</option>
-          </select>
+          <input type="hidden" name="platform" value={platform} />
+          <Select value={platform} onValueChange={setPlatform}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="woocommerce">{t('platformWoo')}</SelectItem>
+              <SelectItem value="shopify">{t('platformShopify')}</SelectItem>
+              <SelectItem value="other">{t('platformOther')}</SelectItem>
+            </SelectContent>
+          </Select>
         </label>
       </div>
       <label className="block">

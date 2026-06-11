@@ -4,6 +4,7 @@ import { useRef, useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
 import type { Customer, Order } from '@/types'
 import { createInvoice } from '@/app/dashboard/invoices/actions'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 
 type Props = { customers: Customer[]; orders: Order[]; onClose: () => void }
 
@@ -14,6 +15,8 @@ export default function InvoiceForm({ customers, orders, onClose }: Props) {
   const [errors, setErrors] = useState<Record<string, string[]>>({})
   const [isPending, startTransition] = useTransition()
   const [selectedCustomerId, setSelectedCustomerId] = useState('')
+  const [orderId, setOrderId] = useState('__none__')
+  const [status, setStatus] = useState('draft')
 
   const customerOrders = orders.filter((o) => o.customer_id === selectedCustomerId)
   const defaultDue = new Date()
@@ -40,18 +43,25 @@ export default function InvoiceForm({ customers, orders, onClose }: Props) {
         <form ref={formRef} onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
             <label className="block text-xs font-medium text-muted-foreground mb-1">{t('customer')}</label>
-            <select name="customer_id" required value={selectedCustomerId} onChange={(e) => setSelectedCustomerId(e.target.value)} className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 ${errors.customer_id ? 'border-red-400' : 'border-input'}`}>
-              <option value="">{t('selectCustomer')}</option>
-              {customers.map((c) => (<option key={c.id} value={c.id}>{c.full_name}</option>))}
-            </select>
+            <input type="hidden" name="customer_id" value={selectedCustomerId} />
+            <Select value={selectedCustomerId || undefined} onValueChange={(v) => { setSelectedCustomerId(v); setOrderId('__none__') }}>
+              <SelectTrigger className={errors.customer_id ? 'border-red-400' : ''}><SelectValue placeholder={t('selectCustomer')} /></SelectTrigger>
+              <SelectContent>
+                {customers.map((c) => (<SelectItem key={c.id} value={c.id}>{c.full_name}</SelectItem>))}
+              </SelectContent>
+            </Select>
             {errors.customer_id && <p className="text-xs text-red-500 mt-1">{errors.customer_id[0]}</p>}
           </div>
           <div>
             <label className="block text-xs font-medium text-muted-foreground mb-1">{t('linkedOrder')} <span className="text-muted-foreground">{t('optional')}</span></label>
-            <select name="order_id" disabled={!selectedCustomerId} className="w-full px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 disabled:bg-muted/40 disabled:text-muted-foreground">
-              <option value="">{t('none')}</option>
-              {customerOrders.map((o) => (<option key={o.id} value={o.id}>{o.id.slice(0, 8)}... — {o.total_amount.toFixed(2)} €</option>))}
-            </select>
+            <input type="hidden" name="order_id" value={orderId === '__none__' ? '' : orderId} />
+            <Select value={orderId} onValueChange={setOrderId} disabled={!selectedCustomerId}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__none__">{t('none')}</SelectItem>
+                {customerOrders.map((o) => (<SelectItem key={o.id} value={o.id}>{o.id.slice(0, 8)}... — {o.total_amount.toFixed(2)} €</SelectItem>))}
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <label className="block text-xs font-medium text-muted-foreground mb-1">{t('amount')}</label>
@@ -65,10 +75,14 @@ export default function InvoiceForm({ customers, orders, onClose }: Props) {
           </div>
           <div>
             <label className="block text-xs font-medium text-muted-foreground mb-1">{t('status')}</label>
-            <select name="status" defaultValue="draft" className="w-full px-3 py-2 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50">
-              <option value="draft">{t('statusDraft')}</option>
-              <option value="sent">{t('statusSent')}</option>
-            </select>
+            <input type="hidden" name="status" value={status} />
+            <Select value={status} onValueChange={setStatus}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="draft">{t('statusDraft')}</SelectItem>
+                <SelectItem value="sent">{t('statusSent')}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           {errors._root && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">{errors._root[0]}</p>}
         </form>

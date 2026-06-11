@@ -4,6 +4,7 @@ import { useRef, useState, useTransition } from 'react'
 import { useTranslations } from 'next-intl'
 import type { Customer, Product } from '@/types'
 import { createOrder } from '@/app/dashboard/orders/actions'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 
 type OrderItem = { product_id: string; quantity: number; unit_price: number }
 type Props = { customers: Customer[]; products: Product[]; onClose: () => void }
@@ -13,6 +14,7 @@ export default function OrderForm({ customers, products, onClose }: Props) {
   const tc = useTranslations('common')
   const formRef = useRef<HTMLFormElement>(null)
   const [items, setItems] = useState<OrderItem[]>([{ product_id: '', quantity: 1, unit_price: 0 }])
+  const [customerId, setCustomerId] = useState('')
   const [errors, setErrors] = useState<Record<string, string[]>>({})
   const [isPending, startTransition] = useTransition()
 
@@ -49,10 +51,15 @@ export default function OrderForm({ customers, products, onClose }: Props) {
         <form ref={formRef} onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
           <div>
             <label className="block text-xs font-medium text-muted-foreground mb-1">{t('customer')}</label>
-            <select name="customer_id" required className={`w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50 ${errors.customer_id ? 'border-red-400' : 'border-input'}`}>
-              <option value="">{t('selectCustomer')}</option>
-              {customers.map((c) => (<option key={c.id} value={c.id}>{c.full_name} ({c.email})</option>))}
-            </select>
+            <input type="hidden" name="customer_id" value={customerId} />
+            <Select value={customerId || undefined} onValueChange={setCustomerId}>
+              <SelectTrigger className={errors.customer_id ? 'border-red-400' : ''}>
+                <SelectValue placeholder={t('selectCustomer')} />
+              </SelectTrigger>
+              <SelectContent>
+                {customers.map((c) => (<SelectItem key={c.id} value={c.id}>{c.full_name} ({c.email})</SelectItem>))}
+              </SelectContent>
+            </Select>
             {errors.customer_id && <p className="text-xs text-red-500 mt-1">{errors.customer_id[0]}</p>}
           </div>
           <div>
@@ -63,10 +70,14 @@ export default function OrderForm({ customers, products, onClose }: Props) {
             <div className="space-y-2">
               {items.map((item, index) => (
                 <div key={index} className="grid grid-cols-[1fr_80px_100px_32px] gap-2 items-start">
-                  <select value={item.product_id} onChange={(e) => updateItem(index, 'product_id', e.target.value)} required className="px-2 py-1.5 border border-input rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50">
-                    <option value="">{t('selectProduct')}</option>
-                    {products.map((p) => (<option key={p.id} value={p.id}>{p.name} ({t('stock')}: {p.stock_quantity})</option>))}
-                  </select>
+                  <Select value={item.product_id || undefined} onValueChange={(v) => updateItem(index, 'product_id', v)}>
+                    <SelectTrigger className="h-auto py-1.5">
+                      <SelectValue placeholder={t('selectProduct')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {products.map((p) => (<SelectItem key={p.id} value={p.id}>{p.name} ({t('stock')}: {p.stock_quantity})</SelectItem>))}
+                    </SelectContent>
+                  </Select>
                   <input type="number" min="1" value={item.quantity} onChange={(e) => updateItem(index, 'quantity', Number(e.target.value))} className="px-2 py-1.5 border border-input rounded-lg text-sm text-right focus:outline-none focus:ring-2 focus:ring-ring/50" placeholder={t('qty')} />
                   <input type="number" step="0.01" min="0" value={item.unit_price} onChange={(e) => updateItem(index, 'unit_price', Number(e.target.value))} className="px-2 py-1.5 border border-input rounded-lg text-sm text-right focus:outline-none focus:ring-2 focus:ring-ring/50" placeholder={t('price')} />
                   <button type="button" onClick={() => removeItem(index)} disabled={items.length === 1} className="text-red-400 hover:text-red-600 disabled:opacity-30 text-lg leading-none mt-1">×</button>

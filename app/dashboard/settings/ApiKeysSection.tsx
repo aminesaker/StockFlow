@@ -4,6 +4,7 @@ import { useRef, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { useTranslations, useLocale } from 'next-intl'
 import { createApiKey, deleteApiKey } from './api-keys-actions'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 
 type ApiKey = { id: string; name: string; key_prefix: string; last_used_at: string | null; created_at: string }
 
@@ -15,6 +16,7 @@ export default function ApiKeysSection({ apiKeys, stores = [] }: { apiKeys: ApiK
   const [newKey, setNewKey] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
+  const [storeBinding, setStoreBinding] = useState('__none__')
 
   function handleCreate(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -115,10 +117,16 @@ export default function ApiKeysSection({ apiKeys, stores = [] }: { apiKeys: ApiK
           className="flex-1 min-w-[12rem] px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50"
         />
         {stores.length > 0 && (
-          <select name="store_id" defaultValue="" aria-label={t('storeLabel')} className="px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50">
-            <option value="">{t('storeNone')}</option>
-            {stores.map((st) => <option key={st.id} value={st.id}>{st.name}</option>)}
-          </select>
+          <>
+          <input type="hidden" name="store_id" value={storeBinding === '__none__' ? '' : storeBinding} />
+          <Select value={storeBinding} onValueChange={setStoreBinding}>
+            <SelectTrigger aria-label={t('storeLabel')} className="min-w-[10rem]"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="__none__">{t('storeNone')}</SelectItem>
+              {stores.map((st) => <SelectItem key={st.id} value={st.id}>{st.name}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          </>
         )}
         <button
           type="submit"

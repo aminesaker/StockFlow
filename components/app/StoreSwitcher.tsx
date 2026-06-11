@@ -3,6 +3,7 @@
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 
 export default function StoreSwitcher({ stores, current }: { stores: { id: string; name: string }[]; current: string }) {
   const t = useTranslations('stores')
@@ -15,15 +16,14 @@ export default function StoreSwitcher({ stores, current }: { stores: { id: strin
   }
 
   return (
-    <select
-      value={current}
-      onChange={(e) => change(e.target.value)}
-      disabled={pending}
-      aria-label={t('switcherLabel')}
-      className="w-full rounded-lg border border-sidebar-border bg-transparent px-2 py-1.5 text-sm text-sidebar-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
-    >
-      <option value="all">{t('all')}</option>
-      {stores.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-    </select>
+    <Select value={current} onValueChange={change} disabled={pending}>
+      <SelectTrigger aria-label={t('switcherLabel')} className="h-9 w-full">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="all">{t('all')}</SelectItem>
+        {stores.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+      </SelectContent>
+    </Select>
   )
 }
