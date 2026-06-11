@@ -884,7 +884,22 @@
     "copy": "Copier",
     "wooInstructions": "Dans WooCommerce → Réglages → Avancé → Webhooks → Ajouter : collez cette URL, statut Actif, pour les sujets Produit créé/modifié/supprimé et Commande créée/modifiée.",
     "verify": "J'ai configuré — vérifier la synchronisation",
-    "keyName": "Connexion boutique"
+    "keyName": "Connexion boutique",
+    "demo": {
+      "title": "Explorer avec des données de démo",
+      "desc": "Chargez un jeu de données d'exemple (produits, clients, commandes, factures) pour découvrir l'application avant de connecter votre boutique.",
+      "load": "Charger les données de démo",
+      "loading": "Chargement…",
+      "remove": "Supprimer les données de démo",
+      "removing": "Suppression…",
+      "loadedBadge": "Données de démo actives",
+      "loadedToast": "Données de démo chargées",
+      "removedToast": "Données de démo supprimées",
+      "removeConfirm": "Supprimer toutes les données de démo ?",
+      "errAuth": "Non authentifié",
+      "errExists": "Les données de démo sont déjà chargées.",
+      "hint": "Astuce : supprimez les données de démo avant de connecter une vraie boutique."
+    }
   },
   "apiDocs": {
     "back": "← Paramètres",

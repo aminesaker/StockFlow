@@ -192,6 +192,7 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          is_demo: boolean
           phone: string | null
           user_id: string | null
         }
@@ -203,6 +204,7 @@ export type Database = {
           email: string
           full_name: string
           id?: string
+          is_demo?: boolean
           phone?: string | null
           user_id?: string | null
         }
@@ -214,6 +216,7 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
+          is_demo?: boolean
           phone?: string | null
           user_id?: string | null
         }
@@ -284,6 +287,7 @@ export type Database = {
           due_date: string
           id: string
           invoice_number: string
+          is_demo: boolean
           last_reminder_at: string | null
           order_id: string | null
           paid_at: string | null
@@ -302,6 +306,7 @@ export type Database = {
           due_date: string
           id?: string
           invoice_number: string
+          is_demo?: boolean
           last_reminder_at?: string | null
           order_id?: string | null
           paid_at?: string | null
@@ -320,6 +325,7 @@ export type Database = {
           due_date?: string
           id?: string
           invoice_number?: string
+          is_demo?: boolean
           last_reminder_at?: string | null
           order_id?: string | null
           paid_at?: string | null
@@ -397,6 +403,7 @@ export type Database = {
           external_id: string | null
           external_source: string | null
           id: string
+          is_demo: boolean
           notes: string | null
           status: string
           total_amount: number
@@ -409,6 +416,7 @@ export type Database = {
           external_id?: string | null
           external_source?: string | null
           id?: string
+          is_demo?: boolean
           notes?: string | null
           status?: string
           total_amount?: number
@@ -421,6 +429,7 @@ export type Database = {
           external_id?: string | null
           external_source?: string | null
           id?: string
+          is_demo?: boolean
           notes?: string | null
           status?: string
           total_amount?: number
@@ -447,6 +456,7 @@ export type Database = {
           external_source: string | null
           id: string
           image_url: string | null
+          is_demo: boolean
           low_stock_threshold: number
           name: string
           price: number
@@ -465,6 +475,7 @@ export type Database = {
           external_source?: string | null
           id?: string
           image_url?: string | null
+          is_demo?: boolean
           low_stock_threshold?: number
           name: string
           price?: number
@@ -483,6 +494,7 @@ export type Database = {
           external_source?: string | null
           id?: string
           image_url?: string | null
+          is_demo?: boolean
           low_stock_threshold?: number
           name?: string
           price?: number

@@ -884,7 +884,22 @@
     "copy": "Copy",
     "wooInstructions": "In WooCommerce → Settings → Advanced → Webhooks → Add: paste this URL, status Active, for topics Product created/updated/deleted and Order created/updated.",
     "verify": "I've configured it — check synchronization",
-    "keyName": "Store connection"
+    "keyName": "Store connection",
+    "demo": {
+      "title": "Explore with demo data",
+      "desc": "Load a sample dataset (products, customers, orders, invoices) to explore the app before connecting your store.",
+      "load": "Load demo data",
+      "loading": "Loading…",
+      "remove": "Remove demo data",
+      "removing": "Removing…",
+      "loadedBadge": "Demo data active",
+      "loadedToast": "Demo data loaded",
+      "removedToast": "Demo data removed",
+      "removeConfirm": "Remove all demo data?",
+      "errAuth": "Not authenticated",
+      "errExists": "Demo data is already loaded.",
+      "hint": "Tip: remove the demo data before connecting a real store."
+    }
   },
   "apiDocs": {
     "back": "← Settings",

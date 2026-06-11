@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { getTranslations } from 'next-intl/server'
 import { getOnboardingState } from '@/lib/onboarding'
 import { OnboardingClient } from '@/components/app/onboarding-client'
+import DemoDataCard from './DemoDataCard'
 import { PageHeader } from '@/components/shared/page-header'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
@@ -16,6 +17,13 @@ export default async function OnboardingPage() {
   if (!user) redirect('/login')
 
   const state = await getOnboardingState(supabase, user.id)
+  const { count: demoCount } = await supabase
+    .from('products')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', user.id)
+    .eq('is_demo', true)
+  const demoLoaded = (demoCount ?? 0) > 0
+
   const h = await headers()
   const host = h.get('host') ?? 'localhost:3000'
   const proto = host.includes('localhost') ? 'http' : 'https'
@@ -28,8 +36,10 @@ export default async function OnboardingPage() {
   const done = steps.filter((s) => s.done).length
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl space-y-4">
       <PageHeader title={t('title')} description={t('progress', { done, total: steps.length })} />
+
+      <DemoDataCard loaded={demoLoaded} />
 
       {state.complete ? (
         <Card>
