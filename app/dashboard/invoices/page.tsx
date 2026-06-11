@@ -6,16 +6,9 @@ import SearchBar from '@/components/ui/SearchBar'
 import StatusFilter from '@/components/ui/StatusFilter'
 import Pagination from '@/components/ui/Pagination'
 import { PageHeader } from '@/components/shared/page-header'
+import { getTranslations } from 'next-intl/server'
 
 const PAGE_SIZE = 15
-
-const invoiceStatusOptions = [
-  { value: 'draft', label: 'Brouillon' },
-  { value: 'sent', label: 'Envoyée' },
-  { value: 'paid', label: 'Payée' },
-  { value: 'overdue', label: 'En retard' },
-  { value: 'cancelled', label: 'Annulée' },
-]
 
 type Props = {
   searchParams: Promise<{ q?: string; status?: string; page?: string }>
@@ -23,6 +16,8 @@ type Props = {
 
 export default async function InvoicesPage({ searchParams }: Props) {
   const { q = '', status = '', page = '1' } = await searchParams
+  const t = await getTranslations('invoices')
+  const tis = await getTranslations('invoiceStatus')
   const currentPage = Math.max(1, parseInt(page))
   const from = (currentPage - 1) * PAGE_SIZE
   const to = from + PAGE_SIZE - 1
@@ -61,14 +56,14 @@ export default async function InvoicesPage({ searchParams }: Props) {
 
   return (
     <div>
-      <PageHeader title="Factures" description={`${total} facture${total !== 1 ? 's' : ''}`} />
+      <PageHeader title={t('title')} description={t('count', { count: total })} />
 
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="flex-1 max-w-xs">
-          <Suspense><SearchBar placeholder="Rechercher N° facture ou client…" /></Suspense>
+          <Suspense><SearchBar placeholder={t('search')} /></Suspense>
         </div>
         <Suspense>
-          <StatusFilter options={invoiceStatusOptions} paramName="status" allLabel="Tous statuts" />
+          <StatusFilter options={(['draft','sent','paid','overdue','cancelled'] as const).map((v) => ({ value: v, label: tis(v) }))} paramName="status" allLabel={t('filterAllStatus')} />
         </Suspense>
       </div>
 

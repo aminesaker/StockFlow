@@ -539,5 +539,50 @@
       "city": "Ville",
       "country": "Pays"
     }
+  },
+  "invoiceStatus": {
+    "draft": "Brouillon",
+    "sent": "Envoyée",
+    "paid": "Payée",
+    "overdue": "En retard",
+    "cancelled": "Annulée"
+  },
+  "invoices": {
+    "title": "Factures",
+    "count": "{count, plural, one {# facture} other {# factures}}",
+    "search": "Rechercher N° facture ou client…",
+    "filterAllStatus": "Tous statuts",
+    "exportCsv": "⬇ Exporter CSV",
+    "newInvoice": "+ Nouvelle facture",
+    "colNumber": "N° Facture",
+    "colCustomer": "Client",
+    "colAmount": "Montant",
+    "colDue": "Échéance",
+    "colStatus": "Statut",
+    "pay": "💳 Payer",
+    "markSent": "Marquer envoyée",
+    "markPaid": "Marquer payée",
+    "pdf": "⬇ PDF",
+    "delete": "Supprimer",
+    "empty": "Aucune facture — créez-en une ou générez-en depuis une commande",
+    "confirmDelete": "Supprimer cette facture ?",
+    "toastDeleted": "Facture supprimée",
+    "toastStatus": "Facture marquée « {status} »",
+    "checkoutError": "Erreur lors de la création du paiement",
+    "form": {
+      "title": "Nouvelle facture",
+      "customer": "Client *",
+      "selectCustomer": "— Sélectionner —",
+      "linkedOrder": "Commande liée",
+      "optional": "(optionnel)",
+      "none": "— Aucune —",
+      "amount": "Montant (€) *",
+      "dueDate": "Date d’échéance *",
+      "status": "Statut",
+      "statusDraft": "Brouillon",
+      "statusSent": "Envoyée",
+      "creating": "Création…",
+      "create": "Créer la facture"
+    }
   }
 }

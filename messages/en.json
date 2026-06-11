@@ -539,5 +539,50 @@
       "city": "City",
       "country": "Country"
     }
+  },
+  "invoiceStatus": {
+    "draft": "Draft",
+    "sent": "Sent",
+    "paid": "Paid",
+    "overdue": "Overdue",
+    "cancelled": "Cancelled"
+  },
+  "invoices": {
+    "title": "Invoices",
+    "count": "{count, plural, one {# invoice} other {# invoices}}",
+    "search": "Search invoice no. or customer…",
+    "filterAllStatus": "All statuses",
+    "exportCsv": "⬇ Export CSV",
+    "newInvoice": "+ New invoice",
+    "colNumber": "Invoice no.",
+    "colCustomer": "Customer",
+    "colAmount": "Amount",
+    "colDue": "Due date",
+    "colStatus": "Status",
+    "pay": "💳 Pay",
+    "markSent": "Mark as sent",
+    "markPaid": "Mark as paid",
+    "pdf": "⬇ PDF",
+    "delete": "Delete",
+    "empty": "No invoices — create one or generate from an order",
+    "confirmDelete": "Delete this invoice?",
+    "toastDeleted": "Invoice deleted",
+    "toastStatus": "Invoice marked “{status}”",
+    "checkoutError": "Error creating the payment",
+    "form": {
+      "title": "New invoice",
+      "customer": "Customer *",
+      "selectCustomer": "— Select —",
+      "linkedOrder": "Linked order",
+      "optional": "(optional)",
+      "none": "— None —",
+      "amount": "Amount (€) *",
+      "dueDate": "Due date *",
+      "status": "Status",
+      "statusDraft": "Draft",
+      "statusSent": "Sent",
+      "creating": "Creating…",
+      "create": "Create invoice"
+    }
   }
 }
