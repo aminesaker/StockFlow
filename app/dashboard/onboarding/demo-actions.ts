@@ -66,9 +66,9 @@ export async function loadDemoData() {
     const created_at = daysAgo(o.days)
     const items = o.lines.map(([sku, qty]) => {
       const p = prodBySku.get(sku)!
-      return { product_id: p.id, quantity: qty, unit_price: p.price, total_price: round2(p.price * qty) }
+      return { product_id: p.id, quantity: qty, unit_price: p.price }
     })
-    const total = round2(items.reduce((s, i) => s + (i.total_price ?? 0), 0))
+    const total = round2(items.reduce((s, i) => s + i.unit_price * i.quantity, 0))
 
     const { data: order, error: oErr } = await supabase
       .from('orders')
