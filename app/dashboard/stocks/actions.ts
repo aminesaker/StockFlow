@@ -107,6 +107,67 @@ export async function deleteProduct(id: string) {
   return { success: true }
 }
 
+export async function createVariant(parentId: string, formData: FormData) {
+  const { supabase, userId } = await getUserId()
+
+  const { data: parent } = await supabase
+    .from('products')
+    .select('id, name, category, parent_id')
+    .eq('id', parentId)
+    .single()
+  if (!parent || parent.parent_id) return { error: { _root: ['Produit parent introuvable'] } }
+
+  const sku = String(formData.get('sku') ?? '').trim()
+  const price = Number(formData.get('price'))
+  const stock = Number(formData.get('stock_quantity'))
+  const threshold = Number(formData.get('low_stock_threshold'))
+  const attrsRaw = String(formData.get('attributes') ?? '').trim()
+
+  if (!sku) return { error: { sku: ['SKU requis'] } }
+  if (!Number.isFinite(price) || price < 0) return { error: { price: ['Prix invalide'] } }
+
+  const attrs: Record<string, string> = {}
+  for (const part of attrsRaw.split(',')) {
+    const idx = part.indexOf(':')
+    if (idx === -1) continue
+    const key = part.slice(0, idx).trim()
+    const val = part.slice(idx + 1).trim()
+    if (key && val) attrs[key] = val
+  }
+
+  const limit = await canCreate(supabase, userId, 'products')
+  if (!limit.allowed) return { error: { _root: [limitMessage('products', limit)] } }
+
+  const stockQ = Number.isFinite(stock) && stock >= 0 ? Math.round(stock) : 0
+  const { data: created, error } = await supabase
+    .from('products')
+    .insert({
+      user_id: userId,
+      parent_id: parentId,
+      name: parent.name,
+      sku,
+      price,
+      cost: 0,
+      stock_quantity: stockQ,
+      low_stock_threshold: Number.isFinite(threshold) && threshold >= 0 ? Math.round(threshold) : 5,
+      category: parent.category,
+      variant_attributes: Object.keys(attrs).length ? attrs : null,
+    })
+    .select('id')
+    .single()
+  if (error) return { error: { _root: [error.message] } }
+
+  if (created && stockQ > 0) {
+    await supabase.from('stock_movements').insert({
+      user_id: userId, product_id: created.id, delta: stockQ, reason: 'initial', balance_after: stockQ,
+    })
+  }
+
+  revalidatePath('/dashboard/stocks')
+  revalidatePath('/dashboard')
+  return { success: true }
+}
+
 // ── Import CSV ─────────────────────────────────────────────────────────────────
 
 type CsvRow = {

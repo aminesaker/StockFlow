@@ -26,13 +26,29 @@ export default async function StocksPage({ searchParams }: Props) {
   const { data: { user } } = await supabase.auth.getUser()
   const limitCheck = user ? await canCreate(supabase, user.id, 'products', 0) : null
 
-  let query = supabase.from('products').select('*', { count: 'exact' })
+  let query = supabase.from('products').select('*', { count: 'exact' }).is('parent_id', null)
   if (q) query = query.or(`name.ilike.%${q}%,sku.ilike.%${q}%,category.ilike.%${q}%`)
   const { data: all, count: totalCount } = await query.order('created_at', { ascending: false })
 
+  // Variantes (produits enfants) regroupées par parent
+  const { data: variantRows } = await supabase
+    .from('products')
+    .select('*')
+    .not('parent_id', 'is', null)
+    .order('created_at', { ascending: true })
+  const variantsByParent: Record<string, Product[]> = {}
+  for (const v of (variantRows as Product[]) ?? []) {
+    if (!v.parent_id) continue
+    ;(variantsByParent[v.parent_id] ??= []).push(v)
+  }
+  const isLow = (p: Product) => {
+    const vs = variantsByParent[p.id]
+    return vs && vs.length ? vs.some((x) => x.stock_quantity <= x.low_stock_threshold) : p.stock_quantity <= p.low_stock_threshold
+  }
+
   let products = (all as Product[]) ?? []
-  if (status === 'low') products = products.filter((p) => p.stock_quantity <= p.low_stock_threshold)
-  else if (status === 'ok') products = products.filter((p) => p.stock_quantity > p.low_stock_threshold)
+  if (status === 'low') products = products.filter(isLow)
+  else if (status === 'ok') products = products.filter((p) => !isLow(p))
 
   const total = status ? products.length : (totalCount ?? 0)
   const paginated = status ? products.slice(from, to + 1) : products
@@ -56,7 +72,7 @@ export default async function StocksPage({ searchParams }: Props) {
         <Suspense><StatusFilter options={stockOptions} paramName="status" allLabel={tc('all')} /></Suspense>
       </div>
 
-      <StocksClient products={paginated} />
+      <StocksClient products={paginated} variantsByParent={variantsByParent} />
 
       <Suspense><Pagination page={currentPage} totalPages={totalPages} /></Suspense>
     </div>

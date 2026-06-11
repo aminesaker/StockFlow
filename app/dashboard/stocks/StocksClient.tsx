@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 import type { Product } from '@/types'
 import ProductForm from '@/components/products/ProductForm'
+import VariantsManager from '@/components/products/VariantsManager'
 import { deleteProduct } from './actions'
 import ImportProducts from './ImportProducts'
 import { Button } from '@/components/ui/button'
@@ -12,12 +13,13 @@ import { Badge } from '@/components/ui/badge'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 
-type Props = { products: Product[] }
+type Props = { products: Product[]; variantsByParent: Record<string, Product[]> }
 
-export default function StocksClient({ products }: Props) {
+export default function StocksClient({ products, variantsByParent }: Props) {
   const t = useTranslations('stocks')
   const tc = useTranslations('common')
   const [modal, setModal] = useState<'create' | Product | null>(null)
+  const [variantParent, setVariantParent] = useState<Product | null>(null)
   const [isPending, startTransition] = useTransition()
 
   function handleDelete(id: string) {
@@ -52,19 +54,26 @@ export default function StocksClient({ products }: Props) {
           </TableHeader>
           <TableBody>
             {products.map((product) => {
-              const low = product.stock_quantity <= product.low_stock_threshold
+              const variants = variantsByParent[product.id] ?? []
+              const hasVar = variants.length > 0
+              const effStock = hasVar ? variants.reduce((sum, v) => sum + v.stock_quantity, 0) : product.stock_quantity
+              const low = hasVar ? variants.some((v) => v.stock_quantity <= v.low_stock_threshold) : product.stock_quantity <= product.low_stock_threshold
               return (
                 <TableRow key={product.id}>
-                  <TableCell className="font-medium text-foreground">{product.name}</TableCell>
+                  <TableCell className="font-medium text-foreground">
+                    {product.name}
+                    {hasVar && <span className="ml-2 rounded-full bg-muted px-2 py-0.5 text-xs font-normal text-muted-foreground">{t('variants.badge', { count: variants.length })}</span>}
+                  </TableCell>
                   <TableCell className="text-muted-foreground">{product.sku}</TableCell>
                   <TableCell className="text-right tabular-nums">{product.price.toFixed(2)} €</TableCell>
-                  <TableCell className="text-right tabular-nums">{product.stock_quantity}</TableCell>
+                  <TableCell className="text-right tabular-nums">{effStock}</TableCell>
                   <TableCell><Badge variant={low ? 'danger' : 'success'}>{low ? t('statusLow') : t('statusOk')}</Badge></TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger className="rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none" aria-label={tc('actions')}>⋯</DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onSelect={() => setModal(product)}>{t('actionEdit')}</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => setVariantParent(product)}>{t('variants.manage')}</DropdownMenuItem>
                         <DropdownMenuItem asChild>
                           <a href={`/dashboard/stocks/movements?product=${product.id}`}>{t('actionView')}</a>
                         </DropdownMenuItem>
@@ -84,6 +93,7 @@ export default function StocksClient({ products }: Props) {
       </div>
 
       {modal && <ProductForm product={modal === 'create' ? undefined : modal} onClose={() => setModal(null)} />}
+      {variantParent && <VariantsManager parent={variantParent} variants={variantsByParent[variantParent.id] ?? []} onClose={() => setVariantParent(null)} />}
     </div>
   )
 }

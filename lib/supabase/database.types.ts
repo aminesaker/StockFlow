@@ -464,6 +464,8 @@ export type Database = {
           stock_quantity: number
           updated_at: string
           user_id: string | null
+          parent_id: string | null
+          variant_attributes: Json | null
           woo_id: number | null
         }
         Insert: {
@@ -483,6 +485,8 @@ export type Database = {
           stock_quantity?: number
           updated_at?: string
           user_id?: string | null
+          parent_id?: string | null
+          variant_attributes?: Json | null
           woo_id?: number | null
         }
         Update: {
@@ -502,6 +506,8 @@ export type Database = {
           stock_quantity?: number
           updated_at?: string
           user_id?: string | null
+          parent_id?: string | null
+          variant_attributes?: Json | null
           woo_id?: number | null
         }
         Relationships: []

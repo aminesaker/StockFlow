@@ -9,6 +9,8 @@ export type Product = {
   low_stock_threshold: number
   category: string | null
   image_url: string | null
+  parent_id: string | null
+  variant_attributes: Record<string, string> | null
   created_at: string
   updated_at: string
 }

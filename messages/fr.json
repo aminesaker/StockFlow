@@ -474,6 +474,28 @@
         "adjustment": "Ajustement",
         "import": "Import"
       }
+    },
+    "variants": {
+      "manage": "Variantes",
+      "title": "Variantes — {name}",
+      "badge": "{count, plural, one {# variante} other {# variantes}}",
+      "totalStock": "{n} en stock",
+      "none": "Aucune variante pour ce produit.",
+      "addTitle": "Ajouter une variante",
+      "attributes": "Attributs",
+      "attributesHint": "Ex : Taille: M, Couleur: Bleu",
+      "sku": "SKU",
+      "price": "Prix (€)",
+      "stock": "Stock",
+      "threshold": "Seuil d'alerte",
+      "add": "Ajouter",
+      "adding": "Ajout…",
+      "delete": "Supprimer",
+      "confirmDelete": "Supprimer cette variante ?",
+      "addedToast": "Variante ajoutée",
+      "deletedToast": "Variante supprimée",
+      "close": "Fermer",
+      "colAttrs": "Variante"
     }
   },
   "orderStatus": {

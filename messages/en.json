@@ -474,6 +474,28 @@
         "adjustment": "Adjustment",
         "import": "Import"
       }
+    },
+    "variants": {
+      "manage": "Variants",
+      "title": "Variants — {name}",
+      "badge": "{count, plural, one {# variant} other {# variants}}",
+      "totalStock": "{n} in stock",
+      "none": "No variants for this product.",
+      "addTitle": "Add a variant",
+      "attributes": "Attributes",
+      "attributesHint": "E.g. Size: M, Color: Blue",
+      "sku": "SKU",
+      "price": "Price (€)",
+      "stock": "Stock",
+      "threshold": "Alert threshold",
+      "add": "Add",
+      "adding": "Adding…",
+      "delete": "Delete",
+      "confirmDelete": "Delete this variant?",
+      "addedToast": "Variant added",
+      "deletedToast": "Variant removed",
+      "close": "Close",
+      "colAttrs": "Variant"
     }
   },
   "orderStatus": {
