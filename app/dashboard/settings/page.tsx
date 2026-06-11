@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import SettingsForm from './SettingsForm'
 import ApiKeysSection from './ApiKeysSection'
 import WooCommerceSection from './WooCommerceSection'
@@ -8,6 +9,7 @@ import { PageHeader } from '@/components/shared/page-header'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 
 export default async function SettingsPage() {
+  const t = await getTranslations('settings')
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -26,16 +28,16 @@ export default async function SettingsPage() {
   return (
     <div>
       <PageHeader
-        title="Paramètres"
-        description="Automatisations et intégrations de votre espace."
-        actions={<Link href="/dashboard/api-docs" className="text-sm text-primary hover:underline">Documentation API →</Link>}
+        title={t('title')}
+        description={t('desc')}
+        actions={<Link href="/dashboard/api-docs" className="text-sm text-primary hover:underline">{t('apiDocs')}</Link>}
       />
 
       <Tabs defaultValue="notifications" className="max-w-2xl">
         <TabsList>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="integrations">Intégrations</TabsTrigger>
-          <TabsTrigger value="apikeys">Clés API</TabsTrigger>
+          <TabsTrigger value="notifications">{t('tabNotifications')}</TabsTrigger>
+          <TabsTrigger value="integrations">{t('tabIntegrations')}</TabsTrigger>
+          <TabsTrigger value="apikeys">{t('tabApiKeys')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="notifications">

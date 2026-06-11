@@ -14,7 +14,8 @@
     "saving": "Enregistrement…",
     "all": "Tous",
     "actions": "Actions",
-    "close": "Fermer"
+    "close": "Fermer",
+    "genericError": "Erreur"
   },
   "nav": {
     "features": "Fonctionnalités",
@@ -677,5 +678,186 @@
     "stockCost": "Valeur (coût)",
     "stockOut": "En rupture",
     "stockCritical": "Stock critique"
+  },
+  "billing": {
+    "title": "Facturation",
+    "desc": "Votre plan, votre usage et vos options d'évolution.",
+    "currentPlan": "Plan actuel : {name}",
+    "meterProducts": "Produits",
+    "meterOrders": "Commandes",
+    "currentBadge": "Actuel",
+    "currentBtn": "Plan actuel",
+    "includedFree": "Inclus gratuitement",
+    "upgradeTo": "Passer à {name}",
+    "securePayment": "Paiement sécurisé par Stripe · Résiliable à tout moment",
+    "free": "Gratuit",
+    "priceMonthly": "{price} €/mois",
+    "highlights": {
+      "starter": [
+        "500 produits",
+        "500 commandes / mois",
+        "1 boutique",
+        "Synchro temps réel"
+      ],
+      "pro": [
+        "5 000 produits",
+        "5 000 commandes / mois",
+        "Automatisations",
+        "Alertes de stock"
+      ],
+      "business": [
+        "Produits & commandes illimités",
+        "Multi-boutiques",
+        "IA prédictive",
+        "API publique"
+      ]
+    }
+  },
+  "integrations": {
+    "title": "Intégrations",
+    "desc": "Connectez vos boutiques et suivez la synchronisation en temps réel",
+    "connectionsState": "État des connexions",
+    "connected": "Connecté",
+    "notConnected": "Non connecté",
+    "synced": "{products, plural, one {# produit} other {# produits}} · {orders, plural, one {# commande synchronisée} other {# commandes synchronisées}}",
+    "lastSync": "Dernière synchro : {time}",
+    "configure": "Configurer",
+    "catalog": "Catalogue de plateformes",
+    "available": "Disponible",
+    "soon": "Bientôt",
+    "webhookConfig": "Configuration des webhooks",
+    "hmac": "Signature HMAC :",
+    "hmacOn": "activée",
+    "hmacOff": "non configurée",
+    "manageSecret": "gérer le secret & les clés API →",
+    "webhookUrl": "URL du webhook",
+    "replaceKey": "Remplacez {key} par une clé API complète (créée dans Paramètres → Clés API).",
+    "eventsToEnable": "Événements à activer",
+    "existingKeys": "Clés API existantes : {keys}",
+    "unnamed": "sans nom",
+    "syncLog": "Journal de synchronisation",
+    "noEvents": "Aucun événement pour le moment. Les synchronisations reçues de vos boutiques apparaîtront ici.",
+    "colWhen": "Quand",
+    "colPlatform": "Plateforme",
+    "colAction": "Action",
+    "colStatus": "Statut",
+    "colDetail": "Détail",
+    "ok": "OK",
+    "errorBadge": "Erreur",
+    "yourKey": "VOTRE_CLÉ",
+    "never": "jamais",
+    "justNow": "à l'instant",
+    "minAgo": "il y a {m} min",
+    "hAgo": "il y a {h} h",
+    "dAgo": "il y a {d} j"
+  },
+  "automations": {
+    "title": "Automatisations",
+    "desc": "Activez ce que StockFlow doit faire sans intervention de votre part.",
+    "items": {
+      "auto_invoice": {
+        "title": "Facturation automatique",
+        "desc": "Crée et envoie une facture au client dès qu'une commande passe en « Livrée »."
+      },
+      "stock_alerts": {
+        "title": "Alertes de stock bas",
+        "desc": "Envoie un email dès qu'un produit passe sous son seuil de réapprovisionnement."
+      },
+      "overdue_reminders": {
+        "title": "Relances impayés",
+        "desc": "Rappels automatiques à J+7, J+15 et J+30 après l'échéance d'une facture."
+      },
+      "weekly_report": {
+        "title": "Rapport hebdomadaire",
+        "desc": "Résumé de votre activité (commandes, revenus, stock) envoyé chaque lundi matin."
+      }
+    },
+    "enabledToast": "Automatisation activée",
+    "disabledToast": "Automatisation désactivée",
+    "lockedPlan": "Plan {plan}.",
+    "lockedHint": "Les automatisations sont disponibles à partir du plan Pro.",
+    "upgradePro": "Passer à Pro",
+    "errNotAuth": "Non authentifié",
+    "errUnknown": "Automatisation inconnue",
+    "errPlan": "Les automatisations sont réservées au plan Pro ou supérieur."
+  },
+  "settings": {
+    "title": "Paramètres",
+    "desc": "Automatisations et intégrations de votre espace.",
+    "apiDocs": "Documentation API →",
+    "tabNotifications": "Notifications",
+    "tabIntegrations": "Intégrations",
+    "tabApiKeys": "Clés API",
+    "notifEmail": "Email de notification",
+    "notifEmailDesc": "Adresse qui reçoit tous les emails automatiques.",
+    "saving": "Enregistrement…",
+    "save": "Enregistrer",
+    "savedToast": "Paramètres enregistrés",
+    "errNotAuth": "Non authentifié",
+    "automationsTitle": "Automatisations",
+    "automationsDesc": "Facturation auto, alertes de stock, relances, rapport hebdo.",
+    "apiKeys": {
+      "title": "Clés API",
+      "desc": "Utilisez ces clés pour connecter WooCommerce, Shopify ou vos propres scripts.",
+      "copyNow": "⚠️ Copiez cette clé maintenant — elle ne sera plus affichée.",
+      "copied": "✓ Copié",
+      "copy": "Copier",
+      "copiedClose": "J'ai copié la clé, fermer",
+      "lastUsed": " · dernière utilisation {date}",
+      "neverUsed": " · jamais utilisée",
+      "revoke": "Révoquer",
+      "noKeys": "Aucune clé API — créez-en une ci-dessous.",
+      "namePlaceholder": "Nom de la clé (ex : WooCommerce boutique)",
+      "generate": "+ Générer",
+      "createdToast": "Clé API créée",
+      "revokedToast": "Clé révoquée",
+      "confirmRevoke": "Révoquer la clé « {name} » ? Les intégrations qui l'utilisent cesseront de fonctionner.",
+      "nameRequired": "Un nom est requis."
+    },
+    "woo": {
+      "subtitle": "Synchronisation automatique commandes, clients, produits",
+      "available": "Disponible",
+      "guideTitle": "Guide de configuration (5 min)",
+      "step1": "Générez une clé API dans la section ci-dessus si ce n'est pas déjà fait.",
+      "step2": "Dans WooCommerce : WooCommerce → Réglages → Avancé → Webhooks → Ajouter",
+      "step3": "Créez 2 webhooks : « Commande créée » et « Commande mise à jour »",
+      "step4": "Collez l'URL ci-dessous dans le champ URL de livraison (remplacez par votre vraie clé API).",
+      "step5": "Copiez le Secret généré par WooCommerce et collez-le dans le champ ci-dessous.",
+      "urlLabel": "URL Webhook à coller dans WooCommerce",
+      "replaceKey": "Remplacez {key} par votre vraie clé API (section Clés API ci-dessus).",
+      "secretLabel": "Secret WooCommerce (optionnel mais recommandé)",
+      "secretPlaceholder": "Collez ici le secret généré par WooCommerce",
+      "secretHelp": "Permet de vérifier que les webhooks proviennent bien de votre boutique WooCommerce.",
+      "topicsToEnable": "Topics à activer :",
+      "savedToast": "Configuration WooCommerce enregistrée",
+      "autoTitle": "⚡ Ce que StockFlow fait automatiquement",
+      "auto1": "→ Nouvelle commande WC | Client upsert + commande créée + stock décrémenté",
+      "auto2": "→ Commande « Completed » WC | Facture PDF générée + envoyée au client par email",
+      "auto3": "→ Produit mis à jour WC | Prix et stock synchronisés dans StockFlow",
+      "auto4": "→ Stock sous le seuil | Email d'alerte envoyé à votre adresse",
+      "copy": "Copier",
+      "saving": "Enregistrement…",
+      "save": "Enregistrer"
+    }
+  },
+  "onboarding": {
+    "title": "Bien démarrer",
+    "progress": "{done}/{total} étapes complétées",
+    "step1Title": "Générer votre clé de connexion",
+    "step1Desc": "Elle authentifie votre boutique auprès de StockFlow.",
+    "step2Title": "Connecter votre boutique",
+    "step2Desc": "Collez l'URL de webhook dans WooCommerce et lancez une première synchronisation.",
+    "completeTitle": "Votre boutique est connectée !",
+    "completeDesc": "{count, plural, one {# produit synchronisé} other {# produits synchronisés}}. Tout est automatique désormais.",
+    "gotoDashboard": "Aller au tableau de bord →",
+    "generate": "Générer ma clé de connexion",
+    "generating": "Génération…",
+    "generatedToast": "Clé de connexion générée",
+    "copiedToast": "Copié dans le presse-papiers",
+    "webhookLabel": "URL de webhook (WooCommerce) — à coller dans votre boutique",
+    "copy": "Copier",
+    "wooInstructions": "Dans WooCommerce → Réglages → Avancé → Webhooks → Ajouter : collez cette URL, statut Actif, pour les sujets Produit créé/modifié/supprimé et Commande créée/modifiée.",
+    "verify": "J'ai configuré — vérifier la synchronisation",
+    "keyName": "Connexion boutique"
   }
 }

@@ -3,16 +3,17 @@
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { setAutomation, type AutomationKey } from './actions'
 
 type Settings = Record<AutomationKey, boolean>
 
-const AUTOMATIONS: { key: AutomationKey; icon: string; title: string; description: string }[] = [
-  { key: 'auto_invoice', icon: '🧾', title: 'Facturation automatique', description: 'Crée et envoie une facture au client dès qu\'une commande passe en « Livrée ».' },
-  { key: 'stock_alerts', icon: '📦', title: 'Alertes de stock bas', description: 'Envoie un email dès qu\'un produit passe sous son seuil de réapprovisionnement.' },
-  { key: 'overdue_reminders', icon: '🔔', title: 'Relances impayés', description: 'Rappels automatiques à J+7, J+15 et J+30 après l\'échéance d\'une facture.' },
-  { key: 'weekly_report', icon: '📊', title: 'Rapport hebdomadaire', description: 'Résumé de votre activité (commandes, revenus, stock) envoyé chaque lundi matin.' },
+const KEYS: { key: AutomationKey; icon: string }[] = [
+  { key: 'auto_invoice', icon: '🧾' },
+  { key: 'stock_alerts', icon: '📦' },
+  { key: 'overdue_reminders', icon: '🔔' },
+  { key: 'weekly_report', icon: '📊' },
 ]
 
 function Toggle({ checked, disabled, onChange }: { checked: boolean; disabled?: boolean; onChange: (v: boolean) => void }) {
@@ -35,6 +36,7 @@ function Toggle({ checked, disabled, onChange }: { checked: boolean; disabled?: 
 }
 
 export default function AutomationsClient({ initial, locked, planName }: { initial: Settings; locked: boolean; planName: string }) {
+  const t = useTranslations('automations')
   const [state, setState] = useState<Settings>(initial)
   const [, startTransition] = useTransition()
 
@@ -47,7 +49,7 @@ export default function AutomationsClient({ initial, locked, planName }: { initi
         setState((s) => ({ ...s, [key]: prev })) // rollback
         toast.error(r.error)
       } else {
-        toast.success(value ? 'Automatisation activée' : 'Automatisation désactivée')
+        toast.success(value ? t('enabledToast') : t('disabledToast'))
       }
     })
   }
@@ -57,23 +59,23 @@ export default function AutomationsClient({ initial, locked, planName }: { initi
       {locked && (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm">
           <p className="text-foreground">
-            <span className="font-medium">Plan {planName}.</span> Les automatisations sont disponibles à partir du plan Pro.
+            <span className="font-medium">{t('lockedPlan', { plan: planName })}</span> {t('lockedHint')}
           </p>
           <Link href="/dashboard/billing" className="shrink-0 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90">
-            Passer à Pro
+            {t('upgradePro')}
           </Link>
         </div>
       )}
 
       <div className="divide-y divide-border rounded-xl border border-border bg-card">
-        {AUTOMATIONS.map((a) => (
+        {KEYS.map((a) => (
           <div key={a.key} className="flex items-start gap-4 px-6 py-5">
             <div className="flex-1">
               <div className="mb-0.5 flex items-center gap-2">
                 <span className="text-xl">{a.icon}</span>
-                <span className="text-sm font-medium text-foreground">{a.title}</span>
+                <span className="text-sm font-medium text-foreground">{t(`items.${a.key}.title`)}</span>
               </div>
-              <p className="ml-7 text-sm text-muted-foreground">{a.description}</p>
+              <p className="ml-7 text-sm text-muted-foreground">{t(`items.${a.key}.desc`)}</p>
             </div>
             <div className="mt-0.5">
               <Toggle checked={!locked && state[a.key]} disabled={locked} onChange={(v) => toggle(a.key, v)} />

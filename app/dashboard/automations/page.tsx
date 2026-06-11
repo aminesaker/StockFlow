@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { PageHeader } from '@/components/shared/page-header'
 import { getUserPlan } from '@/lib/entitlements'
 import { PLANS } from '@/lib/plans'
@@ -8,6 +9,7 @@ import AutomationsClient from './AutomationsClient'
 export const dynamic = 'force-dynamic'
 
 export default async function AutomationsPage() {
+  const t = await getTranslations('automations')
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -28,10 +30,7 @@ export default async function AutomationsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Automatisations"
-        description="Activez ce que StockFlow doit faire sans intervention de votre part."
-      />
+      <PageHeader title={t('title')} description={t('desc')} />
       <AutomationsClient initial={initial} locked={locked} planName={PLANS[plan].name} />
     </div>
   )

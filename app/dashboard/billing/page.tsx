@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { getUserPlan, getUsage } from '@/lib/entitlements'
 import { PLANS, PLAN_ORDER } from '@/lib/plans'
 import { PageHeader } from '@/components/shared/page-header'
@@ -11,6 +12,7 @@ import { UpgradeButton } from '@/components/app/upgrade-button'
 import { cn } from '@/lib/utils'
 
 export default async function BillingPage() {
+  const t = await getTranslations('billing')
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -21,18 +23,21 @@ export default async function BillingPage() {
   ])
   const current = PLANS[plan]
 
+  const priceLabel = (pid: string) =>
+    pid === 'starter' ? t('free') : pid === 'pro' ? t('priceMonthly', { price: 29 }) : t('priceMonthly', { price: 99 })
+
   return (
     <div className="mx-auto max-w-4xl">
-      <PageHeader title="Facturation" description="Votre plan, votre usage et vos options d'évolution." />
+      <PageHeader title={t('title')} description={t('desc')} />
 
       <Card className="mb-6">
         <CardHeader className="flex-row items-center justify-between">
-          <CardTitle>Plan actuel : {current.name}</CardTitle>
-          <Badge>{current.priceLabel}</Badge>
+          <CardTitle>{t('currentPlan', { name: current.name })}</CardTitle>
+          <Badge>{priceLabel(plan)}</Badge>
         </CardHeader>
         <CardContent className="space-y-4">
-          <UsageMeter label="Produits" used={usage.products} limit={current.limits.products} />
-          <UsageMeter label="Commandes" used={usage.orders} limit={current.limits.orders} />
+          <UsageMeter label={t('meterProducts')} used={usage.products} limit={current.limits.products} />
+          <UsageMeter label={t('meterOrders')} used={usage.orders} limit={current.limits.orders} />
         </CardContent>
       </Card>
 
@@ -40,27 +45,28 @@ export default async function BillingPage() {
         {PLAN_ORDER.map((pid) => {
           const p = PLANS[pid]
           const isCurrent = pid === plan
+          const highlights = t.raw(`highlights.${pid}`) as string[]
           return (
             <Card key={pid} className={cn(isCurrent && 'border-primary ring-1 ring-primary')}>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   {p.name}
-                  {isCurrent && <Badge variant="success">Actuel</Badge>}
+                  {isCurrent && <Badge variant="success">{t('currentBadge')}</Badge>}
                 </CardTitle>
-                <p className="text-2xl font-bold text-foreground">{p.priceLabel}</p>
+                <p className="text-2xl font-bold text-foreground">{priceLabel(pid)}</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <ul className="space-y-1.5 text-sm text-muted-foreground">
-                  {p.highlights.map((h) => (
+                  {highlights.map((h) => (
                     <li key={h} className="flex gap-2"><span className="text-emerald-500">✓</span>{h}</li>
                   ))}
                 </ul>
                 {isCurrent ? (
-                  <Button variant="outline" className="w-full" disabled>Plan actuel</Button>
+                  <Button variant="outline" className="w-full" disabled>{t('currentBtn')}</Button>
                 ) : pid === 'starter' ? (
-                  <Button variant="outline" className="w-full" disabled>Inclus gratuitement</Button>
+                  <Button variant="outline" className="w-full" disabled>{t('includedFree')}</Button>
                 ) : (
-                  <UpgradeButton plan={pid} label={`Passer à ${p.name}`} />
+                  <UpgradeButton plan={pid} label={t('upgradeTo', { name: p.name })} />
                 )}
               </CardContent>
             </Card>
@@ -68,9 +74,7 @@ export default async function BillingPage() {
         })}
       </div>
 
-      <p className="mt-4 text-center text-xs text-muted-foreground">
-        Paiement sécurisé par Stripe · Résiliable à tout moment
-      </p>
+      <p className="mt-4 text-center text-xs text-muted-foreground">{t('securePayment')}</p>
     </div>
   )
 }

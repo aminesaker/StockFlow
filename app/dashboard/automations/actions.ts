@@ -1,6 +1,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { getUserPlan } from '@/lib/entitlements'
 import { PLANS } from '@/lib/plans'
@@ -10,15 +11,16 @@ const ALLOWED = ['auto_invoice', 'stock_alerts', 'overdue_reminders', 'weekly_re
 export type AutomationKey = (typeof ALLOWED)[number]
 
 export async function setAutomation(key: AutomationKey, enabled: boolean) {
+  const t = await getTranslations('automations')
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Non authentifié' }
-  if (!ALLOWED.includes(key)) return { error: 'Automatisation inconnue' }
+  if (!user) return { error: t('errNotAuth') }
+  if (!ALLOWED.includes(key)) return { error: t('errUnknown') }
 
   // Gating : les automatisations nécessitent un plan avec la feature
   const plan = await getUserPlan(supabase, user.id)
   if (!PLANS[plan].features.automations) {
-    return { error: 'Les automatisations sont réservées au plan Pro ou supérieur.' }
+    return { error: t('errPlan') }
   }
 
   const { error } = await supabase

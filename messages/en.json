@@ -14,7 +14,8 @@
     "saving": "Saving…",
     "all": "All",
     "actions": "Actions",
-    "close": "Close"
+    "close": "Close",
+    "genericError": "Error"
   },
   "nav": {
     "features": "Features",
@@ -677,5 +678,186 @@
     "stockCost": "Value (cost)",
     "stockOut": "Out of stock",
     "stockCritical": "Critical stock"
+  },
+  "billing": {
+    "title": "Billing",
+    "desc": "Your plan, usage and upgrade options.",
+    "currentPlan": "Current plan: {name}",
+    "meterProducts": "Products",
+    "meterOrders": "Orders",
+    "currentBadge": "Current",
+    "currentBtn": "Current plan",
+    "includedFree": "Included for free",
+    "upgradeTo": "Upgrade to {name}",
+    "securePayment": "Secure payment by Stripe · Cancel anytime",
+    "free": "Free",
+    "priceMonthly": "€{price}/mo",
+    "highlights": {
+      "starter": [
+        "500 products",
+        "500 orders / month",
+        "1 store",
+        "Real-time sync"
+      ],
+      "pro": [
+        "5,000 products",
+        "5,000 orders / month",
+        "Automations",
+        "Stock alerts"
+      ],
+      "business": [
+        "Unlimited products & orders",
+        "Multi-store",
+        "Predictive AI",
+        "Public API"
+      ]
+    }
+  },
+  "integrations": {
+    "title": "Integrations",
+    "desc": "Connect your stores and track synchronization in real time",
+    "connectionsState": "Connection status",
+    "connected": "Connected",
+    "notConnected": "Not connected",
+    "synced": "{products, plural, one {# product} other {# products}} · {orders, plural, one {# order synced} other {# orders synced}}",
+    "lastSync": "Last sync: {time}",
+    "configure": "Configure",
+    "catalog": "Platform catalog",
+    "available": "Available",
+    "soon": "Coming soon",
+    "webhookConfig": "Webhook configuration",
+    "hmac": "HMAC signature:",
+    "hmacOn": "enabled",
+    "hmacOff": "not configured",
+    "manageSecret": "manage secret & API keys →",
+    "webhookUrl": "Webhook URL",
+    "replaceKey": "Replace {key} with a full API key (created in Settings → API keys).",
+    "eventsToEnable": "Events to enable",
+    "existingKeys": "Existing API keys: {keys}",
+    "unnamed": "unnamed",
+    "syncLog": "Synchronization log",
+    "noEvents": "No events yet. Synchronizations received from your stores will appear here.",
+    "colWhen": "When",
+    "colPlatform": "Platform",
+    "colAction": "Action",
+    "colStatus": "Status",
+    "colDetail": "Detail",
+    "ok": "OK",
+    "errorBadge": "Error",
+    "yourKey": "YOUR_KEY",
+    "never": "never",
+    "justNow": "just now",
+    "minAgo": "{m} min ago",
+    "hAgo": "{h} h ago",
+    "dAgo": "{d} d ago"
+  },
+  "automations": {
+    "title": "Automations",
+    "desc": "Enable what StockFlow should do without any action from you.",
+    "items": {
+      "auto_invoice": {
+        "title": "Automatic invoicing",
+        "desc": "Creates and sends an invoice to the customer as soon as an order is marked “Delivered”."
+      },
+      "stock_alerts": {
+        "title": "Low stock alerts",
+        "desc": "Sends an email as soon as a product drops below its reorder threshold."
+      },
+      "overdue_reminders": {
+        "title": "Overdue reminders",
+        "desc": "Automatic reminders at D+7, D+15 and D+30 after an invoice due date."
+      },
+      "weekly_report": {
+        "title": "Weekly report",
+        "desc": "A summary of your activity (orders, revenue, stock) sent every Monday morning."
+      }
+    },
+    "enabledToast": "Automation enabled",
+    "disabledToast": "Automation disabled",
+    "lockedPlan": "{plan} plan.",
+    "lockedHint": "Automations are available from the Pro plan.",
+    "upgradePro": "Upgrade to Pro",
+    "errNotAuth": "Not authenticated",
+    "errUnknown": "Unknown automation",
+    "errPlan": "Automations are reserved for the Pro plan or higher."
+  },
+  "settings": {
+    "title": "Settings",
+    "desc": "Automations and integrations for your workspace.",
+    "apiDocs": "API documentation →",
+    "tabNotifications": "Notifications",
+    "tabIntegrations": "Integrations",
+    "tabApiKeys": "API keys",
+    "notifEmail": "Notification email",
+    "notifEmailDesc": "Address that receives all automatic emails.",
+    "saving": "Saving…",
+    "save": "Save",
+    "savedToast": "Settings saved",
+    "errNotAuth": "Not authenticated",
+    "automationsTitle": "Automations",
+    "automationsDesc": "Auto invoicing, stock alerts, reminders, weekly report.",
+    "apiKeys": {
+      "title": "API keys",
+      "desc": "Use these keys to connect WooCommerce, Shopify or your own scripts.",
+      "copyNow": "⚠️ Copy this key now — it won't be shown again.",
+      "copied": "✓ Copied",
+      "copy": "Copy",
+      "copiedClose": "I've copied the key, close",
+      "lastUsed": " · last used {date}",
+      "neverUsed": " · never used",
+      "revoke": "Revoke",
+      "noKeys": "No API keys — create one below.",
+      "namePlaceholder": "Key name (e.g. WooCommerce store)",
+      "generate": "+ Generate",
+      "createdToast": "API key created",
+      "revokedToast": "Key revoked",
+      "confirmRevoke": "Revoke the key “{name}”? Integrations using it will stop working.",
+      "nameRequired": "A name is required."
+    },
+    "woo": {
+      "subtitle": "Automatic synchronization of orders, customers, products",
+      "available": "Available",
+      "guideTitle": "Setup guide (5 min)",
+      "step1": "Generate an API key in the section above if you haven't already.",
+      "step2": "In WooCommerce: WooCommerce → Settings → Advanced → Webhooks → Add",
+      "step3": "Create 2 webhooks: “Order created” and “Order updated”",
+      "step4": "Paste the URL below into the Delivery URL field (replace with your real API key).",
+      "step5": "Copy the Secret generated by WooCommerce and paste it into the field below.",
+      "urlLabel": "Webhook URL to paste into WooCommerce",
+      "replaceKey": "Replace {key} with your real API key (API keys section above).",
+      "secretLabel": "WooCommerce secret (optional but recommended)",
+      "secretPlaceholder": "Paste here the secret generated by WooCommerce",
+      "secretHelp": "Lets you verify that webhooks really come from your WooCommerce store.",
+      "topicsToEnable": "Topics to enable:",
+      "savedToast": "WooCommerce configuration saved",
+      "autoTitle": "⚡ What StockFlow does automatically",
+      "auto1": "→ New WC order | Customer upsert + order created + stock decremented",
+      "auto2": "→ WC order “Completed” | PDF invoice generated + emailed to the customer",
+      "auto3": "→ WC product updated | Price and stock synced in StockFlow",
+      "auto4": "→ Stock below threshold | Alert email sent to your address",
+      "copy": "Copy",
+      "saving": "Saving…",
+      "save": "Save"
+    }
+  },
+  "onboarding": {
+    "title": "Getting started",
+    "progress": "{done}/{total} steps completed",
+    "step1Title": "Generate your connection key",
+    "step1Desc": "It authenticates your store with StockFlow.",
+    "step2Title": "Connect your store",
+    "step2Desc": "Paste the webhook URL into WooCommerce and run a first synchronization.",
+    "completeTitle": "Your store is connected!",
+    "completeDesc": "{count, plural, one {# product synced} other {# products synced}}. Everything is automatic from now on.",
+    "gotoDashboard": "Go to dashboard →",
+    "generate": "Generate my connection key",
+    "generating": "Generating…",
+    "generatedToast": "Connection key generated",
+    "copiedToast": "Copied to clipboard",
+    "webhookLabel": "Webhook URL (WooCommerce) — to paste into your store",
+    "copy": "Copy",
+    "wooInstructions": "In WooCommerce → Settings → Advanced → Webhooks → Add: paste this URL, status Active, for topics Product created/updated/deleted and Order created/updated.",
+    "verify": "I've configured it — check synchronization",
+    "keyName": "Store connection"
   }
 }

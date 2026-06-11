@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { getOnboardingState } from '@/lib/onboarding'
 import { OnboardingClient } from '@/components/app/onboarding-client'
 import { PageHeader } from '@/components/shared/page-header'
@@ -9,6 +10,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
 export default async function OnboardingPage() {
+  const t = await getTranslations('onboarding')
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -20,24 +22,22 @@ export default async function OnboardingPage() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? `${proto}://${host}`
 
   const steps = [
-    { done: state.hasApiKey, title: 'Générer votre clé de connexion', desc: 'Elle authentifie votre boutique auprès de StockFlow.' },
-    { done: state.hasSync, title: 'Connecter votre boutique', desc: "Collez l'URL de webhook dans WooCommerce et lancez une première synchronisation." },
+    { done: state.hasApiKey, title: t('step1Title'), desc: t('step1Desc') },
+    { done: state.hasSync, title: t('step2Title'), desc: t('step2Desc') },
   ]
   const done = steps.filter((s) => s.done).length
 
   return (
     <div className="mx-auto max-w-2xl">
-      <PageHeader title="Bien démarrer" description={`${done}/${steps.length} étapes complétées`} />
+      <PageHeader title={t('title')} description={t('progress', { done, total: steps.length })} />
 
       {state.complete ? (
         <Card>
           <CardContent className="p-8 text-center">
             <p className="mb-2 text-3xl">🎉</p>
-            <h3 className="font-semibold text-foreground">Votre boutique est connectée !</h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {state.syncedProducts} produit{state.syncedProducts !== 1 ? 's' : ''} synchronisé{state.syncedProducts !== 1 ? 's' : ''}. Tout est automatique désormais.
-            </p>
-            <Link href="/dashboard" className="mt-5 inline-block text-sm font-medium text-primary hover:underline">Aller au tableau de bord →</Link>
+            <h3 className="font-semibold text-foreground">{t('completeTitle')}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{t('completeDesc', { count: state.syncedProducts })}</p>
+            <Link href="/dashboard" className="mt-5 inline-block text-sm font-medium text-primary hover:underline">{t('gotoDashboard')}</Link>
           </CardContent>
         </Card>
       ) : (

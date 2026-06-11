@@ -1,5 +1,6 @@
 import { headers } from 'next/headers'
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/lib/supabase/server'
 import { PageHeader } from '@/components/shared/page-header'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -28,22 +29,23 @@ const COMING = [
   { name: 'API personnalisée', icon: '🔌' },
 ]
 
-function timeAgo(iso: string | null): string {
-  if (!iso) return 'jamais'
-  const diff = Date.now() - new Date(iso).getTime()
-  const m = Math.floor(diff / 60000)
-  if (m < 1) return "à l'instant"
-  if (m < 60) return `il y a ${m} min`
-  const h = Math.floor(m / 60)
-  if (h < 24) return `il y a ${h} h`
-  const d = Math.floor(h / 24)
-  return `il y a ${d} j`
-}
-
 type EventRow = { id: string; source: string; action: string; status: string; detail: string | null; created_at: string }
 type KeyRow = { name: string | null; key_prefix: string; last_used_at: string | null }
 
 export default async function IntegrationsPage() {
+  const t = await getTranslations('integrations')
+  const timeAgo = (iso: string | null): string => {
+    if (!iso) return t('never')
+    const diff = Date.now() - new Date(iso).getTime()
+    const m = Math.floor(diff / 60000)
+    if (m < 1) return t('justNow')
+    if (m < 60) return t('minAgo', { m })
+    const h = Math.floor(m / 60)
+    if (h < 24) return t('hAgo', { h })
+    const d = Math.floor(h / 24)
+    return t('dAgo', { d })
+  }
+
   const supabase = await createClient()
   await supabase.auth.getUser()
 
@@ -63,7 +65,7 @@ export default async function IntegrationsPage() {
   const evs = (events as EventRow[] | null) ?? []
   const apiKeys = (keys as KeyRow[] | null) ?? []
   const hasSecret = !!settings?.wc_webhook_secret
-  const sampleKey = apiKeys[0]?.key_prefix ? `${apiKeys[0].key_prefix}…` : 'VOTRE_CLÉ'
+  const sampleKey = apiKeys[0]?.key_prefix ? `${apiKeys[0].key_prefix}…` : t('yourKey')
 
   const countBy = (rows: { external_source: string | null }[] | null, src: string) =>
     (rows ?? []).filter((r) => r.external_source === src).length
@@ -78,13 +80,10 @@ export default async function IntegrationsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Intégrations"
-        description="Connectez vos boutiques et suivez la synchronisation en temps réel"
-      />
+      <PageHeader title={t('title')} description={t('desc')} />
 
       {/* ── État des connexions ─────────────────────────────── */}
-      <h2 className="mb-3 text-sm font-semibold text-muted-foreground">État des connexions</h2>
+      <h2 className="mb-3 text-sm font-semibold text-muted-foreground">{t('connectionsState')}</h2>
       <div className="mb-8 grid gap-4 sm:grid-cols-2">
         {state.map((p) => (
           <Card key={p.id}>
@@ -95,30 +94,28 @@ export default async function IntegrationsPage() {
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-foreground">{p.name}</span>
                     {p.connected
-                      ? <Badge variant="success">Connecté</Badge>
-                      : <Badge variant="muted">Non connecté</Badge>}
+                      ? <Badge variant="success">{t('connected')}</Badge>
+                      : <Badge variant="muted">{t('notConnected')}</Badge>}
                   </div>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {p.products} produit{p.products !== 1 ? 's' : ''} · {p.orders} commande{p.orders !== 1 ? 's' : ''} synchronisé{p.orders !== 1 ? 's' : ''}
-                  </p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">Dernière synchro : {timeAgo(p.lastSync)}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{t('synced', { products: p.products, orders: p.orders })}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">{t('lastSync', { time: timeAgo(p.lastSync) })}</p>
                 </div>
               </div>
-              <a href="#config" className="shrink-0 text-xs font-medium text-primary hover:underline">Configurer</a>
+              <a href="#config" className="shrink-0 text-xs font-medium text-primary hover:underline">{t('configure')}</a>
             </CardContent>
           </Card>
         ))}
       </div>
 
       {/* ── Catalogue de plateformes ───────────────────────── */}
-      <h2 className="mb-3 text-sm font-semibold text-muted-foreground">Catalogue de plateformes</h2>
+      <h2 className="mb-3 text-sm font-semibold text-muted-foreground">{t('catalog')}</h2>
       <div className="mb-8 grid gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {PLATFORMS.map((p) => (
           <Card key={p.id}>
             <CardContent className="flex flex-col items-center gap-2 p-5 text-center">
               <span className="text-3xl">{p.icon}</span>
               <span className="font-medium text-foreground">{p.name}</span>
-              <Badge variant="success">Disponible</Badge>
+              <Badge variant="success">{t('available')}</Badge>
             </CardContent>
           </Card>
         ))}
@@ -127,20 +124,20 @@ export default async function IntegrationsPage() {
             <CardContent className="flex flex-col items-center gap-2 p-5 text-center">
               <span className="text-3xl grayscale">{p.icon}</span>
               <span className="font-medium text-foreground">{p.name}</span>
-              <Badge variant="muted">Bientôt</Badge>
+              <Badge variant="muted">{t('soon')}</Badge>
             </CardContent>
           </Card>
         ))}
       </div>
 
       {/* ── Config webhooks guidée ─────────────────────────── */}
-      <h2 id="config" className="mb-3 scroll-mt-20 text-sm font-semibold text-muted-foreground">Configuration des webhooks</h2>
+      <h2 id="config" className="mb-3 scroll-mt-20 text-sm font-semibold text-muted-foreground">{t('webhookConfig')}</h2>
       <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
-        <span className="text-muted-foreground">Signature HMAC :</span>
+        <span className="text-muted-foreground">{t('hmac')}</span>
         {hasSecret
-          ? <Badge variant="success">activée</Badge>
-          : <Badge variant="warning">non configurée</Badge>}
-        <Link href="/dashboard/settings" className="text-primary hover:underline">gérer le secret &amp; les clés API →</Link>
+          ? <Badge variant="success">{t('hmacOn')}</Badge>
+          : <Badge variant="warning">{t('hmacOff')}</Badge>}
+        <Link href="/dashboard/settings" className="text-primary hover:underline">{t('manageSecret')}</Link>
       </div>
       <div className="mb-8 grid gap-4 lg:grid-cols-2">
         {PLATFORMS.map((p) => (
@@ -148,17 +145,15 @@ export default async function IntegrationsPage() {
             <CardHeader><CardTitle className="flex items-center gap-2"><span>{p.icon}</span> {p.name}</CardTitle></CardHeader>
             <CardContent className="space-y-3">
               <div>
-                <p className="mb-1 text-xs font-medium text-muted-foreground">URL du webhook</p>
+                <p className="mb-1 text-xs font-medium text-muted-foreground">{t('webhookUrl')}</p>
                 <CopyField value={`${appUrl}/api/webhooks/${p.id}?api_key=${sampleKey}`} />
-                <p className="mt-1 text-[11px] text-muted-foreground">
-                  Remplacez <code>{sampleKey}</code> par une clé API complète (créée dans Paramètres → Clés API).
-                </p>
+                <p className="mt-1 text-[11px] text-muted-foreground">{t('replaceKey', { key: sampleKey })}</p>
               </div>
               <div>
-                <p className="mb-1 text-xs font-medium text-muted-foreground">Événements à activer</p>
+                <p className="mb-1 text-xs font-medium text-muted-foreground">{t('eventsToEnable')}</p>
                 <div className="flex flex-wrap gap-1.5">
-                  {p.topics.map((t) => (
-                    <span key={t} className="rounded bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">{t}</span>
+                  {p.topics.map((tp) => (
+                    <span key={tp} className="rounded bg-muted px-2 py-0.5 text-[11px] text-muted-foreground">{tp}</span>
                   ))}
                 </div>
               </div>
@@ -169,28 +164,26 @@ export default async function IntegrationsPage() {
 
       {apiKeys.length > 0 && (
         <p className="mb-8 text-xs text-muted-foreground">
-          Clés API existantes : {apiKeys.map((k) => `${k.key_prefix}… (${k.name ?? 'sans nom'})`).join(' · ')}
+          {t('existingKeys', { keys: apiKeys.map((k) => `${k.key_prefix}… (${k.name ?? t('unnamed')})`).join(' · ') })}
         </p>
       )}
 
       {/* ── Journal de synchro ─────────────────────────────── */}
-      <h2 className="mb-3 text-sm font-semibold text-muted-foreground">Journal de synchronisation</h2>
+      <h2 className="mb-3 text-sm font-semibold text-muted-foreground">{t('syncLog')}</h2>
       <Card>
         <CardContent className="p-0">
           {evs.length === 0 ? (
-            <p className="px-5 py-10 text-center text-sm text-muted-foreground">
-              Aucun événement pour le moment. Les synchronisations reçues de vos boutiques apparaîtront ici.
-            </p>
+            <p className="px-5 py-10 text-center text-sm text-muted-foreground">{t('noEvents')}</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border text-left text-xs text-muted-foreground">
-                    <th className="px-5 py-2.5 font-medium">Quand</th>
-                    <th className="px-5 py-2.5 font-medium">Plateforme</th>
-                    <th className="px-5 py-2.5 font-medium">Action</th>
-                    <th className="px-5 py-2.5 font-medium">Statut</th>
-                    <th className="px-5 py-2.5 font-medium">Détail</th>
+                    <th className="px-5 py-2.5 font-medium">{t('colWhen')}</th>
+                    <th className="px-5 py-2.5 font-medium">{t('colPlatform')}</th>
+                    <th className="px-5 py-2.5 font-medium">{t('colAction')}</th>
+                    <th className="px-5 py-2.5 font-medium">{t('colStatus')}</th>
+                    <th className="px-5 py-2.5 font-medium">{t('colDetail')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -201,8 +194,8 @@ export default async function IntegrationsPage() {
                       <td className="px-5 py-2.5 text-muted-foreground">{e.action}</td>
                       <td className="px-5 py-2.5">
                         {e.status === 'ok'
-                          ? <Badge variant="success">OK</Badge>
-                          : <Badge variant="danger">Erreur</Badge>}
+                          ? <Badge variant="success">{t('ok')}</Badge>
+                          : <Badge variant="danger">{t('errorBadge')}</Badge>}
                       </td>
                       <td className="max-w-xs truncate px-5 py-2.5 text-muted-foreground">{e.detail}</td>
                     </tr>

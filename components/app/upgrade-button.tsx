@@ -2,9 +2,11 @@
 
 import { useTransition } from 'react'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 
 export function UpgradeButton({ plan, label, variant }: { plan: string; label: string; variant?: 'default' | 'outline' | 'secondary' }) {
+  const tc = useTranslations('common')
   const [pending, start] = useTransition()
   function go() {
     start(async () => {
@@ -15,7 +17,7 @@ export function UpgradeButton({ plan, label, variant }: { plan: string; label: s
       })
       const data = await res.json()
       if (data.url) window.location.href = data.url
-      else toast.error(data.error ?? 'Erreur')
+      else toast.error(data.error ?? tc('genericError'))
     })
   }
   return (
