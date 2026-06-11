@@ -68,7 +68,7 @@ export default function WooCommerceSection({ webhookSecret, appUrl }: Props) {
           <label className="block text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1.5">{t('urlLabel')}</label>
           <div className="flex gap-2">
             <code className="flex-1 bg-muted/40 border border-border rounded-lg px-3 py-2 text-xs text-foreground break-all">
-              {appUrl}/api/webhooks/woocommerce?api_key=<span className="text-primary">sf_live_votreclé</span>
+              {appUrl}/api/webhooks/woocommerce?api_key=<span className="text-primary">{t('sampleKey')}</span>
             </code>
             <button
               type="button"
@@ -78,7 +78,7 @@ export default function WooCommerceSection({ webhookSecret, appUrl }: Props) {
               {copiedUrl ? '✓' : t('copy')}
             </button>
           </div>
-          <p className="text-xs text-muted-foreground mt-1">{t('replaceKey', { key: 'sf_live_votreclé' })}</p>
+          <p className="text-xs text-muted-foreground mt-1">{t('replaceKey', { key: t('sampleKey') })}</p>
         </div>
 
         {/* Secret WooCommerce */}

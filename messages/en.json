@@ -837,7 +837,8 @@
       "auto4": "→ Stock below threshold | Alert email sent to your address",
       "copy": "Copy",
       "saving": "Saving…",
-      "save": "Save"
+      "save": "Save",
+      "sampleKey": "sf_live_yourkey"
     }
   },
   "onboarding": {
@@ -859,5 +860,58 @@
     "wooInstructions": "In WooCommerce → Settings → Advanced → Webhooks → Add: paste this URL, status Active, for topics Product created/updated/deleted and Order created/updated.",
     "verify": "I've configured it — check synchronization",
     "keyName": "Store connection"
+  },
+  "apiDocs": {
+    "back": "← Settings",
+    "title": "API Documentation",
+    "intro": "Connect any store or script to StockFlow via the REST API.",
+    "auth": "Authentication",
+    "authDesc1": "All requests require an",
+    "authDesc2": "header with your API key.",
+    "genKeys1": "Generate your keys in",
+    "settingsApiKeys": "Settings → API keys",
+    "workflowTitle": "🔁 Typical workflow (WooCommerce / Shopify)",
+    "wf1": "Sync your products via",
+    "wf2": "Create customers on the first order via",
+    "wf3": "Send each order via",
+    "wf4": "StockFlow automatically generates the invoice and sends the customer email",
+    "bodyLabel": "Body (JSON)",
+    "responseLabel": "Response",
+    "codesTitle": "Response codes",
+    "endpoints": {
+      "products_list": {
+        "title": "List products",
+        "desc": "Returns all your products."
+      },
+      "products_upsert": {
+        "title": "Create / update a product",
+        "desc": "Creates a product or updates it if the SKU already exists."
+      },
+      "customers_list": {
+        "title": "List customers",
+        "desc": "Returns the latest 100 customers."
+      },
+      "customers_upsert": {
+        "title": "Create / update a customer",
+        "desc": "Creates a customer or updates it if the email already exists."
+      },
+      "orders_list": {
+        "title": "List orders",
+        "desc": "Returns the latest 100 orders with the associated customer."
+      },
+      "orders_create": {
+        "title": "Create an order",
+        "desc": "Creates an order and decrements stock. Identify the customer by email or id, products by SKU or id."
+      }
+    },
+    "codes": {
+      "c200": "Successful request",
+      "c201": "Resource created",
+      "c401": "Missing or invalid API key",
+      "c404": "Customer or product not found",
+      "c409": "Insufficient stock",
+      "c422": "Invalid data — see the details field",
+      "c500": "Internal error"
+    }
   }
 }

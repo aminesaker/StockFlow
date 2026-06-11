@@ -837,7 +837,8 @@
       "auto4": "→ Stock sous le seuil | Email d'alerte envoyé à votre adresse",
       "copy": "Copier",
       "saving": "Enregistrement…",
-      "save": "Enregistrer"
+      "save": "Enregistrer",
+      "sampleKey": "sf_live_votreclé"
     }
   },
   "onboarding": {
@@ -859,5 +860,58 @@
     "wooInstructions": "Dans WooCommerce → Réglages → Avancé → Webhooks → Ajouter : collez cette URL, statut Actif, pour les sujets Produit créé/modifié/supprimé et Commande créée/modifiée.",
     "verify": "J'ai configuré — vérifier la synchronisation",
     "keyName": "Connexion boutique"
+  },
+  "apiDocs": {
+    "back": "← Paramètres",
+    "title": "Documentation API",
+    "intro": "Connectez n'importe quelle boutique ou script à StockFlow via l'API REST.",
+    "auth": "Authentification",
+    "authDesc1": "Toutes les requêtes nécessitent un header",
+    "authDesc2": "avec votre clé API.",
+    "genKeys1": "Générez vos clés dans",
+    "settingsApiKeys": "Paramètres → Clés API",
+    "workflowTitle": "🔁 Workflow typique (WooCommerce / Shopify)",
+    "wf1": "Synchronisez vos produits via",
+    "wf2": "Créez les clients à la première commande via",
+    "wf3": "Envoyez chaque commande via",
+    "wf4": "StockFlow génère automatiquement la facture et envoie l'email client",
+    "bodyLabel": "Body (JSON)",
+    "responseLabel": "Réponse",
+    "codesTitle": "Codes de réponse",
+    "endpoints": {
+      "products_list": {
+        "title": "Lister les produits",
+        "desc": "Retourne tous vos produits."
+      },
+      "products_upsert": {
+        "title": "Créer / mettre à jour un produit",
+        "desc": "Crée un produit ou met à jour si le SKU existe déjà."
+      },
+      "customers_list": {
+        "title": "Lister les clients",
+        "desc": "Retourne les 100 derniers clients."
+      },
+      "customers_upsert": {
+        "title": "Créer / mettre à jour un client",
+        "desc": "Crée un client ou met à jour si l'email existe déjà."
+      },
+      "orders_list": {
+        "title": "Lister les commandes",
+        "desc": "Retourne les 100 dernières commandes avec le client associé."
+      },
+      "orders_create": {
+        "title": "Créer une commande",
+        "desc": "Crée une commande, décrémente le stock. Identifiez le client par email ou id, les produits par SKU ou id."
+      }
+    },
+    "codes": {
+      "c200": "Requête réussie",
+      "c201": "Ressource créée",
+      "c401": "Clé API manquante ou invalide",
+      "c404": "Client ou produit introuvable",
+      "c409": "Stock insuffisant",
+      "c422": "Données invalides — voir le champ details",
+      "c500": "Erreur interne"
+    }
   }
 }

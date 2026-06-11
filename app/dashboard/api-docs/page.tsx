@@ -1,13 +1,11 @@
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 
 const BASE = 'https://votreapp.vercel.app'
 
 const ENDPOINTS = [
   {
-    method: 'GET',
-    path: '/api/v1/products',
-    title: 'Lister les produits',
-    description: 'Retourne tous vos produits.',
+    key: 'products_list', method: 'GET', path: '/api/v1/products',
     response: `{
   "data": [
     {
@@ -23,10 +21,7 @@ const ENDPOINTS = [
 }`,
   },
   {
-    method: 'POST',
-    path: '/api/v1/products',
-    title: 'Créer / mettre à jour un produit',
-    description: 'Crée un produit ou met à jour si le SKU existe déjà.',
+    key: 'products_upsert', method: 'POST', path: '/api/v1/products',
     body: `{
   "name": "T-shirt bleu",
   "sku": "TSH-001",
@@ -38,10 +33,7 @@ const ENDPOINTS = [
     response: `{ "data": { "id": "uuid", "name": "T-shirt bleu", ... } }`,
   },
   {
-    method: 'GET',
-    path: '/api/v1/customers',
-    title: 'Lister les clients',
-    description: 'Retourne les 100 derniers clients.',
+    key: 'customers_list', method: 'GET', path: '/api/v1/customers',
     response: `{
   "data": [
     {
@@ -55,10 +47,7 @@ const ENDPOINTS = [
 }`,
   },
   {
-    method: 'POST',
-    path: '/api/v1/customers',
-    title: 'Créer / mettre à jour un client',
-    description: 'Crée un client ou met à jour si l\'email existe déjà.',
+    key: 'customers_upsert', method: 'POST', path: '/api/v1/customers',
     body: `{
   "full_name": "Marie Dupont",
   "email": "marie@example.com",
@@ -70,10 +59,7 @@ const ENDPOINTS = [
     response: `{ "data": { "id": "uuid", "full_name": "Marie Dupont", ... } }`,
   },
   {
-    method: 'GET',
-    path: '/api/v1/orders',
-    title: 'Lister les commandes',
-    description: 'Retourne les 100 dernières commandes avec le client associé.',
+    key: 'orders_list', method: 'GET', path: '/api/v1/orders',
     response: `{
   "data": [
     {
@@ -87,10 +73,7 @@ const ENDPOINTS = [
 }`,
   },
   {
-    method: 'POST',
-    path: '/api/v1/orders',
-    title: 'Créer une commande',
-    description: 'Crée une commande, décrémente le stock. Identifiez le client par email ou id, les produits par SKU ou id.',
+    key: 'orders_create', method: 'POST', path: '/api/v1/orders',
     body: `{
   "customer_email": "marie@example.com",
   "notes": "Commande WooCommerce #1234",
@@ -115,66 +98,75 @@ const METHOD_COLORS: Record<string, string> = {
   DELETE: 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400',
 }
 
-export default function ApiDocsPage() {
+const CODES: [string, string, string][] = [
+  ['200', 'OK', 'c200'],
+  ['201', 'Created', 'c201'],
+  ['401', 'Unauthorized', 'c401'],
+  ['404', 'Not Found', 'c404'],
+  ['409', 'Conflict', 'c409'],
+  ['422', 'Unprocessable Entity', 'c422'],
+  ['500', 'Server Error', 'c500'],
+]
+
+export default async function ApiDocsPage() {
+  const t = await getTranslations('apiDocs')
   return (
     <div className="max-w-3xl">
       <div className="flex items-center gap-3 mb-6">
-        <Link href="/dashboard/settings" className="text-sm text-muted-foreground hover:text-muted-foreground">← Paramètres</Link>
+        <Link href="/dashboard/settings" className="text-sm text-muted-foreground hover:text-muted-foreground">{t('back')}</Link>
       </div>
 
-      <h2 className="text-2xl font-bold text-foreground mb-1">Documentation API</h2>
-      <p className="text-sm text-muted-foreground mb-8">
-        Connectez n'importe quelle boutique ou script à StockFlow via l'API REST.
-      </p>
+      <h2 className="text-2xl font-bold text-foreground mb-1">{t('title')}</h2>
+      <p className="text-sm text-muted-foreground mb-8">{t('intro')}</p>
 
       {/* Authentification */}
       <div className="rounded-xl border bg-card p-6 mb-6">
-        <h3 className="font-semibold text-foreground mb-3">Authentification</h3>
+        <h3 className="font-semibold text-foreground mb-3">{t('auth')}</h3>
         <p className="text-sm text-muted-foreground mb-3">
-          Toutes les requêtes nécessitent un header <code className="bg-muted px-1.5 py-0.5 rounded text-xs">Authorization</code> avec votre clé API.
+          {t('authDesc1')} <code className="bg-muted px-1.5 py-0.5 rounded text-xs">Authorization</code> {t('authDesc2')}
         </p>
         <pre className="bg-gray-900 text-green-400 rounded-lg p-4 text-xs overflow-x-auto">{`curl ${BASE}/api/v1/products \\
   -H "Authorization: Bearer sf_live_votrecle..."`}</pre>
         <p className="text-xs text-muted-foreground mt-3">
-          Générez vos clés dans{' '}
-          <Link href="/dashboard/settings" className="text-primary hover:underline">Paramètres → Clés API</Link>.
+          {t('genKeys1')}{' '}
+          <Link href="/dashboard/settings" className="text-primary hover:underline">{t('settingsApiKeys')}</Link>.
         </p>
       </div>
 
       {/* Workflow typique */}
       <div className="bg-blue-50 border border-blue-100 rounded-xl p-6 mb-6">
-        <h3 className="font-semibold text-blue-900 mb-2">🔁 Workflow typique (WooCommerce / Shopify)</h3>
+        <h3 className="font-semibold text-blue-900 mb-2">{t('workflowTitle')}</h3>
         <ol className="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-          <li>Synchronisez vos produits via <code className="bg-blue-100 px-1 rounded text-xs">POST /api/v1/products</code></li>
-          <li>Créez les clients à la première commande via <code className="bg-blue-100 px-1 rounded text-xs">POST /api/v1/customers</code></li>
-          <li>Envoyez chaque commande via <code className="bg-blue-100 px-1 rounded text-xs">POST /api/v1/orders</code></li>
-          <li>StockFlow génère automatiquement la facture et envoie l'email client</li>
+          <li>{t('wf1')} <code className="bg-blue-100 px-1 rounded text-xs">POST /api/v1/products</code></li>
+          <li>{t('wf2')} <code className="bg-blue-100 px-1 rounded text-xs">POST /api/v1/customers</code></li>
+          <li>{t('wf3')} <code className="bg-blue-100 px-1 rounded text-xs">POST /api/v1/orders</code></li>
+          <li>{t('wf4')}</li>
         </ol>
       </div>
 
       {/* Endpoints */}
       <div className="space-y-4">
-        {ENDPOINTS.map((ep, i) => (
-          <div key={i} className="overflow-hidden rounded-xl border bg-card">
+        {ENDPOINTS.map((ep) => (
+          <div key={ep.key} className="overflow-hidden rounded-xl border bg-card">
             <div className="px-5 py-4 border-b border-border flex items-center gap-3">
               <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${METHOD_COLORS[ep.method]}`}>
                 {ep.method}
               </span>
               <code className="text-sm font-mono text-foreground">{ep.path}</code>
-              <span className="text-sm text-muted-foreground ml-auto">{ep.title}</span>
+              <span className="text-sm text-muted-foreground ml-auto">{t(`endpoints.${ep.key}.title`)}</span>
             </div>
             <div className="px-5 py-4 space-y-3">
-              <p className="text-sm text-muted-foreground">{ep.description}</p>
+              <p className="text-sm text-muted-foreground">{t(`endpoints.${ep.key}.desc`)}</p>
 
               {ep.body && (
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground uppercase mb-1">Body (JSON)</p>
+                  <p className="text-xs font-medium text-muted-foreground uppercase mb-1">{t('bodyLabel')}</p>
                   <pre className="bg-gray-900 text-blue-300 rounded-lg p-3 text-xs overflow-x-auto">{ep.body}</pre>
                 </div>
               )}
 
               <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase mb-1">Réponse</p>
+                <p className="text-xs font-medium text-muted-foreground uppercase mb-1">{t('responseLabel')}</p>
                 <pre className="bg-gray-900 text-green-400 rounded-lg p-3 text-xs overflow-x-auto">{ep.response}</pre>
               </div>
             </div>
@@ -184,22 +176,14 @@ export default function ApiDocsPage() {
 
       {/* Codes d'erreur */}
       <div className="rounded-xl border bg-card p-6 mt-6">
-        <h3 className="font-semibold text-foreground mb-3">Codes de réponse</h3>
+        <h3 className="font-semibold text-foreground mb-3">{t('codesTitle')}</h3>
         <table className="w-full text-sm">
           <tbody className="divide-y divide-border">
-            {[
-              ['200', 'OK', 'Requête réussie'],
-              ['201', 'Created', 'Ressource créée'],
-              ['401', 'Unauthorized', 'Clé API manquante ou invalide'],
-              ['404', 'Not Found', 'Client ou produit introuvable'],
-              ['409', 'Conflict', 'Stock insuffisant'],
-              ['422', 'Unprocessable Entity', 'Données invalides — voir le champ details'],
-              ['500', 'Server Error', 'Erreur interne'],
-            ].map(([code, status, desc]) => (
+            {CODES.map(([code, status, descKey]) => (
               <tr key={code}>
                 <td className="py-2 pr-4 font-mono font-semibold text-foreground w-12">{code}</td>
                 <td className="py-2 pr-4 text-muted-foreground w-40">{status}</td>
-                <td className="py-2 text-muted-foreground">{desc}</td>
+                <td className="py-2 text-muted-foreground">{t(`codes.${descKey}`)}</td>
               </tr>
             ))}
           </tbody>
