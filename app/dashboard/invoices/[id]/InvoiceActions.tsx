@@ -2,10 +2,11 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 import { updateInvoiceStatus, deleteInvoice, createCreditNote } from '../actions'
+import CreditNoteModal, { type ReturnLine } from './CreditNoteModal'
 
 const NEXT_STATUS: Record<string, { status: string; labelKey: string; toastKey: string }> = {
   draft:   { status: 'sent', labelKey: 'markSent', toastKey: 'toastSent' },
@@ -17,13 +18,15 @@ type Props = {
   invoiceId: string
   status: string
   isPayable: boolean
-  credited?: boolean
+  returnLines?: ReturnLine[]
+  canCredit?: boolean
 }
 
-export default function InvoiceActions({ invoiceId, status, isPayable, credited }: Props) {
+export default function InvoiceActions({ invoiceId, status, isPayable, returnLines = [], canCredit = false }: Props) {
   const t = useTranslations('invoiceDetail')
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
+  const [showCredit, setShowCredit] = useState(false)
 
   const next = NEXT_STATUS[status]
 
@@ -35,7 +38,9 @@ export default function InvoiceActions({ invoiceId, status, isPayable, credited 
     })
   }
 
-  function handleCredit() {
+  function openCredit() {
+    if (returnLines.length > 0) { setShowCredit(true); return }
+    // Facture manuelle sans lignes : avoir total direct
     if (!confirm(t('creditConfirm'))) return
     startTransition(async () => {
       const r = await createCreditNote(invoiceId)
@@ -55,67 +60,45 @@ export default function InvoiceActions({ invoiceId, status, isPayable, credited 
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {/* Avancer le statut */}
       {next && (
-        <button
-          onClick={() => handleStatus(next.status, t(next.toastKey))}
-          disabled={isPending}
-          className="px-3 py-1.5 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-colors"
-        >
+        <button onClick={() => handleStatus(next.status, t(next.toastKey))} disabled={isPending}
+          className="px-3 py-1.5 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-colors">
           {t(next.labelKey)}
         </button>
       )}
 
-      {/* Payer via Stripe */}
       {isPayable && (
-        <Link
-          href={`/dashboard/invoices?pay=${invoiceId}`}
-          className="px-3 py-1.5 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors"
-        >
+        <Link href={`/dashboard/invoices?pay=${invoiceId}`}
+          className="px-3 py-1.5 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 transition-colors">
           {t('pay')}
         </Link>
       )}
 
-      {/* PDF */}
-      <a
-        href={`/api/invoices/${invoiceId}/pdf`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="px-3 py-1.5 border border-border text-muted-foreground text-sm rounded-lg hover:bg-muted/40 transition-colors"
-      >
+      <a href={`/api/invoices/${invoiceId}/pdf`} target="_blank" rel="noopener noreferrer"
+        className="px-3 py-1.5 border border-border text-muted-foreground text-sm rounded-lg hover:bg-muted/40 transition-colors">
         {t('pdf')}
       </a>
 
-      {/* Annuler si pas payée / annulée */}
       {!['paid', 'cancelled'].includes(status) && (
-        <button
-          onClick={() => handleStatus('cancelled', t('toastCancelled'))}
-          disabled={isPending}
-          className="px-3 py-1.5 border border-red-200 text-red-600 text-sm rounded-lg hover:bg-red-50 disabled:opacity-50 transition-colors"
-        >
+        <button onClick={() => handleStatus('cancelled', t('toastCancelled'))} disabled={isPending}
+          className="px-3 py-1.5 border border-red-200 text-red-600 text-sm rounded-lg hover:bg-red-50 disabled:opacity-50 transition-colors">
           {t('cancel')}
         </button>
       )}
 
-      {/* Créer un avoir */}
-      {!credited && status !== 'cancelled' && (
-        <button
-          onClick={handleCredit}
-          disabled={isPending}
-          className="px-3 py-1.5 border border-amber-300 text-amber-700 text-sm rounded-lg hover:bg-amber-50 disabled:opacity-50 transition-colors"
-        >
+      {canCredit && status !== 'cancelled' && (
+        <button onClick={openCredit} disabled={isPending}
+          className="px-3 py-1.5 border border-amber-300 text-amber-700 text-sm rounded-lg hover:bg-amber-50 disabled:opacity-50 transition-colors">
           {t('creditCreate')}
         </button>
       )}
 
-      {/* Supprimer */}
-      <button
-        onClick={handleDelete}
-        disabled={isPending}
-        className="px-3 py-1.5 border border-border text-muted-foreground text-sm rounded-lg hover:bg-muted/40 disabled:opacity-50 transition-colors"
-      >
+      <button onClick={handleDelete} disabled={isPending}
+        className="px-3 py-1.5 border border-border text-muted-foreground text-sm rounded-lg hover:bg-muted/40 disabled:opacity-50 transition-colors">
         {t('delete')}
       </button>
+
+      {showCredit && <CreditNoteModal invoiceId={invoiceId} lines={returnLines} onClose={() => setShowCredit(false)} />}
     </div>
   )
 }

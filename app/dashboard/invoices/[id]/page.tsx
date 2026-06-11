@@ -32,7 +32,7 @@ export default async function InvoiceDetailPage({
       order:orders(
         id, status, total_amount,
         items:order_items(
-          quantity, unit_price, total_price,
+          product_id, quantity, unit_price, total_price,
           product:products(name, sku)
         )
       )
@@ -47,14 +47,39 @@ export default async function InvoiceDetailPage({
   }
   const order = invoice.order as {
     id: string; status: string; total_amount: number
-    items: { quantity: number; unit_price: number; total_price: number; product: { name: string; sku: string } }[]
+    items: { product_id: string | null; quantity: number; unit_price: number; total_price: number; product: { name: string; sku: string } }[]
   } | null
 
-  const { data: creditNote } = await supabase
+  const { data: creditNotes } = await supabase
     .from('credit_notes')
     .select('id, credit_number')
     .eq('invoice_id', invoice.id)
-    .maybeSingle()
+    .order('created_at', { ascending: true })
+  const cnList = creditNotes ?? []
+
+  const returnedByProduct: Record<string, number> = {}
+  if (cnList.length) {
+    const { data: cni } = await supabase
+      .from('credit_note_items')
+      .select('product_id, quantity')
+      .in('credit_note_id', cnList.map((c) => c.id))
+    for (const r of cni ?? []) {
+      if (r.product_id) returnedByProduct[r.product_id] = (returnedByProduct[r.product_id] ?? 0) + r.quantity
+    }
+  }
+
+  const returnLines = (order?.items ?? [])
+    .filter((it) => it.product_id)
+    .map((it) => ({
+      product_id: it.product_id as string,
+      name: it.product.name,
+      ordered: it.quantity,
+      returnable: it.quantity - (returnedByProduct[it.product_id as string] ?? 0),
+      unit_price: it.unit_price,
+    }))
+    .filter((l) => l.returnable > 0)
+  const hasOrder = !!(order?.items && order.items.length)
+  const canCredit = returnLines.length > 0 || (!hasOrder && cnList.length === 0)
 
   const isPayable = ['sent', 'overdue'].includes(invoice.status)
 
@@ -79,14 +104,21 @@ export default async function InvoiceDetailPage({
           <span className={`px-3 py-1.5 rounded-full text-sm font-medium ${STATUS_COLORS[invoice.status]}`}>
             {ts(invoice.status)}
           </span>
-          <InvoiceActions invoiceId={invoice.id} status={invoice.status} isPayable={isPayable} credited={!!creditNote} />
+          <InvoiceActions invoiceId={invoice.id} status={invoice.status} isPayable={isPayable} returnLines={returnLines} canCredit={canCredit} />
         </div>
       </div>
 
-      {creditNote && (
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-amber-300/60 bg-amber-50 px-4 py-3 text-sm dark:bg-amber-500/10">
-          <span className="font-medium text-amber-800 dark:text-amber-300">{t('creditedBanner', { number: creditNote.credit_number })}</span>
-          <a href={`/api/credit-notes/${creditNote.id}/pdf`} target="_blank" rel="noopener noreferrer" className="text-amber-700 hover:underline dark:text-amber-300">{t('creditPdf')}</a>
+      {cnList.length > 0 && (
+        <div className="mb-6 rounded-lg border border-amber-300/60 bg-amber-50 px-4 py-3 text-sm dark:bg-amber-500/10">
+          <p className="mb-1 font-medium text-amber-800 dark:text-amber-300">{t('creditNotesTitle')}</p>
+          <ul className="space-y-1">
+            {cnList.map((cn) => (
+              <li key={cn.id} className="flex items-center justify-between gap-2">
+                <span className="text-amber-800 dark:text-amber-300">{cn.credit_number}</span>
+                <a href={`/api/credit-notes/${cn.id}/pdf`} target="_blank" rel="noopener noreferrer" className="text-amber-700 hover:underline dark:text-amber-300">{t('creditPdf')}</a>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 

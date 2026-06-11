@@ -128,7 +128,10 @@ export async function deleteInvoice(id: string) {
   return { success: true }
 }
 
-export async function createCreditNote(invoiceId: string) {
+export async function createCreditNote(
+  invoiceId: string,
+  items?: { product_id: string; quantity: number }[],
+) {
   const t = await getTranslations('invoiceDetail')
   const { supabase, userId } = await getUserId()
 
@@ -139,41 +142,81 @@ export async function createCreditNote(invoiceId: string) {
     .single()
   if (invErr || !invoice) return { error: t('creditNotFound') }
 
-  const { data: existing } = await supabase
-    .from('credit_notes')
-    .select('credit_number')
-    .eq('invoice_id', invoiceId)
-    .maybeSingle()
-  if (existing) return { error: t('creditExists', { number: existing.credit_number }) }
+  // Lignes de la commande liée (si présente)
+  let orderItems: { product_id: string; quantity: number; unit_price: number }[] = []
+  if (invoice.order_id) {
+    const { data: oi } = await supabase
+      .from('order_items')
+      .select('product_id, quantity, unit_price')
+      .eq('order_id', invoice.order_id)
+    orderItems = (oi ?? []) as { product_id: string; quantity: number; unit_price: number }[]
+  }
+
+  // Quantités déjà retournées (avoirs précédents de cette facture)
+  const { data: prevCN } = await supabase.from('credit_notes').select('id').eq('invoice_id', invoiceId)
+  const prevIds = (prevCN ?? []).map((c) => c.id)
+  const returned: Record<string, number> = {}
+  if (prevIds.length) {
+    const { data: cni } = await supabase.from('credit_note_items').select('product_id, quantity').in('credit_note_id', prevIds)
+    for (const r of cni ?? []) {
+      if (r.product_id) returned[r.product_id] = (returned[r.product_id] ?? 0) + r.quantity
+    }
+  }
+
+  const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100
+
+  // Construire les lignes de l'avoir
+  let lines: { product_id: string; quantity: number; unit_price: number }[] = []
+  if (orderItems.length) {
+    if (items && items.length) {
+      // Partiel : valider chaque quantité demandée
+      for (const req of items) {
+        const oi = orderItems.find((x) => x.product_id === req.product_id)
+        if (!oi) continue
+        const remaining = oi.quantity - (returned[req.product_id] ?? 0)
+        const qty = Math.min(Math.max(0, Math.floor(req.quantity)), remaining)
+        if (qty > 0) lines.push({ product_id: req.product_id, quantity: qty, unit_price: oi.unit_price })
+      }
+    } else {
+      // Sans sélection : retourner tout ce qui reste
+      for (const oi of orderItems) {
+        const remaining = oi.quantity - (returned[oi.product_id] ?? 0)
+        if (remaining > 0) lines.push({ product_id: oi.product_id, quantity: remaining, unit_price: oi.unit_price })
+      }
+    }
+    if (!lines.length) return { error: t('creditNothing') }
+  } else {
+    // Facture manuelle sans commande : un seul avoir total possible
+    if (prevIds.length) return { error: t('creditExists', { number: '' }) }
+    lines = []
+  }
+
+  const amount = lines.length ? round2(lines.reduce((s2, l) => s2 + l.quantity * l.unit_price, 0)) : invoice.amount
+  const rate = Number(invoice.vat_rate ?? 0)
+  const subtotal = rate > 0 ? round2(amount / (1 + rate / 100)) : amount
+  const vat = round2(amount - subtotal)
 
   const { data: creditNumber, error: numErr } = await supabase.rpc('next_credit_number', { p_user_id: userId })
   if (numErr || !creditNumber) return { error: numErr?.message ?? 'numbering error' }
 
-  const { error: insErr } = await supabase.from('credit_notes').insert({
+  const { data: cn, error: insErr } = await supabase.from('credit_notes').insert({
     user_id: userId,
     invoice_id: invoice.id,
     customer_id: invoice.customer_id,
     credit_number: creditNumber,
-    amount: invoice.amount,
-    subtotal: invoice.subtotal ?? invoice.amount,
-    vat_rate: invoice.vat_rate ?? 0,
-    vat_amount: invoice.vat_amount ?? 0,
-  })
-  if (insErr) return { error: insErr.message }
+    amount,
+    subtotal,
+    vat_rate: rate,
+    vat_amount: vat,
+  }).select('id').single()
+  if (insErr || !cn) return { error: insErr?.message ?? 'insert error' }
 
-  // Réapprovisionnement du stock des articles de la commande liée
-  if (invoice.order_id) {
-    const { data: items } = await supabase
-      .from('order_items')
-      .select('product_id, quantity')
-      .eq('order_id', invoice.order_id)
-    for (const it of items ?? []) {
-      await supabase.rpc('increment_stock', {
-        p_product_id: it.product_id,
-        p_quantity: it.quantity,
-        p_reason: 'return',
-        p_reference: creditNumber,
-      })
+  if (lines.length) {
+    await supabase.from('credit_note_items').insert(
+      lines.map((l) => ({ credit_note_id: cn.id, product_id: l.product_id, quantity: l.quantity, unit_price: l.unit_price })),
+    )
+    for (const l of lines) {
+      await supabase.rpc('increment_stock', { p_product_id: l.product_id, p_quantity: l.quantity, p_reason: 'return', p_reference: creditNumber })
     }
   }
 

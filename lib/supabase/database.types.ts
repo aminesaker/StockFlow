@@ -144,6 +144,30 @@ export type Database = {
         }
         Relationships: []
       }
+      credit_note_items: {
+        Row: {
+          credit_note_id: string
+          id: string
+          product_id: string | null
+          quantity: number
+          unit_price: number
+        }
+        Insert: {
+          credit_note_id: string
+          id?: string
+          product_id?: string | null
+          quantity: number
+          unit_price: number
+        }
+        Update: {
+          credit_note_id?: string
+          id?: string
+          product_id?: string | null
+          quantity?: number
+          unit_price?: number
+        }
+        Relationships: []
+      }
       credit_notes: {
         Row: {
           amount: number
