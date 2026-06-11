@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getStoreFilter } from '@/lib/store-filter'
 import type { Customer } from '@/types'
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
@@ -18,8 +19,10 @@ export default async function CustomersPage({ searchParams }: Props) {
   const to = from + PAGE_SIZE - 1
 
   const supabase = await createClient()
+  const storeId = await getStoreFilter()
   let query = supabase.from('customers').select('*', { count: 'exact' }).order('created_at', { ascending: false }).range(from, to)
   if (q) query = query.or(`full_name.ilike.%${q}%,email.ilike.%${q}%,city.ilike.%${q}%`)
+  if (storeId) query = query.eq('store_id', storeId)
   const { data: customers, count } = await query
 
   const total = count ?? 0

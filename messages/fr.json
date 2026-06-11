@@ -1088,6 +1088,8 @@
     "secretUnset": "Aucun secret",
     "errName": "Le nom est requis.",
     "errAuth": "Non authentifié",
-    "errLimit": "Limite du plan atteinte ({limit} boutique(s)). Passez à Business pour en connecter davantage."
+    "errLimit": "Limite du plan atteinte ({limit} boutique(s)). Passez à Business pour en connecter davantage.",
+    "all": "Toutes les boutiques",
+    "switcherLabel": "Boutique active"
   }
 }

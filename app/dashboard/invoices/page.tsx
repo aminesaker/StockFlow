@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getStoreFilter } from '@/lib/store-filter'
 import type { Customer, Order } from '@/types'
 import { Suspense } from 'react'
 import InvoicesClient from './InvoicesClient'
@@ -23,6 +24,7 @@ export default async function InvoicesPage({ searchParams }: Props) {
   const to = from + PAGE_SIZE - 1
 
   const supabase = await createClient()
+  const storeId = await getStoreFilter()
 
   let query = supabase
     .from('invoices')
@@ -32,6 +34,7 @@ export default async function InvoicesPage({ searchParams }: Props) {
 
   if (status) query = query.eq('status', status)
   if (q) query = query.ilike('invoice_number', `%${q}%`)
+  if (storeId) query = query.eq('store_id', storeId)
 
   const { data: invoices, count } = await query
 

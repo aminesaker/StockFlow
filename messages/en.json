@@ -1088,6 +1088,8 @@
     "secretUnset": "No secret",
     "errName": "Name is required.",
     "errAuth": "Not authenticated",
-    "errLimit": "Plan limit reached ({limit} store(s)). Upgrade to Business to connect more."
+    "errLimit": "Plan limit reached ({limit} store(s)). Upgrade to Business to connect more.",
+    "all": "All stores",
+    "switcherLabel": "Active store"
   }
 }

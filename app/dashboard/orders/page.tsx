@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getStoreFilter } from '@/lib/store-filter'
 import type { Customer, Product } from '@/types'
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
@@ -22,12 +23,14 @@ export default async function OrdersPage({ searchParams }: Props) {
   const to = from + PAGE_SIZE - 1
 
   const supabase = await createClient()
+  const storeId = await getStoreFilter()
   let ordersQuery = supabase
     .from('orders')
     .select('*, customer:customers(id, full_name, email)', { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to)
   if (status) ordersQuery = ordersQuery.eq('status', status)
+  if (storeId) ordersQuery = ordersQuery.eq('store_id', storeId)
   const { data: orders, count } = await ordersQuery
 
   const filteredOrders = q

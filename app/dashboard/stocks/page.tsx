@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getStoreFilter } from '@/lib/store-filter'
 import type { Product } from '@/types'
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
@@ -23,10 +24,12 @@ export default async function StocksPage({ searchParams }: Props) {
   const to = from + PAGE_SIZE - 1
 
   const supabase = await createClient()
+  const storeId = await getStoreFilter()
   const { data: { user } } = await supabase.auth.getUser()
   const limitCheck = user ? await canCreate(supabase, user.id, 'products', 0) : null
 
   let query = supabase.from('products').select('*', { count: 'exact' }).is('parent_id', null)
+  if (storeId) query = query.eq('store_id', storeId)
   if (q) query = query.or(`name.ilike.%${q}%,sku.ilike.%${q}%,category.ilike.%${q}%`)
   const { data: all, count: totalCount } = await query.order('created_at', { ascending: false })
 

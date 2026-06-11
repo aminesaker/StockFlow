@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import StoreSwitcher from '@/components/app/StoreSwitcher'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
@@ -26,7 +27,7 @@ const nav = [
   { href: '/dashboard/api-docs', key: 'api', icon: '🔌' },
 ]
 
-export function AppSidebar({ userEmail }: { userEmail: string }) {
+export function AppSidebar({ userEmail, stores = [], currentStore = 'all' }: { userEmail: string; stores?: { id: string; name: string }[]; currentStore?: string }) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
   const tn = useTranslations('app.nav')
@@ -41,6 +42,12 @@ export function AppSidebar({ userEmail }: { userEmail: string }) {
         <span className="font-bold text-sidebar-foreground">{BRAND}</span>
         <button className="ml-auto text-muted-foreground lg:hidden" onClick={() => setOpen(false)} aria-label={ts('close')}>✕</button>
       </div>
+
+      {stores.length > 0 && (
+        <div className="border-b border-sidebar-border px-3 py-3">
+          <StoreSwitcher stores={stores} current={currentStore} />
+        </div>
+      )}
 
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-3 py-4">
         {nav.map((item) => {
