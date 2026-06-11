@@ -125,6 +125,20 @@ export async function createOrder(
   const externalId = o.externalId
   const status = o.status
 
+  // 0. Idempotence : si cette commande externe existe déjà, ne pas la re-traiter.
+  //    Un webhook rejoué (retry boutique) ne doit pas re-décrémenter le stock
+  //    ni créer une commande en double.
+  if (externalId) {
+    const { data: dup } = await supabase
+      .from('orders')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('external_source', source)
+      .eq('external_id', externalId)
+      .maybeSingle()
+    if (dup) return
+  }
+
   // 1. Upsert client
   const customerData = mapCustomerRow(o.customer)
   const { data: customer } = await supabase
