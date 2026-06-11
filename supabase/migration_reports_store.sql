@@ -1,0 +1,8 @@
+-- ============================================================
+-- Filtrage boutique des rapports : reports_overview accepte
+-- un p_store_id optionnel (null = toutes les boutiques).
+-- (Appliqué en prod le 2026-06-11 — voir la définition complète en base.)
+-- ============================================================
+-- drop function if exists public.reports_overview(uuid, integer);
+-- create or replace function public.reports_overview(p_user_id uuid, p_days integer default 30, p_store_id uuid default null) ...
+--   ajoute « and (p_store_id is null or store_id = p_store_id) » à chaque agrégat (CA, top produits, stock, clients).

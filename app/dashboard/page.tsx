@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getStoreFilter } from '@/lib/store-filter'
 import Link from 'next/link'
 import { getTranslations, getLocale } from 'next-intl/server'
 import RevenueChart from '@/components/dashboard/RevenueChart'
@@ -17,17 +18,36 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   const onboarding = user ? await getOnboardingState(supabase, user.id) : null
 
+  const storeId = await getStoreFilter()
+
+  let qProducts = supabase.from('products').select('*', { count: 'exact', head: true })
+  let qOrders = supabase.from('orders').select('*', { count: 'exact', head: true })
+  let qCustomers = supabase.from('customers').select('*', { count: 'exact', head: true })
+  let qInvCount = supabase.from('invoices').select('*', { count: 'exact', head: true })
+  let qInvoices = supabase.from('invoices').select('status, amount, created_at')
+  let qLow = supabase.from('products').select('id, name, stock_quantity, low_stock_threshold').lte('stock_quantity', 5)
+  let qRecent = supabase.from('orders').select('id, total_amount, status, created_at, customer:customers(full_name)')
+  if (storeId) {
+    qProducts = qProducts.eq('store_id', storeId)
+    qOrders = qOrders.eq('store_id', storeId)
+    qCustomers = qCustomers.eq('store_id', storeId)
+    qInvCount = qInvCount.eq('store_id', storeId)
+    qInvoices = qInvoices.eq('store_id', storeId)
+    qLow = qLow.eq('store_id', storeId)
+    qRecent = qRecent.eq('store_id', storeId)
+  }
+
   const [
     { count: productsCount }, { count: ordersCount }, { count: customersCount }, { count: invoicesCount },
     { data: allInvoices }, { data: lowStock }, { data: recentOrders }, { data: orderItems },
   ] = await Promise.all([
-    supabase.from('products').select('*', { count: 'exact', head: true }),
-    supabase.from('orders').select('*', { count: 'exact', head: true }),
-    supabase.from('customers').select('*', { count: 'exact', head: true }),
-    supabase.from('invoices').select('*', { count: 'exact', head: true }),
-    supabase.from('invoices').select('status, amount, created_at'),
-    supabase.from('products').select('id, name, stock_quantity, low_stock_threshold').lte('stock_quantity', 5).order('stock_quantity').limit(5),
-    supabase.from('orders').select('id, total_amount, status, created_at, customer:customers(full_name)').order('created_at', { ascending: false }).limit(5),
+    qProducts,
+    qOrders,
+    qCustomers,
+    qInvCount,
+    qInvoices,
+    qLow.order('stock_quantity').limit(5),
+    qRecent.order('created_at', { ascending: false }).limit(5),
     supabase.from('order_items').select('quantity, product:products(name)').order('quantity', { ascending: false }),
   ])
 

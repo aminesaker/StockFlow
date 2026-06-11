@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getStoreFilter } from '@/lib/store-filter'
 import { getTranslations, getLocale } from 'next-intl/server'
 import { PageHeader } from '@/components/shared/page-header'
 import { StatCard } from '@/components/shared/stat-card'
@@ -50,7 +51,8 @@ export default async function ReportsPage({ searchParams }: Props) {
 
   let r: Report | null = null
   if (user) {
-    const { data } = await supabase.rpc('reports_overview', { p_user_id: user.id, p_days: days })
+    const storeId = await getStoreFilter()
+    const { data } = await supabase.rpc('reports_overview', { p_user_id: user.id, p_days: days, p_store_id: storeId ?? undefined })
     r = (data as Report | null) ?? null
   }
 

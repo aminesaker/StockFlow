@@ -778,7 +778,7 @@ export type Database = {
         Returns: undefined
       }
       reports_overview: {
-        Args: { p_days?: number; p_user_id: string }
+        Args: { p_days?: number; p_store_id?: string; p_user_id: string }
         Returns: Json
       }
     }
