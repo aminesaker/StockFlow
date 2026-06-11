@@ -34,7 +34,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-muted/40">
       <div className="w-full max-w-md bg-background rounded-2xl shadow-sm border border-border p-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-foreground">{tc('appName')}</h1>
+          <Link href="/" className="text-2xl font-bold text-foreground hover:opacity-80">{tc('appName')}</Link>
           <p className="text-muted-foreground mt-1">{t('subtitle')}</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -63,7 +63,10 @@ export default function LoginPage() {
           {t('noAccount')}{' '}
           <Link href="/register" className="text-primary hover:underline font-medium">{t('signupLink')}</Link>
         </p>
-      </div>
+        <p className="mt-6 text-center text-sm">
+            <Link href="/" className="text-muted-foreground hover:underline">{tc('backHome')}</Link>
+          </p>
+</div>
     </div>
   )
 }

@@ -15,7 +15,8 @@
     "all": "Tous",
     "actions": "Actions",
     "close": "Fermer",
-    "genericError": "Erreur"
+    "genericError": "Erreur",
+    "backHome": "← Retour à l’accueil"
   },
   "nav": {
     "features": "Fonctionnalités",

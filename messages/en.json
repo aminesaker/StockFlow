@@ -15,7 +15,8 @@
     "all": "All",
     "actions": "Actions",
     "close": "Close",
-    "genericError": "Error"
+    "genericError": "Error",
+    "backHome": "← Back to home"
   },
   "nav": {
     "features": "Features",
