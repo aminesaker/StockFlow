@@ -584,5 +584,47 @@
       "creating": "Creating…",
       "create": "Create invoice"
     }
+  },
+  "statuses": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "shipped": "Shipped",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled",
+    "draft": "Draft",
+    "sent": "Sent",
+    "paid": "Paid",
+    "overdue": "Overdue",
+    "rupture": "Stockout",
+    "critique": "Critical",
+    "a_commander": "To reorder",
+    "ok": "OK",
+    "sans_ventes": "No sales"
+  },
+  "overview": {
+    "title": "Overview",
+    "onboardingTitle": "🚀 Finish your setup",
+    "onboardingConnect": "Connect your store to see your data flow in.",
+    "onboardingGenerate": "Generate your key and connect your store in 2 minutes.",
+    "getStarted": "Get started →",
+    "kpiProducts": "Products",
+    "kpiOrders": "Orders",
+    "kpiCustomers": "Customers",
+    "kpiInvoices": "Invoices",
+    "revCollected": "Collected",
+    "revPending": "Pending",
+    "revOverdue": "Overdue",
+    "recoveryRate": "Recovery rate",
+    "chartRevenue": "Revenue, last 6 months",
+    "legendCollected": "Collected",
+    "legendPending": "Pending",
+    "chartTopProducts": "Top 5 products sold",
+    "recentOrders": "Recent orders",
+    "seeAll": "See all →",
+    "noOrders": "No orders",
+    "stockAlerts": "⚠️ Stock alerts",
+    "manage": "Manage →",
+    "allStockOk": "All stock is OK ✓",
+    "remaining": "{count, plural, one {# left} other {# left}}"
   }
 }

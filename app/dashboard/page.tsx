@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+import { getTranslations, getLocale } from 'next-intl/server'
 import RevenueChart from '@/components/dashboard/RevenueChart'
 import TopProductsChart from '@/components/dashboard/TopProductsChart'
 import { PageHeader } from '@/components/shared/page-header'
@@ -8,22 +9,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { getOnboardingState } from '@/lib/onboarding'
 
-const MONTHS_FR = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc']
-
 export default async function DashboardPage() {
   const supabase = await createClient()
+  const t = await getTranslations('overview')
+  const locale = await getLocale()
+  const intlLocale = locale === 'en' ? 'en-US' : 'fr-FR'
   const { data: { user } } = await supabase.auth.getUser()
   const onboarding = user ? await getOnboardingState(supabase, user.id) : null
 
   const [
-    { count: productsCount },
-    { count: ordersCount },
-    { count: customersCount },
-    { count: invoicesCount },
-    { data: allInvoices },
-    { data: lowStock },
-    { data: recentOrders },
-    { data: orderItems },
+    { count: productsCount }, { count: ordersCount }, { count: customersCount }, { count: invoicesCount },
+    { data: allInvoices }, { data: lowStock }, { data: recentOrders }, { data: orderItems },
   ] = await Promise.all([
     supabase.from('products').select('*', { count: 'exact', head: true }),
     supabase.from('orders').select('*', { count: 'exact', head: true }),
@@ -47,7 +43,7 @@ export default async function DashboardPage() {
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
     const monthInvoices = allInvoices?.filter((inv) => inv.created_at.startsWith(key)) ?? []
     return {
-      month: MONTHS_FR[d.getMonth()],
+      month: d.toLocaleDateString(intlLocale, { month: 'short' }),
       paid: monthInvoices.filter((i) => i.status === 'paid').reduce((s, i) => s + i.amount, 0),
       pending: monthInvoices.filter((i) => ['sent', 'draft', 'overdue'].includes(i.status)).reduce((s, i) => s + i.amount, 0),
     }
@@ -56,43 +52,39 @@ export default async function DashboardPage() {
   const productTotals: Record<string, number> = {}
   orderItems?.forEach((item) => {
     const product = Array.isArray(item.product) ? item.product[0] : item.product
-    const name = (product as { name: string } | null)?.name ?? 'Inconnu'
+    const name = (product as { name: string } | null)?.name ?? '—'
     const truncated = name.length > 18 ? name.slice(0, 18) + '…' : name
     productTotals[truncated] = (productTotals[truncated] ?? 0) + item.quantity
   })
   const topProducts = Object.entries(productTotals).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([name, quantity]) => ({ name, quantity }))
 
-  const fmt = (n: number) => n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'
+  const fmt = (n: number) => new Intl.NumberFormat(intlLocale, { style: 'currency', currency: 'EUR' }).format(n)
 
   const kpis = [
-    { label: 'Produits', value: productsCount ?? 0, icon: '📦', href: '/dashboard/stocks' },
-    { label: 'Commandes', value: ordersCount ?? 0, icon: '🛒', href: '/dashboard/orders' },
-    { label: 'Clients', value: customersCount ?? 0, icon: '👥', href: '/dashboard/customers' },
-    { label: 'Factures', value: invoicesCount ?? 0, icon: '🧾', href: '/dashboard/invoices' },
+    { label: t('kpiProducts'), value: productsCount ?? 0, icon: '📦', href: '/dashboard/stocks' },
+    { label: t('kpiOrders'), value: ordersCount ?? 0, icon: '🛒', href: '/dashboard/orders' },
+    { label: t('kpiCustomers'), value: customersCount ?? 0, icon: '👥', href: '/dashboard/customers' },
+    { label: t('kpiInvoices'), value: invoicesCount ?? 0, icon: '🧾', href: '/dashboard/invoices' },
   ]
   const revenue = [
-    { label: 'Encaissé', value: fmt(paid), color: 'text-emerald-600 dark:text-emerald-400' },
-    { label: 'En attente', value: fmt(pending), color: 'text-primary dark:text-blue-400' },
-    { label: 'En retard', value: fmt(overdue), color: 'text-red-600 dark:text-red-400' },
-    { label: 'Taux de recouvrement', value: `${recoveryRate}%`, color: recoveryRate >= 80 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400' },
+    { label: t('revCollected'), value: fmt(paid), color: 'text-emerald-600 dark:text-emerald-400' },
+    { label: t('revPending'), value: fmt(pending), color: 'text-primary dark:text-blue-400' },
+    { label: t('revOverdue'), value: fmt(overdue), color: 'text-red-600 dark:text-red-400' },
+    { label: t('recoveryRate'), value: `${recoveryRate}%`, color: recoveryRate >= 80 ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400' },
   ]
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Vue d'ensemble" />
+      <PageHeader title={t('title')} />
 
       {onboarding && !onboarding.complete && (
         <Card className="border-primary/30 bg-primary/5">
           <CardContent className="flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="font-semibold text-foreground">🚀 Terminez votre installation</p>
-              <p className="text-sm text-muted-foreground">
-                {onboarding.hasApiKey ? 'Connectez votre boutique pour voir vos données affluer.' : 'Générez votre clé et connectez votre boutique en 2 minutes.'}
-              </p>
+              <p className="font-semibold text-foreground">{t('onboardingTitle')}</p>
+              <p className="text-sm text-muted-foreground">{onboarding.hasApiKey ? t('onboardingConnect') : t('onboardingGenerate')}</p>
             </div>
-            <Link href="/dashboard/onboarding" className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
-              Bien démarrer →
-            </Link>
+            <Link href="/dashboard/onboarding" className="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">{t('getStarted')}</Link>
           </CardContent>
         </Card>
       )}
@@ -100,42 +92,37 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {kpis.map((s) => (
           <Link key={s.label} href={s.href} className="transition-transform hover:-translate-y-0.5">
-            <Card className="py-0">
-              <CardContent className="p-5">
-                <div className="mb-2 text-2xl">{s.icon}</div>
-                <div className="text-3xl font-bold text-foreground">{s.value}</div>
-                <div className="mt-1 text-sm text-muted-foreground">{s.label}</div>
-              </CardContent>
-            </Card>
+            <Card className="py-0"><CardContent className="p-5">
+              <div className="mb-2 text-2xl">{s.icon}</div>
+              <div className="text-3xl font-bold text-foreground">{s.value}</div>
+              <div className="mt-1 text-sm text-muted-foreground">{s.label}</div>
+            </CardContent></Card>
           </Link>
         ))}
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {revenue.map((r) => (
-          <Card key={r.label} className="py-0">
-            <CardContent className="p-5">
-              <div className={cn('text-2xl font-bold', r.color)}>{r.value}</div>
-              <div className="mt-1 text-sm text-muted-foreground">{r.label}</div>
-            </CardContent>
-          </Card>
+          <Card key={r.label} className="py-0"><CardContent className="p-5">
+            <div className={cn('text-2xl font-bold', r.color)}>{r.value}</div>
+            <div className="mt-1 text-sm text-muted-foreground">{r.label}</div>
+          </CardContent></Card>
         ))}
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card className="gap-4">
           <CardHeader className="flex-row items-center justify-between">
-            <CardTitle className="text-sm">Revenus 6 derniers mois</CardTitle>
+            <CardTitle className="text-sm">{t('chartRevenue')}</CardTitle>
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-primary" />Encaissé</span>
-              <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-amber-400" />En attente</span>
+              <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-primary" />{t('legendCollected')}</span>
+              <span className="flex items-center gap-1"><span className="inline-block h-2 w-2 rounded-full bg-amber-400" />{t('legendPending')}</span>
             </div>
           </CardHeader>
           <CardContent><RevenueChart data={monthlyData} /></CardContent>
         </Card>
-
         <Card className="gap-4">
-          <CardHeader><CardTitle className="text-sm">Top 5 produits vendus</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-sm">{t('chartTopProducts')}</CardTitle></CardHeader>
           <CardContent><TopProductsChart data={topProducts} /></CardContent>
         </Card>
       </div>
@@ -143,41 +130,37 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card className="gap-0 py-0">
           <CardHeader className="flex-row items-center justify-between border-b py-4">
-            <CardTitle className="text-sm">Commandes récentes</CardTitle>
-            <Link href="/dashboard/orders" className="text-xs text-primary hover:underline">Voir tout →</Link>
+            <CardTitle className="text-sm">{t('recentOrders')}</CardTitle>
+            <Link href="/dashboard/orders" className="text-xs text-primary hover:underline">{t('seeAll')}</Link>
           </CardHeader>
           <div className="divide-y">
             {recentOrders?.length ? recentOrders.map((o) => (
               <div key={o.id} className="flex items-center justify-between px-6 py-3">
                 <div>
-                  <p className="text-sm font-medium text-foreground">
-                    {((Array.isArray(o.customer) ? o.customer[0] : o.customer) as { full_name: string } | null)?.full_name ?? '—'}
-                  </p>
-                  <p className="text-xs text-muted-foreground">{new Date(o.created_at).toLocaleDateString('fr-FR')}</p>
+                  <p className="text-sm font-medium text-foreground">{((Array.isArray(o.customer) ? o.customer[0] : o.customer) as { full_name: string } | null)?.full_name ?? '—'}</p>
+                  <p className="text-xs text-muted-foreground">{new Date(o.created_at).toLocaleDateString(intlLocale)}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <StatusBadge status={o.status} />
                   <span className="text-sm font-semibold text-foreground">{o.total_amount.toFixed(2)} €</span>
                 </div>
               </div>
-            )) : <p className="px-6 py-4 text-sm text-muted-foreground">Aucune commande</p>}
+            )) : <p className="px-6 py-4 text-sm text-muted-foreground">{t('noOrders')}</p>}
           </div>
         </Card>
 
         <Card className="gap-0 py-0">
           <CardHeader className="flex-row items-center justify-between border-b py-4">
-            <CardTitle className="text-sm">⚠️ Alertes stock</CardTitle>
-            <Link href="/dashboard/stocks" className="text-xs text-primary hover:underline">Gérer →</Link>
+            <CardTitle className="text-sm">{t('stockAlerts')}</CardTitle>
+            <Link href="/dashboard/stocks" className="text-xs text-primary hover:underline">{t('manage')}</Link>
           </CardHeader>
           <div className="divide-y">
             {lowStock?.length ? lowStock.map((p) => (
               <div key={p.id} className="flex items-center justify-between px-6 py-3">
                 <p className="text-sm font-medium text-foreground">{p.name}</p>
-                <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700 dark:bg-red-500/15 dark:text-red-400">
-                  {p.stock_quantity} restant{p.stock_quantity !== 1 ? 's' : ''}
-                </span>
+                <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700 dark:bg-red-500/15 dark:text-red-400">{t('remaining', { count: p.stock_quantity })}</span>
               </div>
-            )) : <p className="px-6 py-4 text-sm text-muted-foreground">Tous les stocks sont OK ✓</p>}
+            )) : <p className="px-6 py-4 text-sm text-muted-foreground">{t('allStockOk')}</p>}
           </div>
         </Card>
       </div>

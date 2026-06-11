@@ -1,28 +1,20 @@
+'use client'
+
+import { useTranslations } from 'next-intl'
 import { Badge } from '@/components/ui/badge'
 
 type Variant = 'default' | 'secondary' | 'success' | 'warning' | 'danger' | 'muted' | 'outline'
 
-const MAP: Record<string, { label: string; variant: Variant }> = {
-  // Commandes
-  pending: { label: 'En attente', variant: 'warning' },
-  confirmed: { label: 'Confirmée', variant: 'default' },
-  shipped: { label: 'Expédiée', variant: 'default' },
-  delivered: { label: 'Livrée', variant: 'success' },
-  cancelled: { label: 'Annulée', variant: 'danger' },
-  // Factures
-  draft: { label: 'Brouillon', variant: 'muted' },
-  sent: { label: 'Envoyée', variant: 'default' },
-  paid: { label: 'Payée', variant: 'success' },
-  overdue: { label: 'En retard', variant: 'danger' },
-  // Prévision
-  rupture: { label: 'Rupture', variant: 'danger' },
-  critique: { label: 'Critique', variant: 'warning' },
-  a_commander: { label: 'À commander', variant: 'warning' },
-  ok: { label: 'OK', variant: 'success' },
-  sans_ventes: { label: 'Sans ventes', variant: 'muted' },
+const VARIANT: Record<string, Variant> = {
+  pending: 'warning', confirmed: 'default', shipped: 'default', delivered: 'success', cancelled: 'danger',
+  draft: 'muted', sent: 'default', paid: 'success', overdue: 'danger',
+  rupture: 'danger', critique: 'warning', a_commander: 'warning', ok: 'success', sans_ventes: 'muted',
 }
+const KNOWN = Object.keys(VARIANT)
 
 export function StatusBadge({ status }: { status: string }) {
-  const m = MAP[status] ?? { label: status, variant: 'secondary' as Variant }
-  return <Badge variant={m.variant}>{m.label}</Badge>
+  const t = useTranslations('statuses')
+  const variant = VARIANT[status] ?? 'secondary'
+  const label = KNOWN.includes(status) ? t(status) : status
+  return <Badge variant={variant}>{label}</Badge>
 }

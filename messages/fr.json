@@ -584,5 +584,47 @@
       "creating": "Création…",
       "create": "Créer la facture"
     }
+  },
+  "statuses": {
+    "pending": "En attente",
+    "confirmed": "Confirmée",
+    "shipped": "Expédiée",
+    "delivered": "Livrée",
+    "cancelled": "Annulée",
+    "draft": "Brouillon",
+    "sent": "Envoyée",
+    "paid": "Payée",
+    "overdue": "En retard",
+    "rupture": "Rupture",
+    "critique": "Critique",
+    "a_commander": "À commander",
+    "ok": "OK",
+    "sans_ventes": "Sans ventes"
+  },
+  "overview": {
+    "title": "Vue d'ensemble",
+    "onboardingTitle": "🚀 Terminez votre installation",
+    "onboardingConnect": "Connectez votre boutique pour voir vos données affluer.",
+    "onboardingGenerate": "Générez votre clé et connectez votre boutique en 2 minutes.",
+    "getStarted": "Bien démarrer →",
+    "kpiProducts": "Produits",
+    "kpiOrders": "Commandes",
+    "kpiCustomers": "Clients",
+    "kpiInvoices": "Factures",
+    "revCollected": "Encaissé",
+    "revPending": "En attente",
+    "revOverdue": "En retard",
+    "recoveryRate": "Taux de recouvrement",
+    "chartRevenue": "Revenus 6 derniers mois",
+    "legendCollected": "Encaissé",
+    "legendPending": "En attente",
+    "chartTopProducts": "Top 5 produits vendus",
+    "recentOrders": "Commandes récentes",
+    "seeAll": "Voir tout →",
+    "noOrders": "Aucune commande",
+    "stockAlerts": "⚠️ Alertes stock",
+    "manage": "Gérer →",
+    "allStockOk": "Tous les stocks sont OK ✓",
+    "remaining": "{count, plural, one {# restant} other {# restants}}"
   }
 }
