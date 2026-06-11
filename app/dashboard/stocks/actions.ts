@@ -168,6 +168,50 @@ export async function createVariant(parentId: string, formData: FormData) {
   return { success: true }
 }
 
+export async function updateVariant(id: string, formData: FormData) {
+  const { supabase, userId } = await getUserId()
+
+  const price = Number(formData.get('price'))
+  const stock = Number(formData.get('stock_quantity'))
+  const threshold = Number(formData.get('low_stock_threshold'))
+  const attrsRaw = String(formData.get('attributes') ?? '').trim()
+
+  const attrs: Record<string, string> = {}
+  for (const part of attrsRaw.split(',')) {
+    const idx = part.indexOf(':')
+    if (idx === -1) continue
+    const key = part.slice(0, idx).trim()
+    const val = part.slice(idx + 1).trim()
+    if (key && val) attrs[key] = val
+  }
+
+  const { data: before } = await supabase
+    .from('products')
+    .select('stock_quantity, price, low_stock_threshold')
+    .eq('id', id)
+    .single()
+
+  const stockQ = Number.isFinite(stock) && stock >= 0 ? Math.round(stock) : (before?.stock_quantity ?? 0)
+
+  const { error } = await supabase.from('products').update({
+    price: Number.isFinite(price) && price >= 0 ? price : (before?.price ?? 0),
+    stock_quantity: stockQ,
+    low_stock_threshold: Number.isFinite(threshold) && threshold >= 0 ? Math.round(threshold) : (before?.low_stock_threshold ?? 5),
+    variant_attributes: Object.keys(attrs).length ? attrs : null,
+  }).eq('id', id)
+  if (error) return { error: { _root: [error.message] } }
+
+  if (before && stockQ !== before.stock_quantity) {
+    await supabase.from('stock_movements').insert({
+      user_id: userId, product_id: id, delta: stockQ - before.stock_quantity, reason: 'adjustment', balance_after: stockQ,
+    })
+  }
+
+  revalidatePath('/dashboard/stocks')
+  revalidatePath('/dashboard')
+  return { success: true }
+}
+
 // ── Import CSV ─────────────────────────────────────────────────────────────────
 
 type CsvRow = {
