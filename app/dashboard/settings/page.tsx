@@ -16,10 +16,11 @@ export default async function SettingsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: settings }, { data: apiKeys }, billingProfile] = await Promise.all([
+  const [{ data: settings }, { data: apiKeys }, billingProfile, { data: stores }] = await Promise.all([
     supabase.from('user_settings').select('*').eq('user_id', user.id).maybeSingle(),
     supabase.from('api_keys').select('id, name, key_prefix, last_used_at, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
     getBillingProfile(supabase, user.id),
+    supabase.from('stores').select('id, name').eq('user_id', user.id).order('created_at', { ascending: true }),
   ])
 
   const defaults = {
@@ -61,7 +62,7 @@ export default async function SettingsPage() {
         </TabsContent>
 
         <TabsContent value="apikeys">
-          <ApiKeysSection apiKeys={(apiKeys ?? []) as unknown as Parameters<typeof ApiKeysSection>[0]['apiKeys']} />
+          <ApiKeysSection apiKeys={(apiKeys ?? []) as unknown as Parameters<typeof ApiKeysSection>[0]['apiKeys']} stores={stores ?? []} />
         </TabsContent>
       </Tabs>
     </div>

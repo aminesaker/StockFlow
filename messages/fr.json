@@ -399,7 +399,8 @@
       "integrations": "Intégrations",
       "automations": "Automatisations",
       "settings": "Paramètres",
-      "api": "API"
+      "api": "API",
+      "stores": "Boutiques"
     },
     "sidebar": {
       "close": "Fermer",
@@ -835,7 +836,9 @@
       "createdToast": "Clé API créée",
       "revokedToast": "Clé révoquée",
       "confirmRevoke": "Révoquer la clé « {name} » ? Les intégrations qui l'utilisent cesseront de fonctionner.",
-      "nameRequired": "Un nom est requis."
+      "nameRequired": "Un nom est requis.",
+      "storeLabel": "Boutique (optionnel)",
+      "storeNone": "— Aucune —"
     },
     "woo": {
       "subtitle": "Synchronisation automatique commandes, clients, produits",
@@ -1057,5 +1060,34 @@
     "successBody": "Votre paiement a été traité avec succès.",
     "cancelBody": "Aucun montant n'a été débité.",
     "backToInvoices": "Retour aux factures"
+  },
+  "stores": {
+    "title": "Boutiques",
+    "desc": "Connectez plusieurs boutiques, chacune avec son propre secret de webhook et ses clés API.",
+    "empty": "Aucune boutique. Créez-en une pour commencer.",
+    "add": "Nouvelle boutique",
+    "name": "Nom",
+    "platform": "Plateforme",
+    "domain": "Domaine (optionnel)",
+    "secret": "Secret de webhook (HMAC)",
+    "secretHint": "Collez le secret généré par votre boutique (WooCommerce/Shopify).",
+    "create": "Créer",
+    "creating": "Création…",
+    "createdToast": "Boutique créée",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "savedToast": "Boutique mise à jour",
+    "delete": "Supprimer",
+    "confirmDelete": "Supprimer cette boutique ? Les données rattachées seront déliées (non supprimées).",
+    "deletedToast": "Boutique supprimée",
+    "statusActive": "Active",
+    "platformWoo": "WooCommerce",
+    "platformShopify": "Shopify",
+    "platformOther": "Autre",
+    "secretSet": "Secret configuré",
+    "secretUnset": "Aucun secret",
+    "errName": "Le nom est requis.",
+    "errAuth": "Non authentifié",
+    "errLimit": "Limite du plan atteinte ({limit} boutique(s)). Passez à Business pour en connecter davantage."
   }
 }

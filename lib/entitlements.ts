@@ -87,17 +87,24 @@ export async function canUseStore(
   const limit = PLANS[plan].limits.stores
   if (limit === null) return { allowed: true, limit: null, current: 0 }
 
-  const [{ data: p }, { data: o }] = await Promise.all([
-    supabase.from('products').select('external_source').eq('user_id', userId).not('external_source', 'is', null),
-    supabase.from('orders').select('external_source').eq('user_id', userId).not('external_source', 'is', null),
-  ])
-  const set = new Set<string>()
-  for (const r of [...(p ?? []), ...(o ?? [])]) {
-    const s = (r as { external_source: string | null }).external_source
-    if (s) set.add(s)
-  }
-  if (set.has(source)) return { allowed: true, limit, current: set.size }
-  return { allowed: set.size < limit, limit, current: set.size }
+  const { data: stores } = await supabase.from('stores').select('id, platform').eq('user_id', userId)
+  const list = (stores ?? []) as { id: string; platform: string }[]
+  // Une boutique de cette plateforme existe déjà → autorisée.
+  if (list.some((s) => s.platform === source)) return { allowed: true, limit, current: list.length }
+  return { allowed: list.length < limit, limit, current: list.length }
+}
+
+/** Peut-on ajouter une NOUVELLE boutique sans dépasser la limite du plan ? */
+export async function canAddStore(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<StoreCheck> {
+  const plan = await getUserPlan(supabase, userId)
+  const limit = PLANS[plan].limits.stores
+  const { count } = await supabase.from('stores').select('*', { count: 'exact', head: true }).eq('user_id', userId)
+  const current = count ?? 0
+  if (limit === null) return { allowed: true, limit: null, current }
+  return { allowed: current < limit, limit, current }
 }
 
 // ── Gating exécution des automatisations ───────────────────────────────────

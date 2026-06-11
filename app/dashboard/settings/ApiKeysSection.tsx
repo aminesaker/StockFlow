@@ -7,7 +7,7 @@ import { createApiKey, deleteApiKey } from './api-keys-actions'
 
 type ApiKey = { id: string; name: string; key_prefix: string; last_used_at: string | null; created_at: string }
 
-export default function ApiKeysSection({ apiKeys }: { apiKeys: ApiKey[] }) {
+export default function ApiKeysSection({ apiKeys, stores = [] }: { apiKeys: ApiKey[]; stores?: { id: string; name: string }[] }) {
   const t = useTranslations('settings.apiKeys')
   const locale = useLocale()
   const dateLocale = locale === 'en' ? 'en-US' : 'fr-FR'
@@ -106,14 +106,20 @@ export default function ApiKeysSection({ apiKeys }: { apiKeys: ApiKey[] }) {
       )}
 
       {/* Formulaire de création */}
-      <form ref={formRef} onSubmit={handleCreate} className="px-6 py-5 border-t border-border flex gap-3">
+      <form ref={formRef} onSubmit={handleCreate} className="px-6 py-5 border-t border-border flex flex-wrap gap-3">
         <input
           type="text"
           name="name"
           placeholder={t('namePlaceholder')}
           required
-          className="flex-1 px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50"
+          className="flex-1 min-w-[12rem] px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50"
         />
+        {stores.length > 0 && (
+          <select name="store_id" defaultValue="" aria-label={t('storeLabel')} className="px-3 py-2 border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring/50">
+            <option value="">{t('storeNone')}</option>
+            {stores.map((st) => <option key={st.id} value={st.id}>{st.name}</option>)}
+          </select>
+        )}
         <button
           type="submit"
           disabled={isPending}

@@ -40,11 +40,18 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
   const supabase = getServiceClient()
   const { data: keyRow } = await supabase
     .from('api_keys')
-    .select('user_id')
+    .select('user_id, store_id')
     .eq('key_hash', keyHash)
     .single()
   if (!keyRow) return err('Clé API invalide', 401)
   const userId = keyRow.user_id
+
+  // Résolution de la boutique : depuis la clé API, sinon par plateforme (s'il n'y en a qu'une)
+  let storeId: string | null = (keyRow as { store_id?: string | null }).store_id ?? null
+  if (!storeId) {
+    const { data: stl } = await supabase.from('stores').select('id').eq('user_id', userId).eq('platform', adapter.source)
+    if (stl && stl.length === 1) storeId = stl[0].id
+  }
 
   // 2. Rate limiting par tenant (anti-abus)
   const allowed = await checkRateLimit(
@@ -61,7 +68,11 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
     .select('wc_webhook_secret, auto_invoice, stock_alerts')
     .eq('user_id', userId)
     .maybeSingle()
-  const secret = settings?.wc_webhook_secret ?? null
+  let secret = settings?.wc_webhook_secret ?? null
+  if (storeId) {
+    const { data: st } = await supabase.from('stores').select('webhook_secret').eq('id', storeId).maybeSingle()
+    if (st?.webhook_secret) secret = st.webhook_secret
+  }
 
   // 4. Vérification de signature (propre à la plateforme)
   if (!adapter.verifySignature(rawBody, req.headers, secret)) {
@@ -100,7 +111,7 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
       case 'ignore':
         return ok(`ignoré (${action.reason})`)
       case 'product.upsert': {
-        const r = await upsertProduct(supabase, userId, src, action.product)
+        const r = await upsertProduct(supabase, userId, src, action.product, storeId)
         summary = `produit ${r} — ${src}#${action.product.externalId}`
         break
       }
@@ -109,7 +120,7 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
         summary = `produit supprimé — ${src}`
         break
       case 'order.created':
-        await createOrder(supabase, userId, src, action.order, settings)
+        await createOrder(supabase, userId, src, action.order, settings, storeId)
         summary = `commande créée — ${src}#${action.order.externalId}`
         break
       case 'order.updated':
@@ -121,7 +132,7 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
         summary = `commande supprimée — ${src}#${action.externalId}`
         break
       case 'customer.upsert':
-        await upsertCustomer(supabase, userId, action.customer)
+        await upsertCustomer(supabase, userId, action.customer, storeId)
         summary = `client synchronisé — ${src}`
         break
       default:

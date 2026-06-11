@@ -30,7 +30,8 @@ export async function upsertProduct(
   supabase: DB,
   userId: string,
   source: string,
-  p: NormalizedProduct
+  p: NormalizedProduct,
+  storeId?: string | null
 ): Promise<'created' | 'updated' | 'skipped'> {
   const externalId = p.externalId
   const sku =
@@ -83,7 +84,7 @@ export async function upsertProduct(
 
   const ins = await supabase
     .from('products')
-    .insert({ ...baseFields, low_stock_threshold: 5 })
+    .insert({ ...baseFields, low_stock_threshold: 5, store_id: storeId ?? null })
   if (ins.error) {
     console.error('[sync] product insert error', ins.error)
     return 'skipped'
@@ -120,7 +121,8 @@ export async function createOrder(
   userId: string,
   source: string,
   o: NormalizedOrder,
-  settings: SyncSettings
+  settings: SyncSettings,
+  storeId?: string | null
 ) {
   const externalId = o.externalId
   const status = o.status
@@ -143,7 +145,7 @@ export async function createOrder(
   const customerData = mapCustomerRow(o.customer)
   const { data: customer } = await supabase
     .from('customers')
-    .upsert({ ...customerData, user_id: userId }, { onConflict: 'email' })
+    .upsert({ ...customerData, user_id: userId, store_id: storeId ?? null }, { onConflict: 'email' })
     .select('id')
     .single()
   if (!customer) return
@@ -173,7 +175,7 @@ export async function createOrder(
     } else {
       const { data: created } = await supabase
         .from('products')
-        .insert({ user_id: userId, name: item.name, sku: item.sku, price: item.unitPrice, stock_quantity: 0, low_stock_threshold: 5 })
+        .insert({ user_id: userId, name: item.name, sku: item.sku, price: item.unitPrice, stock_quantity: 0, low_stock_threshold: 5, store_id: storeId ?? null })
         .select('id')
         .single()
       productId = created?.id ?? ''
@@ -199,6 +201,7 @@ export async function createOrder(
       notes: o.note || `Commande ${source} #${externalId}`,
       external_id: externalId,
       external_source: source,
+      store_id: storeId ?? null,
     })
     .select('id')
     .single()
@@ -261,12 +264,13 @@ export async function updateOrder(
 export async function upsertCustomer(
   supabase: DB,
   userId: string,
-  c: NormalizedCustomer
+  c: NormalizedCustomer,
+  storeId?: string | null
 ) {
   if (!c.email) return
   const { error } = await supabase
     .from('customers')
-    .upsert({ ...mapCustomerRow(c), user_id: userId }, { onConflict: 'email' })
+    .upsert({ ...mapCustomerRow(c), user_id: userId, store_id: storeId ?? null }, { onConflict: 'email' })
   if (error) console.error('[sync] customer upsert error', error)
 }
 

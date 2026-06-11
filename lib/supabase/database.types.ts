@@ -19,6 +19,7 @@ export type Database = {
           key_hash: string
           key_prefix: string
           last_used_at: string | null
+          store_id: string | null
           name: string
           user_id: string
         }
@@ -28,6 +29,7 @@ export type Database = {
           key_hash: string
           key_prefix: string
           last_used_at?: string | null
+          store_id?: string | null
           name: string
           user_id: string
         }
@@ -37,6 +39,7 @@ export type Database = {
           key_hash?: string
           key_prefix?: string
           last_used_at?: string | null
+          store_id?: string | null
           name?: string
           user_id?: string
         }
@@ -194,6 +197,7 @@ export type Database = {
           id: string
           is_demo: boolean
           phone: string | null
+          store_id: string | null
           user_id: string | null
         }
         Insert: {
@@ -206,6 +210,7 @@ export type Database = {
           id?: string
           is_demo?: boolean
           phone?: string | null
+          store_id?: string | null
           user_id?: string | null
         }
         Update: {
@@ -218,6 +223,7 @@ export type Database = {
           id?: string
           is_demo?: boolean
           phone?: string | null
+          store_id?: string | null
           user_id?: string | null
         }
         Relationships: []
@@ -294,6 +300,7 @@ export type Database = {
           reminder_count: number | null
           status: string
           stripe_payment_intent_id: string | null
+          store_id: string | null
           subtotal: number | null
           vat_amount: number | null
           vat_rate: number | null
@@ -313,6 +320,7 @@ export type Database = {
           reminder_count?: number | null
           status?: string
           stripe_payment_intent_id?: string | null
+          store_id?: string | null
           subtotal?: number | null
           vat_amount?: number | null
           vat_rate?: number | null
@@ -332,6 +340,7 @@ export type Database = {
           reminder_count?: number | null
           status?: string
           stripe_payment_intent_id?: string | null
+          store_id?: string | null
           subtotal?: number | null
           vat_amount?: number | null
           vat_rate?: number | null
@@ -407,6 +416,7 @@ export type Database = {
           notes: string | null
           status: string
           total_amount: number
+          store_id: string | null
           updated_at: string
           user_id: string | null
         }
@@ -420,6 +430,7 @@ export type Database = {
           notes?: string | null
           status?: string
           total_amount?: number
+          store_id?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -433,6 +444,7 @@ export type Database = {
           notes?: string | null
           status?: string
           total_amount?: number
+          store_id?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -458,6 +470,7 @@ export type Database = {
           image_url: string | null
           is_demo: boolean
           low_stock_threshold: number
+          store_id: string | null
           name: string
           price: number
           sku: string
@@ -479,6 +492,7 @@ export type Database = {
           image_url?: string | null
           is_demo?: boolean
           low_stock_threshold?: number
+          store_id?: string | null
           name: string
           price?: number
           sku: string
@@ -500,6 +514,7 @@ export type Database = {
           image_url?: string | null
           is_demo?: boolean
           low_stock_threshold?: number
+          store_id?: string | null
           name?: string
           price?: number
           sku?: string
@@ -533,6 +548,7 @@ export type Database = {
       stock_movements: {
         Row: {
           balance_after: number | null
+          store_id: string | null
           created_at: string
           delta: number
           id: string
@@ -544,6 +560,7 @@ export type Database = {
         }
         Insert: {
           balance_after?: number | null
+          store_id?: string | null
           created_at?: string
           delta: number
           id?: string
@@ -555,6 +572,7 @@ export type Database = {
         }
         Update: {
           balance_after?: number | null
+          store_id?: string | null
           created_at?: string
           delta?: number
           id?: string
@@ -573,6 +591,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      stores: {
+        Row: {
+          created_at: string
+          domain: string | null
+          id: string
+          name: string
+          platform: string
+          status: string
+          user_id: string
+          webhook_secret: string | null
+        }
+        Insert: {
+          created_at?: string
+          domain?: string | null
+          id?: string
+          name: string
+          platform?: string
+          status?: string
+          user_id: string
+          webhook_secret?: string | null
+        }
+        Update: {
+          created_at?: string
+          domain?: string | null
+          id?: string
+          name?: string
+          platform?: string
+          status?: string
+          user_id?: string
+          webhook_secret?: string | null
+        }
+        Relationships: []
       }
       sync_events: {
         Row: {

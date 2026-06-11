@@ -11,6 +11,7 @@ export type Product = {
   image_url: string | null
   parent_id: string | null
   variant_attributes: Record<string, string> | null
+  store_id: string | null
   created_at: string
   updated_at: string
 }

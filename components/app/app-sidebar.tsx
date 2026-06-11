@@ -19,6 +19,7 @@ const nav = [
   { href: '/dashboard/customers', key: 'customers', icon: '👥' },
   { href: '/dashboard/invoices', key: 'invoices', icon: '🧾' },
   { href: '/dashboard/billing', key: 'billing', icon: '💳' },
+  { href: '/dashboard/stores', key: 'stores', icon: '🏬' },
   { href: '/dashboard/integrations', key: 'integrations', icon: '🔗' },
   { href: '/dashboard/automations', key: 'automations', icon: '⚡' },
   { href: '/dashboard/settings', key: 'settings', icon: '⚙️' },

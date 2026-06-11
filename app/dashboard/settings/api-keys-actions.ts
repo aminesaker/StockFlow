@@ -16,11 +16,14 @@ export async function createApiKey(formData: FormData) {
 
   const { raw, hash, prefix } = generateApiKey()
 
+  const storeId = (formData.get('store_id') as string)?.trim() || null
+
   const { error } = await supabase.from('api_keys').insert({
     user_id: user.id,
     name,
     key_prefix: prefix,
     key_hash: hash,
+    store_id: storeId,
   })
 
   if (error) return { error: error.message }
