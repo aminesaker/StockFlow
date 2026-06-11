@@ -144,6 +144,9 @@ type InvoiceData = {
   due_date: string
   paid_at?: string | null
   created_at: string
+  subtotal?: number | null
+  vat_rate?: number | null
+  vat_amount?: number | null
   customer: {
     full_name: string
     email: string
@@ -163,6 +166,20 @@ type InvoiceData = {
   } | null
 }
 
+type Seller = {
+  company_name?: string | null
+  address_line1?: string | null
+  address_line2?: string | null
+  postal_code?: string | null
+  city?: string | null
+  country?: string | null
+  siret?: string | null
+  vat_number?: string | null
+  vat_exempt?: boolean | null
+  legal_footer?: string | null
+  payment_terms_days?: number | null
+}
+
 type Locale = 'fr' | 'en'
 
 const STATUS_LABELS: Record<Locale, Record<string, string>> = {
@@ -175,26 +192,29 @@ const DICT: Record<Locale, Record<string, string>> = {
     brandSub: 'Plateforme de gestion e-commerce', invoice: 'FACTURE', issuedOn: 'Émise le', due: 'Échéance :',
     issuer: 'Émetteur', billedTo: 'Facturé à', description: 'Description', qty: 'Qté', unit: 'Prix unit.', total: 'Total',
     serviceProduct: 'Prestation / Produit', subtotal: 'Sous-total HT', vat: 'TVA (0%)', totalIncl: 'Total TTC',
-    paidOn: '✓ Payée le', thanks: 'StockFlow — Merci pour votre confiance', sku: 'SKU :',
+    paidOn: '✓ Payée le', thanks: 'Merci pour votre confiance', sku: 'SKU :', siret: 'SIRET', vatNo: 'N° TVA', vatExemptMention: 'TVA non applicable, art. 293 B du CGI',
   },
   en: {
     brandSub: 'E-commerce management platform', invoice: 'INVOICE', issuedOn: 'Issued on', due: 'Due:',
     issuer: 'From', billedTo: 'Billed to', description: 'Description', qty: 'Qty', unit: 'Unit price', total: 'Total',
     serviceProduct: 'Service / Product', subtotal: 'Subtotal (excl. tax)', vat: 'VAT (0%)', totalIncl: 'Total (incl. tax)',
-    paidOn: '✓ Paid on', thanks: 'StockFlow — Thank you for your business', sku: 'SKU:',
+    paidOn: '✓ Paid on', thanks: 'Thank you for your business', sku: 'SKU:', siret: 'SIRET', vatNo: 'VAT No.', vatExemptMention: 'VAT not applicable, art. 293 B of the French CGI',
   },
 }
 
-export default function InvoicePDF({ data, locale = 'fr' }: { data: InvoiceData; locale?: Locale }) {
+export default function InvoicePDF({ data, locale = 'fr', seller }: { data: InvoiceData; locale?: Locale; seller?: Seller }) {
   const L = locale === 'en' ? 'en' : 'fr'
   const dl = L === 'en' ? 'en-US' : 'fr-FR'
   const d = DICT[L]
   const fmt = (n: number) => new Intl.NumberFormat(dl, { style: 'currency', currency: 'EUR' }).format(n || 0)
   const fmtDate = (s: string) => new Date(s).toLocaleDateString(dl)
   const items = data.order?.items ?? []
-  const subtotal = items.length > 0
-    ? items.reduce((s, i) => s + i.total_price, 0)
-    : data.amount
+  const ttc = data.amount || 0
+  const vatRate = data.vat_rate ?? 0
+  const subtotal = data.subtotal ?? ttc
+  const vatAmount = data.vat_amount ?? 0
+  const sellerName = seller?.company_name || 'TijaraFlow'
+  const vatLabel = L === 'fr' ? `TVA (${vatRate} %)` : `VAT (${vatRate}%)`
 
   return (
     <Document>
@@ -202,7 +222,7 @@ export default function InvoicePDF({ data, locale = 'fr' }: { data: InvoiceData;
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.brandName}>StockFlow</Text>
+            <Text style={styles.brandName}>{sellerName}</Text>
             <Text style={styles.brandSub}>{d.brandSub}</Text>
           </View>
           <View>
@@ -224,8 +244,17 @@ export default function InvoicePDF({ data, locale = 'fr' }: { data: InvoiceData;
         <View style={styles.parties}>
           <View style={styles.partyBlock}>
             <Text style={styles.partyLabel}>{d.issuer}</Text>
-            <Text style={styles.partyName}>StockFlow SAS</Text>
-            <Text style={styles.partyInfo}>contact@stockflow.app</Text>
+            <Text style={styles.partyName}>{sellerName}</Text>
+            {seller?.address_line1 ? <Text style={styles.partyInfo}>{seller.address_line1}</Text> : null}
+            {seller?.address_line2 ? <Text style={styles.partyInfo}>{seller.address_line2}</Text> : null}
+            {(seller?.postal_code || seller?.city) ? <Text style={styles.partyInfo}>{[seller?.postal_code, seller?.city].filter(Boolean).join(' ')}</Text> : null}
+            {seller?.country ? <Text style={styles.partyInfo}>{seller.country}</Text> : null}
+            {seller?.siret ? <Text style={styles.partyInfo}>{d.siret} {seller.siret}</Text> : null}
+            {seller?.vat_exempt ? (
+              <Text style={styles.partyInfo}>{d.vatExemptMention}</Text>
+            ) : seller?.vat_number ? (
+              <Text style={styles.partyInfo}>{d.vatNo} {seller.vat_number}</Text>
+            ) : null}
           </View>
           <View style={styles.partyBlock}>
             <Text style={styles.partyLabel}>{d.billedTo}</Text>
@@ -279,10 +308,12 @@ export default function InvoicePDF({ data, locale = 'fr' }: { data: InvoiceData;
             <Text style={styles.totalLabel}>{d.subtotal}</Text>
             <Text style={styles.totalValue}>{fmt(subtotal)}</Text>
           </View>
-          <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>{d.vat}</Text>
-            <Text style={styles.totalValue}>{fmt(0)}</Text>
-          </View>
+          {!seller?.vat_exempt && (
+            <View style={styles.totalRow}>
+              <Text style={styles.totalLabel}>{vatLabel}</Text>
+              <Text style={styles.totalValue}>{fmt(vatAmount)}</Text>
+            </View>
+          )}
           <View style={styles.grandTotalRow}>
             <Text style={styles.grandTotalLabel}>{d.totalIncl}</Text>
             <Text style={styles.grandTotalValue}>{fmt(data.amount)}</Text>
@@ -294,6 +325,18 @@ export default function InvoicePDF({ data, locale = 'fr' }: { data: InvoiceData;
               </Text>
             </View>
           )}
+        </View>
+
+        {/* Mentions légales */}
+        <View style={{ marginTop: 18 }}>
+          <Text style={{ fontSize: 8, color: '#6b7280', marginBottom: 3 }}>
+            {L === 'fr' ? `Conditions de règlement : paiement à ${seller?.payment_terms_days ?? 30} jours.` : `Payment terms: due within ${seller?.payment_terms_days ?? 30} days.`}
+          </Text>
+          <Text style={{ fontSize: 8, color: '#9ca3af' }}>
+            {seller?.legal_footer || (L === 'fr'
+              ? "En cas de retard de paiement : pénalités au taux de 3 fois le taux d'intérêt légal et indemnité forfaitaire de 40 € pour frais de recouvrement (art. L441-10 du Code de commerce)."
+              : 'Late payment incurs penalties at three times the legal interest rate plus a flat 40 EUR recovery fee (art. L441-10 French Commercial Code).')}
+          </Text>
         </View>
 
         {/* Footer */}

@@ -4,6 +4,7 @@
 // après mapping via un adaptateur (WooCommerce, Shopify, …).
 // ============================================================
 import { createClient } from '@supabase/supabase-js'
+import { getBillingProfile, splitVat } from '@/lib/billing/profile'
 import { sendInvoiceEmail, sendStockAlert } from '@/lib/email/send'
 import type { Locale } from '@/i18n/locales'
 import { hasAutomations } from '@/lib/entitlements'
@@ -330,11 +331,12 @@ async function triggerAutoInvoice(
     .maybeSingle()
   if (existing) return
 
-  const { data: numData } = await supabase.rpc('generate_invoice_number')
+  const { data: numData } = await supabase.rpc('next_invoice_number', { p_user_id: userId })
   if (!numData) return
 
+  const profile = await getBillingProfile(supabase, userId)
   const dueDate = new Date()
-  dueDate.setDate(dueDate.getDate() + 30)
+  dueDate.setDate(dueDate.getDate() + (profile.payment_terms_days ?? 30))
 
   let cId = customerId, amt = amount, cData = customerData
   if (!cId || !amt) {
@@ -348,6 +350,7 @@ async function triggerAutoInvoice(
     cData = (order?.customer as { full_name: string; email: string } | undefined) ?? cData
   }
 
+  const v = splitVat(amt ?? 0, profile)
   const { data: invoice } = await supabase
     .from('invoices')
     .insert({
@@ -355,7 +358,10 @@ async function triggerAutoInvoice(
       order_id: orderId,
       customer_id: cId,
       invoice_number: numData,
-      amount: amt ?? 0,
+      amount: v.amount,
+      subtotal: v.subtotal,
+      vat_rate: v.vat_rate,
+      vat_amount: v.vat_amount,
       due_date: dueDate.toISOString().split('T')[0],
       status: 'sent',
     })

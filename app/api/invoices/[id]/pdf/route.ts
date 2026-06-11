@@ -2,6 +2,7 @@ import { renderToBuffer } from '@react-pdf/renderer'
 import { createElement } from 'react'
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { getBillingProfile } from '@/lib/billing/profile'
 import InvoicePDF from '@/components/invoices/InvoicePDF'
 
 export async function GET(
@@ -45,8 +46,10 @@ export async function GET(
     return NextResponse.json({ error: msg }, { status: 404 })
   }
 
+  const seller = invoice.user_id ? await getBillingProfile(supabase, invoice.user_id) : null
+
   const buffer = await renderToBuffer(
-    createElement(InvoicePDF as any, { data: invoice, locale }) as any
+    createElement(InvoicePDF as any, { data: invoice, locale, seller }) as any
   )
   return new NextResponse(new Uint8Array(buffer), {
     headers: {

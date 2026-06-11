@@ -5,6 +5,8 @@ import { getTranslations } from 'next-intl/server'
 import SettingsForm from './SettingsForm'
 import ApiKeysSection from './ApiKeysSection'
 import WooCommerceSection from './WooCommerceSection'
+import BillingProfileForm from './BillingProfileForm'
+import { getBillingProfile } from '@/lib/billing/profile'
 import { PageHeader } from '@/components/shared/page-header'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 
@@ -14,9 +16,10 @@ export default async function SettingsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  const [{ data: settings }, { data: apiKeys }] = await Promise.all([
+  const [{ data: settings }, { data: apiKeys }, billingProfile] = await Promise.all([
     supabase.from('user_settings').select('*').eq('user_id', user.id).maybeSingle(),
     supabase.from('api_keys').select('id, name, key_prefix, last_used_at, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
+    getBillingProfile(supabase, user.id),
   ])
 
   const defaults = {
@@ -37,6 +40,7 @@ export default async function SettingsPage() {
         <TabsList>
           <TabsTrigger value="notifications">{t('tabNotifications')}</TabsTrigger>
           <TabsTrigger value="integrations">{t('tabIntegrations')}</TabsTrigger>
+          <TabsTrigger value="billing">{t('tabBilling')}</TabsTrigger>
           <TabsTrigger value="apikeys">{t('tabApiKeys')}</TabsTrigger>
         </TabsList>
 
@@ -50,6 +54,10 @@ export default async function SettingsPage() {
             webhookSecret={settings?.wc_webhook_secret ?? null}
             appUrl={appUrl}
           />
+        </TabsContent>
+
+        <TabsContent value="billing">
+          <BillingProfileForm profile={billingProfile} />
         </TabsContent>
 
         <TabsContent value="apikeys">

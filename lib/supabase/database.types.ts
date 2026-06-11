@@ -42,6 +42,69 @@ export type Database = {
         }
         Relationships: []
       }
+      billing_profiles: {
+        Row: {
+          address_line1: string | null
+          address_line2: string | null
+          city: string | null
+          company_name: string | null
+          country: string
+          created_at: string
+          default_vat_rate: number
+          invoice_prefix: string
+          legal_footer: string | null
+          logo_url: string | null
+          next_invoice_seq: number
+          payment_terms_days: number
+          postal_code: string | null
+          siret: string | null
+          updated_at: string
+          user_id: string
+          vat_exempt: boolean
+          vat_number: string | null
+        }
+        Insert: {
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string
+          created_at?: string
+          default_vat_rate?: number
+          invoice_prefix?: string
+          legal_footer?: string | null
+          logo_url?: string | null
+          next_invoice_seq?: number
+          payment_terms_days?: number
+          postal_code?: string | null
+          siret?: string | null
+          updated_at?: string
+          user_id: string
+          vat_exempt?: boolean
+          vat_number?: string | null
+        }
+        Update: {
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string
+          created_at?: string
+          default_vat_rate?: number
+          invoice_prefix?: string
+          legal_footer?: string | null
+          logo_url?: string | null
+          next_invoice_seq?: number
+          payment_terms_days?: number
+          postal_code?: string | null
+          siret?: string | null
+          updated_at?: string
+          user_id?: string
+          vat_exempt?: boolean
+          vat_number?: string | null
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           company: string | null
@@ -179,6 +242,9 @@ export type Database = {
           reminder_count: number | null
           status: string
           stripe_payment_intent_id: string | null
+          subtotal: number | null
+          vat_amount: number | null
+          vat_rate: number | null
           user_id: string | null
         }
         Insert: {
@@ -194,6 +260,9 @@ export type Database = {
           reminder_count?: number | null
           status?: string
           stripe_payment_intent_id?: string | null
+          subtotal?: number | null
+          vat_amount?: number | null
+          vat_rate?: number | null
           user_id?: string | null
         }
         Update: {
@@ -209,6 +278,9 @@ export type Database = {
           reminder_count?: number | null
           status?: string
           stripe_payment_intent_id?: string | null
+          subtotal?: number | null
+          vat_amount?: number | null
+          vat_rate?: number | null
           user_id?: string | null
         }
         Relationships: [
@@ -577,6 +649,7 @@ export type Database = {
         }[]
       }
       generate_invoice_number: { Args: Record<PropertyKey, never>; Returns: string }
+      next_invoice_number: { Args: { p_user_id: string }; Returns: string }
       increment_stock: {
         Args: {
           p_product_id: string

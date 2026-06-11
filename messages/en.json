@@ -840,6 +840,30 @@
       "saving": "Saving…",
       "save": "Save",
       "sampleKey": "sf_live_yourkey"
+    },
+    "tabBilling": "Invoicing",
+    "billing": {
+      "title": "Billing profile",
+      "desc": "This information appears on your PDF invoices. Fill it in for compliant invoices.",
+      "company": "Company name",
+      "address1": "Address",
+      "address2": "Address line 2",
+      "postal": "Postal code",
+      "city": "City",
+      "country": "Country",
+      "siret": "Company reg. no. (SIRET)",
+      "vatNumber": "VAT number",
+      "vatExempt": "VAT exempt (small-business scheme)",
+      "vatExemptHint": "If checked, the mention \"VAT not applicable, art. 293 B of the French CGI\" is shown and no VAT is applied.",
+      "vatRate": "Default VAT rate (%)",
+      "prefix": "Invoice number prefix",
+      "paymentTerms": "Payment terms (days)",
+      "legalFooter": "Legal mentions (invoice footer)",
+      "legalFooterHint": "Leave empty to use the default legal mention (late penalties + 40 EUR fee).",
+      "save": "Save",
+      "saving": "Saving…",
+      "savedToast": "Billing profile saved",
+      "nextHint": "Continuous per-seller sequential numbering (e.g. {prefix}-{year}-0001)."
     }
   },
   "onboarding": {

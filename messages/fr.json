@@ -840,6 +840,30 @@
       "saving": "Enregistrement…",
       "save": "Enregistrer",
       "sampleKey": "sf_live_votreclé"
+    },
+    "tabBilling": "Facturation",
+    "billing": {
+      "title": "Profil de facturation",
+      "desc": "Ces informations apparaissent sur vos factures PDF. Renseignez-les pour des factures conformes.",
+      "company": "Raison sociale",
+      "address1": "Adresse",
+      "address2": "Complément d'adresse",
+      "postal": "Code postal",
+      "city": "Ville",
+      "country": "Pays",
+      "siret": "SIRET",
+      "vatNumber": "N° de TVA intracommunautaire",
+      "vatExempt": "Franchise en base de TVA (non assujetti)",
+      "vatExemptHint": "Si coché, la mention « TVA non applicable, art. 293 B du CGI » s'affiche et aucune TVA n'est appliquée.",
+      "vatRate": "Taux de TVA par défaut (%)",
+      "prefix": "Préfixe de numéro de facture",
+      "paymentTerms": "Délai de paiement (jours)",
+      "legalFooter": "Mentions légales (pied de facture)",
+      "legalFooterHint": "Laissez vide pour utiliser la mention légale par défaut (pénalités de retard + indemnité de 40 €).",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "savedToast": "Profil de facturation enregistré",
+      "nextHint": "Numérotation séquentielle continue par vendeur (ex. {prefix}-{year}-0001)."
     }
   },
   "onboarding": {
