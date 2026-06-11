@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import type { LimitCheck } from '@/lib/entitlements'
 
 /**
@@ -8,16 +9,19 @@ import type { LimitCheck } from '@/lib/entitlements'
  */
 export function LimitBanner({
   check,
-  resourceLabel,
+  resourceKey,
 }: {
   check: LimitCheck
-  resourceLabel: string // ex. "produits", "commandes"
+  resourceKey: 'resProducts' | 'resOrders'
 }) {
+  const t = useTranslations('limitBanner')
   if (check.limit === null) return null // plan illimité
 
   const reached = check.used >= check.limit
   const pct = Math.round((check.used / Math.max(1, check.limit)) * 100)
   if (!reached && pct < 80) return null
+
+  const resource = t(resourceKey)
 
   return (
     <div
@@ -31,15 +35,13 @@ export function LimitBanner({
         <p className="text-foreground">
           {reached ? (
             <>
-              <span className="font-medium">Limite atteinte.</span> Vous avez{' '}
-              {check.used.toLocaleString('fr-FR')} / {check.limit.toLocaleString('fr-FR')}{' '}
-              {resourceLabel}. La création de nouveaux {resourceLabel} est bloquée.
+              <span className="font-medium">{t('reachedTitle')}</span>{' '}
+              {t('reachedBody', { used: check.used, limit: check.limit, resource })}
             </>
           ) : (
             <>
-              <span className="font-medium">Bientôt à la limite.</span> Vous avez utilisé{' '}
-              {pct}% de votre quota de {resourceLabel} ({check.used.toLocaleString('fr-FR')} /{' '}
-              {check.limit.toLocaleString('fr-FR')}).
+              <span className="font-medium">{t('nearTitle')}</span>{' '}
+              {t('nearBody', { pct, used: check.used, limit: check.limit, resource })}
             </>
           )}
         </p>
@@ -47,7 +49,7 @@ export function LimitBanner({
           href="/dashboard/billing"
           className="shrink-0 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90"
         >
-          Passer à un plan supérieur
+          {t('upgrade')}
         </Link>
       </div>
     </div>

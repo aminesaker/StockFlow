@@ -3,16 +3,18 @@
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 import { updateOrderStatus, deleteOrder } from '../actions'
 
 const STATUS_FLOW = ['pending', 'confirmed', 'shipped', 'delivered'] as const
-const STATUS_NEXT_LABEL: Record<string, string> = {
-  pending: '→ Confirmer', confirmed: '→ Expédier', shipped: '→ Livrer',
+const NEXT_LABEL_KEY: Record<string, string> = {
+  pending: 'nextConfirm', confirmed: 'nextShip', shipped: 'nextDeliver',
 }
 
 type Props = { orderId: string; currentStatus: string; canCancel: boolean }
 
 export default function OrderStatusActions({ orderId, currentStatus, canCancel }: Props) {
+  const t = useTranslations('orderDetail')
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -24,21 +26,21 @@ export default function OrderStatusActions({ orderId, currentStatus, canCancel }
     startTransition(async () => {
       const r = await updateOrderStatus(orderId, nextStatus)
       if (r.error) toast.error(r.error)
-      else { toast.success('Statut mis à jour'); router.refresh() }
+      else { toast.success(t('toastStatus')); router.refresh() }
     })
   }
 
   function handleCancel() {
-    if (!confirm('Annuler cette commande ?')) return
+    if (!confirm(t('confirmCancel'))) return
     startTransition(async () => {
       const r = await updateOrderStatus(orderId, 'cancelled')
       if (r.error) toast.error(r.error)
-      else { toast.success('Commande annulée'); router.refresh() }
+      else { toast.success(t('toastCancelled')); router.refresh() }
     })
   }
 
   function handleDelete() {
-    if (!confirm('Supprimer définitivement cette commande ?')) return
+    if (!confirm(t('confirmDelete'))) return
     startTransition(async () => {
       const r = await deleteOrder(orderId)
       if (r.error) toast.error(r.error)
@@ -48,13 +50,13 @@ export default function OrderStatusActions({ orderId, currentStatus, canCancel }
 
   return (
     <div className="flex items-center gap-2">
-      {nextStatus && STATUS_NEXT_LABEL[currentStatus] && (
+      {nextStatus && NEXT_LABEL_KEY[currentStatus] && (
         <button
           onClick={handleNext}
           disabled={isPending}
           className="px-3 py-1.5 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-colors"
         >
-          {STATUS_NEXT_LABEL[currentStatus]}
+          {t(NEXT_LABEL_KEY[currentStatus])}
         </button>
       )}
       {canCancel && (
@@ -63,7 +65,7 @@ export default function OrderStatusActions({ orderId, currentStatus, canCancel }
           disabled={isPending}
           className="px-3 py-1.5 border border-red-200 text-red-600 text-sm rounded-lg hover:bg-red-50 disabled:opacity-50 transition-colors"
         >
-          Annuler
+          {t('cancel')}
         </button>
       )}
       <button
@@ -71,7 +73,7 @@ export default function OrderStatusActions({ orderId, currentStatus, canCancel }
         disabled={isPending}
         className="px-3 py-1.5 border border-border text-muted-foreground text-sm rounded-lg hover:bg-muted/40 disabled:opacity-50 transition-colors"
       >
-        Supprimer
+        {t('delete')}
       </button>
     </div>
   )

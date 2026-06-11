@@ -47,7 +47,7 @@ export default async function StocksPage({ searchParams }: Props) {
     <div>
       <PageHeader title={t('title')} description={t('count', { count: total })} />
 
-      {limitCheck && <LimitBanner check={limitCheck} resourceLabel="produits" />}
+      {limitCheck && <LimitBanner check={limitCheck} resourceKey="resProducts" />}
 
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="flex-1 max-w-xs">

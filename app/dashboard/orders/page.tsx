@@ -52,7 +52,7 @@ export default async function OrdersPage({ searchParams }: Props) {
   return (
     <div>
       <PageHeader title={t('title')} description={t('count', { count: total })} />
-      {limitCheck && <LimitBanner check={limitCheck} resourceLabel="commandes" />}
+      {limitCheck && <LimitBanner check={limitCheck} resourceKey="resOrders" />}
       <div className="flex flex-col sm:flex-row gap-3 mb-4">
         <div className="flex-1 max-w-xs"><Suspense><SearchBar placeholder={t('search')} /></Suspense></div>
         <Suspense><StatusFilter options={orderStatusOptions} paramName="status" allLabel={t('filterAllStatus')} /></Suspense>
