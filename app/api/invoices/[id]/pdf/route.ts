@@ -11,6 +11,17 @@ export async function GET(
   const { id } = await params
   const supabase = await createClient()
 
+  const { data: { user } } = await supabase.auth.getUser()
+  let locale: 'fr' | 'en' = 'fr'
+  if (user) {
+    const { data: settings } = await supabase
+      .from('user_settings')
+      .select('locale')
+      .eq('user_id', user.id)
+      .maybeSingle()
+    if (settings?.locale === 'en') locale = 'en'
+  }
+
   const { data: invoice, error } = await supabase
     .from('invoices')
     .select(`
@@ -30,16 +41,4 @@ export async function GET(
     .single()
 
   if (error || !invoice) {
-    return NextResponse.json({ error: 'Facture introuvable' }, { status: 404 })
-  }
-
-const buffer = await renderToBuffer(
-  createElement(InvoicePDF as any, { data: invoice }) as any
-)
-  return new NextResponse(new Uint8Array(buffer), {
-    headers: {
-      'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename="${invoice.invoice_number}.pdf"`,
-    },
-  })
-}
+    return NextResponse.json({ error: locale === 'en' ? 'Invoice not found' : 'Fac

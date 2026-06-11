@@ -163,18 +163,34 @@ type InvoiceData = {
   } | null
 }
 
-const STATUS_FR: Record<string, string> = {
-  draft: 'Brouillon',
-  sent: 'Envoyée',
-  paid: 'Payée',
-  overdue: 'En retard',
-  cancelled: 'Annulée',
+type Locale = 'fr' | 'en'
+
+const STATUS_LABELS: Record<Locale, Record<string, string>> = {
+  fr: { draft: 'Brouillon', sent: 'Envoyée', paid: 'Payée', overdue: 'En retard', cancelled: 'Annulée' },
+  en: { draft: 'Draft', sent: 'Sent', paid: 'Paid', overdue: 'Overdue', cancelled: 'Cancelled' },
 }
 
-const fmt = (n: number) =>
-  n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €'
+const DICT: Record<Locale, Record<string, string>> = {
+  fr: {
+    brandSub: 'Plateforme de gestion e-commerce', invoice: 'FACTURE', issuedOn: 'Émise le', due: 'Échéance :',
+    issuer: 'Émetteur', billedTo: 'Facturé à', description: 'Description', qty: 'Qté', unit: 'Prix unit.', total: 'Total',
+    serviceProduct: 'Prestation / Produit', subtotal: 'Sous-total HT', vat: 'TVA (0%)', totalIncl: 'Total TTC',
+    paidOn: '✓ Payée le', thanks: 'StockFlow — Merci pour votre confiance', sku: 'SKU :',
+  },
+  en: {
+    brandSub: 'E-commerce management platform', invoice: 'INVOICE', issuedOn: 'Issued on', due: 'Due:',
+    issuer: 'From', billedTo: 'Billed to', description: 'Description', qty: 'Qty', unit: 'Unit price', total: 'Total',
+    serviceProduct: 'Service / Product', subtotal: 'Subtotal (excl. tax)', vat: 'VAT (0%)', totalIncl: 'Total (incl. tax)',
+    paidOn: '✓ Paid on', thanks: 'StockFlow — Thank you for your business', sku: 'SKU:',
+  },
+}
 
-export default function InvoicePDF({ data }: { data: InvoiceData }) {
+export default function InvoicePDF({ data, locale = 'fr' }: { data: InvoiceData; locale?: Locale }) {
+  const L = locale === 'en' ? 'en' : 'fr'
+  const dl = L === 'en' ? 'en-US' : 'fr-FR'
+  const d = DICT[L]
+  const fmt = (n: number) => new Intl.NumberFormat(dl, { style: 'currency', currency: 'EUR' }).format(n || 0)
+  const fmtDate = (s: string) => new Date(s).toLocaleDateString(dl)
   const items = data.order?.items ?? []
   const subtotal = items.length > 0
     ? items.reduce((s, i) => s + i.total_price, 0)
@@ -187,19 +203,19 @@ export default function InvoicePDF({ data }: { data: InvoiceData }) {
         <View style={styles.header}>
           <View>
             <Text style={styles.brandName}>StockFlow</Text>
-            <Text style={styles.brandSub}>Plateforme de gestion e-commerce</Text>
+            <Text style={styles.brandSub}>{d.brandSub}</Text>
           </View>
           <View>
-            <Text style={styles.invoiceTitle}>FACTURE</Text>
+            <Text style={styles.invoiceTitle}>{d.invoice}</Text>
             <Text style={styles.invoiceMeta}>{data.invoice_number}</Text>
             <Text style={styles.invoiceMeta}>
-              Émise le {new Date(data.created_at).toLocaleDateString('fr-FR')}
+              {d.issuedOn} {fmtDate(data.created_at)}
             </Text>
             <Text style={styles.invoiceMeta}>
-              Échéance : {new Date(data.due_date).toLocaleDateString('fr-FR')}
+              {d.due} {fmtDate(data.due_date)}
             </Text>
             <Text style={[styles.invoiceMeta, { marginTop: 4, fontFamily: 'Helvetica-Bold' }]}>
-              {STATUS_FR[data.status] ?? data.status}
+              {STATUS_LABELS[L][data.status] ?? data.status}
             </Text>
           </View>
         </View>
@@ -207,12 +223,12 @@ export default function InvoicePDF({ data }: { data: InvoiceData }) {
         {/* Parties */}
         <View style={styles.parties}>
           <View style={styles.partyBlock}>
-            <Text style={styles.partyLabel}>Émetteur</Text>
+            <Text style={styles.partyLabel}>{d.issuer}</Text>
             <Text style={styles.partyName}>StockFlow SAS</Text>
             <Text style={styles.partyInfo}>contact@stockflow.app</Text>
           </View>
           <View style={styles.partyBlock}>
-            <Text style={styles.partyLabel}>Facturé à</Text>
+            <Text style={styles.partyLabel}>{d.billedTo}</Text>
             <Text style={styles.partyName}>{data.customer.full_name}</Text>
             <Text style={styles.partyInfo}>{data.customer.email}</Text>
             {data.customer.phone ? <Text style={styles.partyInfo}>{data.customer.phone}</Text> : null}
@@ -228,10 +244,10 @@ export default function InvoicePDF({ data }: { data: InvoiceData }) {
         {/* Table */}
         <View style={styles.table}>
           <View style={styles.tableHeader}>
-            <Text style={styles.colDesc}>Description</Text>
-            <Text style={styles.colQty}>Qté</Text>
-            <Text style={styles.colPrice}>Prix unit.</Text>
-            <Text style={styles.colTotal}>Total</Text>
+            <Text style={styles.colDesc}>{d.description}</Text>
+            <Text style={styles.colQty}>{d.qty}</Text>
+            <Text style={styles.colPrice}>{d.unit}</Text>
+            <Text style={styles.colTotal}>{d.total}</Text>
           </View>
 
           {items.length > 0 ? (
@@ -240,7 +256,7 @@ export default function InvoicePDF({ data }: { data: InvoiceData }) {
                 <Text style={styles.colDescVal}>
                   {item.product.name}
                   {'\n'}
-                  <Text style={{ color: '#9ca3af', fontSize: 8 }}>SKU : {item.product.sku}</Text>
+                  <Text style={{ color: '#9ca3af', fontSize: 8 }}>{d.sku} {item.product.sku}</Text>
                 </Text>
                 <Text style={styles.colQtyVal}>{item.quantity}</Text>
                 <Text style={styles.colPriceVal}>{fmt(item.unit_price)}</Text>
@@ -249,7 +265,7 @@ export default function InvoicePDF({ data }: { data: InvoiceData }) {
             ))
           ) : (
             <View style={styles.tableRow}>
-              <Text style={styles.colDescVal}>Prestation / Produit</Text>
+              <Text style={styles.colDescVal}>{d.serviceProduct}</Text>
               <Text style={styles.colQtyVal}>1</Text>
               <Text style={styles.colPriceVal}>{fmt(data.amount)}</Text>
               <Text style={styles.colTotalVal}>{fmt(data.amount)}</Text>
@@ -260,21 +276,21 @@ export default function InvoicePDF({ data }: { data: InvoiceData }) {
         {/* Totals */}
         <View style={styles.totalsSection}>
           <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Sous-total HT</Text>
+            <Text style={styles.totalLabel}>{d.subtotal}</Text>
             <Text style={styles.totalValue}>{fmt(subtotal)}</Text>
           </View>
           <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>TVA (0%)</Text>
+            <Text style={styles.totalLabel}>{d.vat}</Text>
             <Text style={styles.totalValue}>{fmt(0)}</Text>
           </View>
           <View style={styles.grandTotalRow}>
-            <Text style={styles.grandTotalLabel}>Total TTC</Text>
+            <Text style={styles.grandTotalLabel}>{d.totalIncl}</Text>
             <Text style={styles.grandTotalValue}>{fmt(data.amount)}</Text>
           </View>
           {data.paid_at && (
             <View style={[styles.totalRow, { marginTop: 6 }]}>
               <Text style={[styles.totalLabel, { color: '#16a34a' }]}>
-                ✓ Payée le {new Date(data.paid_at).toLocaleDateString('fr-FR')}
+                {d.paidOn} {fmtDate(data.paid_at)}
               </Text>
             </View>
           )}
@@ -282,7 +298,7 @@ export default function InvoicePDF({ data }: { data: InvoiceData }) {
 
         {/* Footer */}
         <View style={styles.footer} fixed>
-          <Text style={styles.footerText}>StockFlow — Merci pour votre confiance</Text>
+          <Text style={styles.footerText}>{d.thanks}</Text>
           <Text style={styles.footerText}>{data.invoice_number}</Text>
         </View>
       </Page>

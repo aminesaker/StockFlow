@@ -980,5 +980,13 @@
     "upgrade": "Passer à un plan supérieur",
     "resProducts": "produits",
     "resOrders": "commandes"
+  },
+  "payment": {
+    "successTitle": "Paiement confirmé",
+    "cancelTitle": "Paiement annulé",
+    "invoiceLabel": "Facture",
+    "successBody": "Votre paiement a été traité avec succès.",
+    "cancelBody": "Aucun montant n'a été débité.",
+    "backToInvoices": "Retour aux factures"
   }
 }

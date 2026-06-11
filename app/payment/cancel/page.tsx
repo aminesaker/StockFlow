@@ -1,10 +1,12 @@
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 
 export default async function PaymentCancelPage({
   searchParams,
 }: {
   searchParams: Promise<{ invoice?: string }>
 }) {
+  const t = await getTranslations('payment')
   const { invoice } = await searchParams
 
   return (
@@ -15,20 +17,18 @@ export default async function PaymentCancelPage({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </div>
-        <h1 className="text-2xl font-bold text-foreground mb-2">Paiement annulé</h1>
+        <h1 className="text-2xl font-bold text-foreground mb-2">{t('cancelTitle')}</h1>
         {invoice && (
           <p className="text-muted-foreground mb-1">
-            Facture <span className="font-medium text-foreground">{invoice}</span>
+            {t('invoiceLabel')} <span className="font-medium text-foreground">{invoice}</span>
           </p>
         )}
-        <p className="text-muted-foreground text-sm mb-8">
-          Aucun montant n&apos;a été débité.
-        </p>
+        <p className="text-muted-foreground text-sm mb-8">{t('cancelBody')}</p>
         <Link
           href="/dashboard/invoices"
           className="inline-block px-6 py-2.5 bg-gray-800 text-white text-sm font-medium rounded-lg hover:bg-gray-900 transition-colors"
         >
-          Retour aux factures
+          {t('backToInvoices')}
         </Link>
       </div>
     </div>

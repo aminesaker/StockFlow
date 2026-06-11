@@ -1,10 +1,12 @@
 import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
 
 export default async function PaymentSuccessPage({
   searchParams,
 }: {
   searchParams: Promise<{ invoice?: string }>
 }) {
+  const t = await getTranslations('payment')
   const { invoice } = await searchParams
 
   return (
@@ -15,20 +17,18 @@ export default async function PaymentSuccessPage({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h1 className="text-2xl font-bold text-foreground mb-2">Paiement confirmé</h1>
+        <h1 className="text-2xl font-bold text-foreground mb-2">{t('successTitle')}</h1>
         {invoice && (
           <p className="text-muted-foreground mb-1">
-            Facture <span className="font-medium text-foreground">{invoice}</span>
+            {t('invoiceLabel')} <span className="font-medium text-foreground">{invoice}</span>
           </p>
         )}
-        <p className="text-muted-foreground text-sm mb-8">
-          Votre paiement a été traité avec succès.
-        </p>
+        <p className="text-muted-foreground text-sm mb-8">{t('successBody')}</p>
         <Link
           href="/dashboard/invoices"
           className="inline-block px-6 py-2.5 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
         >
-          Retour aux factures
+          {t('backToInvoices')}
         </Link>
       </div>
     </div>

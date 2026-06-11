@@ -980,5 +980,13 @@
     "upgrade": "Upgrade your plan",
     "resProducts": "products",
     "resOrders": "orders"
+  },
+  "payment": {
+    "successTitle": "Payment confirmed",
+    "cancelTitle": "Payment cancelled",
+    "invoiceLabel": "Invoice",
+    "successBody": "Your payment was processed successfully.",
+    "cancelBody": "No amount was charged.",
+    "backToInvoices": "Back to invoices"
   }
 }
