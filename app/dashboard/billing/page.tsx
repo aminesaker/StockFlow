@@ -23,8 +23,9 @@ export default async function BillingPage() {
   ])
   const current = PLANS[plan]
 
+  const MONTHLY_PRICE: Record<string, number> = { pro: 19, business: 39, scale: 89 }
   const priceLabel = (pid: string) =>
-    pid === 'starter' ? t('free') : pid === 'pro' ? t('priceMonthly', { price: 29 }) : t('priceMonthly', { price: 99 })
+    pid === 'starter' ? t('free') : t('priceMonthly', { price: MONTHLY_PRICE[pid] ?? 0 })
 
   return (
     <div className="mx-auto max-w-4xl">

@@ -742,9 +742,15 @@
       ],
       "business": [
         "Produits & commandes illimités",
-        "Multi-boutiques",
+        "Jusqu'à 3 boutiques",
+        "API publique",
+        "Automatisations"
+      ],
+      "scale": [
+        "Tout Business",
+        "Multi-boutiques illimitées",
         "IA prédictive",
-        "API publique"
+        "Support prioritaire"
       ]
     }
   },

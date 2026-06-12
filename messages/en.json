@@ -742,9 +742,15 @@
       ],
       "business": [
         "Unlimited products & orders",
-        "Multi-store",
+        "Up to 3 stores",
+        "Public API",
+        "Automations"
+      ],
+      "scale": [
+        "Everything in Business",
+        "Unlimited stores",
         "Predictive AI",
-        "Public API"
+        "Priority support"
       ]
     }
   },
