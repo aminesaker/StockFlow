@@ -68,10 +68,16 @@ export async function handleSyncWebhook(req: NextRequest, adapter: PlatformAdapt
     .select('wc_webhook_secret, auto_invoice, stock_alerts')
     .eq('user_id', userId)
     .maybeSingle()
-  let secret = settings?.wc_webhook_secret ?? null
+  // Secret propre à la boutique d'abord. Le secret global `wc_webhook_secret`
+  // est spécifique à WooCommerce : ne pas l'appliquer aux autres plateformes
+  // (sinon un store Shopify sans secret hérite du secret WooCommerce → 401).
+  let secret: string | null = null
   if (storeId) {
     const { data: st } = await supabase.from('stores').select('webhook_secret').eq('id', storeId).maybeSingle()
-    if (st?.webhook_secret) secret = st.webhook_secret
+    secret = st?.webhook_secret ?? null
+  }
+  if (!secret && adapter.source === 'woocommerce') {
+    secret = settings?.wc_webhook_secret ?? null
   }
 
   // 4. Vérification de signature (propre à la plateforme)
