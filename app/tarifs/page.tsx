@@ -10,20 +10,20 @@ export async function generateMetadata() {
   return { title: t('title', { brand: BRAND }), description: t('description', { brand: BRAND }) }
 }
 
-const CTA_HREF: Record<string, string> = { starter: '/register', pro: '/register', business: '/contact' }
+const CTA_HREF: Record<string, string> = { starter: '/register', pro: '/register', business: '/register', scale: '/contact' }
 
 export default async function TarifsPage() {
   const t = await getTranslations('pricing')
   return (
     <div className="min-h-screen bg-white text-gray-900 antialiased">
       <SiteHeader />
-      <section className="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+      <section className="mx-auto max-w-7xl px-5 py-16 sm:py-24">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-sm font-semibold uppercase tracking-wide text-indigo-600">{t('kicker')}</p>
           <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">{t('title')}</h1>
           <p className="mt-4 text-lg text-gray-600">{t('subtitle')}</p>
         </div>
-        <div className="mt-14 grid gap-6 lg:grid-cols-3">
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {PLAN_ORDER.map((id) => {
             const popular = id === 'pro'
             const highlights = t.raw(`plans.${id}.highlights`) as string[]

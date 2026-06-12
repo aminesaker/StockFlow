@@ -269,7 +269,7 @@
       },
       "pro": {
         "name": "Pro",
-        "price": "29 €/mois",
+        "price": "19 €/mois",
         "cta": "Choisir Pro",
         "highlights": [
           "5 000 produits",
@@ -280,13 +280,24 @@
       },
       "business": {
         "name": "Business",
-        "price": "99 €/mois",
-        "cta": "Nous contacter",
+        "price": "39 €/mois",
+        "cta": "Choisir Business",
         "highlights": [
           "Produits & commandes illimités",
-          "Multi-boutiques",
+          "Jusqu'à 3 boutiques",
+          "API publique",
+          "Automatisations"
+        ]
+      },
+      "scale": {
+        "name": "Scale",
+        "price": "89 €/mois",
+        "cta": "Choisir Scale",
+        "highlights": [
+          "Tout Business",
+          "Multi-boutiques illimitées",
           "IA prédictive",
-          "API publique"
+          "Support prioritaire"
         ]
       }
     }

@@ -269,7 +269,7 @@
       },
       "pro": {
         "name": "Pro",
-        "price": "€29/mo",
+        "price": "€19/mo",
         "cta": "Choose Pro",
         "highlights": [
           "5,000 products",
@@ -280,13 +280,24 @@
       },
       "business": {
         "name": "Business",
-        "price": "€99/mo",
-        "cta": "Contact us",
+        "price": "€39/mo",
+        "cta": "Choose Business",
         "highlights": [
           "Unlimited products & orders",
-          "Multi-store",
+          "Up to 3 stores",
+          "Public API",
+          "Automations"
+        ]
+      },
+      "scale": {
+        "name": "Scale",
+        "price": "€89/mo",
+        "cta": "Choose Scale",
+        "highlights": [
+          "Everything in Business",
+          "Unlimited stores",
           "Predictive AI",
-          "Public API"
+          "Priority support"
         ]
       }
     }
