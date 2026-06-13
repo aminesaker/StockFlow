@@ -618,6 +618,7 @@ export type Database = {
       }
       stores: {
         Row: {
+          access_token: string | null
           created_at: string
           domain: string | null
           id: string
@@ -628,6 +629,7 @@ export type Database = {
           webhook_secret: string | null
         }
         Insert: {
+          access_token?: string | null
           created_at?: string
           domain?: string | null
           id?: string
@@ -638,6 +640,7 @@ export type Database = {
           webhook_secret?: string | null
         }
         Update: {
+          access_token?: string | null
           created_at?: string
           domain?: string | null
           id?: string

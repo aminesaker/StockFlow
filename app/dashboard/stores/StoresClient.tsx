@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 import type { Tables } from '@/lib/supabase/database.types'
-import { createStore, updateStore, deleteStore } from './actions'
+import { createStore, updateStore, deleteStore, importShopifyCatalog } from './actions'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 
 type Store = Tables<'stores'>
@@ -57,6 +57,13 @@ function StoreForm({ store, onDone }: { store?: Store; onDone: () => void }) {
         <input name="webhook_secret" type="password" defaultValue={store?.webhook_secret ?? ''} className={`${inputCls} font-mono`} />
         <span className="mt-1 block text-xs text-muted-foreground">{t('secretHint')}</span>
       </label>
+      {platform === 'shopify' && (
+        <label className="block">
+          <span className="mb-1 block text-xs font-medium text-muted-foreground">{t('accessToken')}</span>
+          <input name="access_token" type="password" defaultValue={store?.access_token ?? ''} placeholder="shpat_..." className={`${inputCls} font-mono`} />
+          <span className="mt-1 block text-xs text-muted-foreground">{t('accessTokenHint')}</span>
+        </label>
+      )}
       <div className="flex justify-end gap-2">
         <button type="button" onClick={onDone} className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/40">{tc('cancel')}</button>
         <button type="submit" disabled={pending} className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
@@ -74,6 +81,7 @@ export default function StoresClient({ stores, canAdd }: { stores: Store[]; canA
   const [, start] = useTransition()
   const [creating, setCreating] = useState(false)
   const [editing, setEditing] = useState<string | null>(null)
+  const [importing, setImporting] = useState<string | null>(null)
 
   function handleDelete(id: string) {
     if (!confirm(t('confirmDelete'))) return
@@ -81,6 +89,16 @@ export default function StoresClient({ stores, canAdd }: { stores: Store[]; canA
       const r = await deleteStore(id)
       if (r.error) toast.error(r.error)
       else { toast.success(t('deletedToast')); router.refresh() }
+    })
+  }
+
+  function handleImport(id: string) {
+    setImporting(id)
+    start(async () => {
+      const r = await importShopifyCatalog(id)
+      setImporting(null)
+      if (r.error) toast.error(r.error)
+      else { toast.success(t('importDone', { total: r.total ?? 0, created: r.created ?? 0, updated: r.updated ?? 0 })); router.refresh() }
     })
   }
 
@@ -118,6 +136,11 @@ export default function StoresClient({ stores, canAdd }: { stores: Store[]; canA
                   </p>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
+                  {s.platform === 'shopify' && (
+                    <button onClick={() => handleImport(s.id)} disabled={importing === s.id} className="text-primary hover:underline disabled:opacity-50">
+                      {importing === s.id ? t('importing') : t('importBtn')}
+                    </button>
+                  )}
                   <button onClick={() => setEditing(s.id)} className="text-primary hover:underline">{tc('edit')}</button>
                   <button onClick={() => handleDelete(s.id)} className="text-red-500 hover:underline">{t('delete')}</button>
                 </div>

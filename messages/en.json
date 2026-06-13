@@ -1116,6 +1116,14 @@
     "errAuth": "Not authenticated",
     "errLimit": "Plan limit reached ({limit} store(s)). Upgrade to Business to connect more.",
     "all": "All stores",
-    "switcherLabel": "Active store"
+    "switcherLabel": "Active store",
+    "accessToken": "Admin API token (Shopify)",
+    "accessTokenHint": "Create a read-only custom app in Shopify and paste the shpat_… token to import the catalog.",
+    "importBtn": "Import catalog",
+    "importing": "Importing…",
+    "importDone": "Import complete: {total} product(s) ({created} created, {updated} updated).",
+    "errNotFound": "Store not found.",
+    "errNotShopify": "Import is only available for Shopify stores.",
+    "errMissingCreds": "Set the Shopify domain and Admin API token before importing."
   }
 }

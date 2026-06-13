@@ -1116,6 +1116,14 @@
     "errAuth": "Non authentifié",
     "errLimit": "Limite du plan atteinte ({limit} boutique(s)). Passez à Business pour en connecter davantage.",
     "all": "Toutes les boutiques",
-    "switcherLabel": "Boutique active"
+    "switcherLabel": "Boutique active",
+    "accessToken": "Token API Admin (Shopify)",
+    "accessTokenHint": "Créez une app personnalisée en lecture seule dans Shopify et collez le token shpat_… pour importer le catalogue.",
+    "importBtn": "Importer le catalogue",
+    "importing": "Import en cours…",
+    "importDone": "Import terminé : {total} produit(s) ({created} créé(s), {updated} mis à jour).",
+    "errNotFound": "Boutique introuvable.",
+    "errNotShopify": "L'import n'est disponible que pour les boutiques Shopify.",
+    "errMissingCreds": "Renseignez le domaine Shopify et le token API Admin avant d'importer."
   }
 }
