@@ -626,6 +626,7 @@ export type Database = {
           platform: string
           status: string
           user_id: string
+          sheet_tab: string | null
           webhook_secret: string | null
         }
         Insert: {
@@ -637,6 +638,7 @@ export type Database = {
           platform?: string
           status?: string
           user_id: string
+          sheet_tab?: string | null
           webhook_secret?: string | null
         }
         Update: {
@@ -648,6 +650,7 @@ export type Database = {
           platform?: string
           status?: string
           user_id?: string
+          sheet_tab?: string | null
           webhook_secret?: string | null
         }
         Relationships: []

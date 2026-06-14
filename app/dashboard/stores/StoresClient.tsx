@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 import type { Tables } from '@/lib/supabase/database.types'
-import { createStore, updateStore, deleteStore, importShopifyCatalog } from './actions'
+import { createStore, updateStore, deleteStore, importShopifyCatalog, importGoogleSheet, exportGoogleSheet } from './actions'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
 
 type Store = Tables<'stores'>
@@ -43,20 +43,30 @@ function StoreForm({ store, onDone }: { store?: Store; onDone: () => void }) {
             <SelectContent>
               <SelectItem value="woocommerce">{t('platformWoo')}</SelectItem>
               <SelectItem value="shopify">{t('platformShopify')}</SelectItem>
+              <SelectItem value="google_sheets">{t('platformSheets')}</SelectItem>
               <SelectItem value="other">{t('platformOther')}</SelectItem>
             </SelectContent>
           </Select>
         </label>
       </div>
       <label className="block">
-        <span className="mb-1 block text-xs font-medium text-muted-foreground">{t('domain')}</span>
-        <input name="domain" defaultValue={store?.domain ?? ''} placeholder="maboutique.com" className={inputCls} />
+        <span className="mb-1 block text-xs font-medium text-muted-foreground">{platform === 'google_sheets' ? t('sheetUrl') : t('domain')}</span>
+        <input name="domain" defaultValue={store?.domain ?? ''} placeholder={platform === 'google_sheets' ? 'https://docs.google.com/spreadsheets/d/...' : 'maboutique.com'} className={inputCls} />
+        {platform === 'google_sheets' && <span className="mt-1 block text-xs text-muted-foreground">{t('sheetShareHint')}</span>}
       </label>
-      <label className="block">
-        <span className="mb-1 block text-xs font-medium text-muted-foreground">{t('secret')}</span>
-        <input name="webhook_secret" type="password" defaultValue={store?.webhook_secret ?? ''} className={`${inputCls} font-mono`} />
-        <span className="mt-1 block text-xs text-muted-foreground">{t('secretHint')}</span>
-      </label>
+      {platform === 'google_sheets' && (
+        <label className="block">
+          <span className="mb-1 block text-xs font-medium text-muted-foreground">{t('sheetTab')}</span>
+          <input name="sheet_tab" defaultValue={store?.sheet_tab ?? ''} placeholder={t('sheetTabPlaceholder')} className={inputCls} />
+        </label>
+      )}
+      {platform !== 'google_sheets' && (
+        <label className="block">
+          <span className="mb-1 block text-xs font-medium text-muted-foreground">{t('secret')}</span>
+          <input name="webhook_secret" type="password" defaultValue={store?.webhook_secret ?? ''} className={`${inputCls} font-mono`} />
+          <span className="mt-1 block text-xs text-muted-foreground">{t('secretHint')}</span>
+        </label>
+      )}
       {platform === 'shopify' && (
         <label className="block">
           <span className="mb-1 block text-xs font-medium text-muted-foreground">{t('accessToken')}</span>
@@ -82,6 +92,7 @@ export default function StoresClient({ stores, canAdd }: { stores: Store[]; canA
   const [creating, setCreating] = useState(false)
   const [editing, setEditing] = useState<string | null>(null)
   const [importing, setImporting] = useState<string | null>(null)
+  const [sheetBusy, setSheetBusy] = useState<string | null>(null)
 
   function handleDelete(id: string) {
     if (!confirm(t('confirmDelete'))) return
@@ -102,7 +113,27 @@ export default function StoresClient({ stores, canAdd }: { stores: Store[]; canA
     })
   }
 
-  const platformLabel = (p: string) => p === 'shopify' ? t('platformShopify') : p === 'woocommerce' ? t('platformWoo') : t('platformOther')
+  function handleSheetImport(id: string) {
+    setSheetBusy(`${id}:import`)
+    start(async () => {
+      const r = await importGoogleSheet(id)
+      setSheetBusy(null)
+      if (r.error) toast.error(r.error)
+      else { toast.success(t('sheetImportDone', { total: r.total ?? 0, created: r.created ?? 0, updated: r.updated ?? 0, skipped: r.skipped ?? 0 })); router.refresh() }
+    })
+  }
+
+  function handleSheetExport(id: string) {
+    setSheetBusy(`${id}:export`)
+    start(async () => {
+      const r = await exportGoogleSheet(id)
+      setSheetBusy(null)
+      if (r.error) toast.error(r.error)
+      else toast.success(t('sheetExportDone', { count: r.count ?? 0 }))
+    })
+  }
+
+  const platformLabel = (p: string) => p === 'shopify' ? t('platformShopify') : p === 'woocommerce' ? t('platformWoo') : p === 'google_sheets' ? t('platformSheets') : t('platformOther')
 
   return (
     <div className="space-y-4">
@@ -132,7 +163,7 @@ export default function StoresClient({ stores, canAdd }: { stores: Store[]; canA
                     <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">{t('statusActive')}</span>
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {s.domain ? `${s.domain} · ` : ''}{s.webhook_secret ? t('secretSet') : t('secretUnset')}
+                    {s.domain ? `${s.domain} · ` : ''}{s.platform === 'google_sheets' ? (s.sheet_tab || t('sheetTabPlaceholder')) : (s.webhook_secret ? t('secretSet') : t('secretUnset'))}
                   </p>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
@@ -140,6 +171,16 @@ export default function StoresClient({ stores, canAdd }: { stores: Store[]; canA
                     <button onClick={() => handleImport(s.id)} disabled={importing === s.id} className="text-primary hover:underline disabled:opacity-50">
                       {importing === s.id ? t('importing') : t('importBtn')}
                     </button>
+                  )}
+                  {s.platform === 'google_sheets' && (
+                    <>
+                      <button onClick={() => handleSheetImport(s.id)} disabled={sheetBusy !== null} className="text-primary hover:underline disabled:opacity-50">
+                        {sheetBusy === `${s.id}:import` ? t('importing') : t('sheetImportBtn')}
+                      </button>
+                      <button onClick={() => handleSheetExport(s.id)} disabled={sheetBusy !== null} className="text-primary hover:underline disabled:opacity-50">
+                        {sheetBusy === `${s.id}:export` ? t('exporting') : t('sheetExportBtn')}
+                      </button>
+                    </>
                   )}
                   <button onClick={() => setEditing(s.id)} className="text-primary hover:underline">{tc('edit')}</button>
                   <button onClick={() => handleDelete(s.id)} className="text-red-500 hover:underline">{t('delete')}</button>

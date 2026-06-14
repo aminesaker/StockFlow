@@ -1124,6 +1124,18 @@
     "importDone": "Import complete: {total} product(s) ({created} created, {updated} updated).",
     "errNotFound": "Store not found.",
     "errNotShopify": "Import is only available for Shopify stores.",
-    "errMissingCreds": "Set the Shopify domain and Admin API token before importing."
+    "errMissingCreds": "Set the Shopify domain and Admin API token before importing.",
+    "platformSheets": "Google Sheets",
+    "sheetUrl": "Google Sheet URL",
+    "sheetShareHint": "Share the Sheet with the service account email (Viewer to import, Editor to export).",
+    "sheetTab": "Tab (optional)",
+    "sheetTabPlaceholder": "Sheet1 (empty = first tab)",
+    "sheetImportBtn": "Import from Sheets",
+    "sheetExportBtn": "Export to Sheets",
+    "exporting": "Exporting…",
+    "sheetImportDone": "Import complete: {total} product(s) ({created} created, {updated} updated, {skipped} skipped).",
+    "sheetExportDone": "Export complete: {count} product(s) written to the Sheet.",
+    "errNotSheets": "This action is only available for Google Sheets stores.",
+    "errNoSheetUrl": "Set the Google Sheet URL before syncing."
   }
 }

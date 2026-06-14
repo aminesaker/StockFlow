@@ -1124,6 +1124,18 @@
     "importDone": "Import terminé : {total} produit(s) ({created} créé(s), {updated} mis à jour).",
     "errNotFound": "Boutique introuvable.",
     "errNotShopify": "L'import n'est disponible que pour les boutiques Shopify.",
-    "errMissingCreds": "Renseignez le domaine Shopify et le token API Admin avant d'importer."
+    "errMissingCreds": "Renseignez le domaine Shopify et le token API Admin avant d'importer.",
+    "platformSheets": "Google Sheets",
+    "sheetUrl": "URL du Google Sheet",
+    "sheetShareHint": "Partagez le Sheet avec l'e-mail du compte de service (Lecteur pour importer, Éditeur pour exporter).",
+    "sheetTab": "Onglet (optionnel)",
+    "sheetTabPlaceholder": "Feuille 1 (vide = première feuille)",
+    "sheetImportBtn": "Importer depuis Sheets",
+    "sheetExportBtn": "Exporter vers Sheets",
+    "exporting": "Export en cours…",
+    "sheetImportDone": "Import terminé : {total} produit(s) ({created} créé(s), {updated} mis à jour, {skipped} ignoré(s)).",
+    "sheetExportDone": "Export terminé : {count} produit(s) écrit(s) dans le Sheet.",
+    "errNotSheets": "Cette action n'est disponible que pour les boutiques Google Sheets.",
+    "errNoSheetUrl": "Renseignez l'URL du Google Sheet avant de synchroniser."
   }
 }
