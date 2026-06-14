@@ -1136,6 +1136,10 @@
     "sheetImportDone": "Import complete: {total} product(s) ({created} created, {updated} updated, {skipped} skipped).",
     "sheetExportDone": "Export complete: {count} product(s) written to the Sheet.",
     "errNotSheets": "This action is only available for Google Sheets stores.",
-    "errNoSheetUrl": "Set the Google Sheet URL before syncing."
+    "errNoSheetUrl": "Set the Google Sheet URL before syncing.",
+    "sheetServiceLabel": "Share your Sheet with this address (service account):",
+    "sheetServiceUnset": "The Google service account isn't configured on the platform yet. Contact the administrator.",
+    "copy": "Copy",
+    "copied": "Copied to clipboard"
   }
 }

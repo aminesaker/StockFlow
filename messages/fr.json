@@ -1136,6 +1136,10 @@
     "sheetImportDone": "Import terminé : {total} produit(s) ({created} créé(s), {updated} mis à jour, {skipped} ignoré(s)).",
     "sheetExportDone": "Export terminé : {count} produit(s) écrit(s) dans le Sheet.",
     "errNotSheets": "Cette action n'est disponible que pour les boutiques Google Sheets.",
-    "errNoSheetUrl": "Renseignez l'URL du Google Sheet avant de synchroniser."
+    "errNoSheetUrl": "Renseignez l'URL du Google Sheet avant de synchroniser.",
+    "sheetServiceLabel": "Partagez votre Sheet avec cette adresse (compte de service) :",
+    "sheetServiceUnset": "Le compte de service Google n'est pas encore configuré côté plateforme. Contactez l'administrateur.",
+    "copy": "Copier",
+    "copied": "Copié dans le presse-papiers"
   }
 }

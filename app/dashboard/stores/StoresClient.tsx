@@ -11,7 +11,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@
 type Store = Tables<'stores'>
 const inputCls = 'w-full rounded-lg border border-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring/50'
 
-function StoreForm({ store, onDone }: { store?: Store; onDone: () => void }) {
+function StoreForm({ store, onDone, serviceEmail }: { store?: Store; onDone: () => void; serviceEmail: string | null }) {
   const t = useTranslations('stores')
   const tc = useTranslations('common')
   const [pending, start] = useTransition()
@@ -60,6 +60,19 @@ function StoreForm({ store, onDone }: { store?: Store; onDone: () => void }) {
           <input name="sheet_tab" defaultValue={store?.sheet_tab ?? ''} placeholder={t('sheetTabPlaceholder')} className={inputCls} />
         </label>
       )}
+      {platform === 'google_sheets' && (
+        serviceEmail ? (
+          <div className="rounded-lg border border-border bg-muted/30 p-3 text-xs">
+            <p className="mb-1.5 font-medium text-foreground">{t('sheetServiceLabel')}</p>
+            <div className="flex items-center gap-2">
+              <code className="flex-1 break-all rounded bg-background px-2 py-1 font-mono text-[11px]">{serviceEmail}</code>
+              <button type="button" onClick={() => { navigator.clipboard?.writeText(serviceEmail); toast.success(t('copied')) }} className="shrink-0 rounded border border-border px-2 py-1 hover:bg-muted/40">{t('copy')}</button>
+            </div>
+          </div>
+        ) : (
+          <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-foreground">{t('sheetServiceUnset')}</p>
+        )
+      )}
       {platform !== 'google_sheets' && (
         <label className="block">
           <span className="mb-1 block text-xs font-medium text-muted-foreground">{t('secret')}</span>
@@ -84,7 +97,7 @@ function StoreForm({ store, onDone }: { store?: Store; onDone: () => void }) {
   )
 }
 
-export default function StoresClient({ stores, canAdd }: { stores: Store[]; canAdd: boolean }) {
+export default function StoresClient({ stores, canAdd, serviceEmail }: { stores: Store[]; canAdd: boolean; serviceEmail: string | null }) {
   const t = useTranslations('stores')
   const tc = useTranslations('common')
   const router = useRouter()
@@ -145,7 +158,7 @@ export default function StoresClient({ stores, canAdd }: { stores: Store[]; canA
         )}
       </div>
 
-      {creating && <StoreForm onDone={() => setCreating(false)} />}
+      {creating && <StoreForm onDone={() => setCreating(false)} serviceEmail={serviceEmail} />}
 
       {stores.length === 0 && !creating ? (
         <p className="rounded-xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">{t('empty')}</p>
@@ -153,7 +166,7 @@ export default function StoresClient({ stores, canAdd }: { stores: Store[]; canA
         <div className="space-y-3">
           {stores.map((s) => (
             editing === s.id ? (
-              <StoreForm key={s.id} store={s} onDone={() => setEditing(null)} />
+              <StoreForm key={s.id} store={s} onDone={() => setEditing(null)} serviceEmail={serviceEmail} />
             ) : (
               <div key={s.id} className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card p-5">
                 <div>

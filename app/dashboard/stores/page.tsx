@@ -21,6 +21,7 @@ export default async function StoresPage() {
     .order('created_at', { ascending: true })
 
   const limit = await canAddStore(supabase, user.id)
+  const serviceEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL ?? null
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -30,7 +31,7 @@ export default async function StoresPage() {
           {t('errLimit', { limit: limit.limit })}
         </div>
       )}
-      <StoresClient stores={(stores ?? []) as Tables<'stores'>[]} canAdd={limit.allowed} />
+      <StoresClient stores={(stores ?? []) as Tables<'stores'>[]} canAdd={limit.allowed} serviceEmail={serviceEmail} />
     </div>
   )
 }
