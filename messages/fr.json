@@ -906,6 +906,37 @@
       "saving": "Enregistrement…",
       "savedToast": "Profil de facturation enregistré",
       "nextHint": "Numérotation séquentielle continue par vendeur (ex. {prefix}-{year}-0001)."
+    },
+    "shopify": {
+      "subtitle": "Synchronisez votre boutique Shopify en temps réel.",
+      "available": "Disponible",
+      "guideTitle": "Comment connecter",
+      "step1": "Créez la boutique Shopify dans l'onglet Boutiques et générez une clé API rattachée.",
+      "step2": "Dans Shopify : Réglages → Notifications → Webhooks.",
+      "step3": "Ajoutez un webhook par événement, au format JSON, avec l'URL ci-dessous.",
+      "step4": "Collez votre clé API à la fin de l'URL (remplace sf_live_…).",
+      "step5": "Pour importer tout le catalogue existant, utilisez « Importer le catalogue » dans Boutiques.",
+      "urlLabel": "URL de webhook",
+      "copy": "Copier",
+      "topicsToEnable": "Événements à activer :",
+      "configureNote": "Le secret de webhook, le token API Admin et l'import du catalogue se règlent dans la page Boutiques.",
+      "storesLink": "Configurer dans Boutiques"
+    },
+    "sheets": {
+      "subtitle": "Pour les marchands sans plateforme : import/export via un Google Sheet.",
+      "available": "Disponible",
+      "needsConfig": "Le compte de service Google n'est pas encore configuré côté plateforme. Contactez l'administrateur.",
+      "guideTitle": "Comment connecter",
+      "step1": "Créez une boutique « Google Sheets » dans l'onglet Boutiques et collez l'URL de votre Sheet.",
+      "step2": "Partagez votre Sheet avec l'e-mail du compte de service ci-dessous (Lecteur pour importer, Éditeur pour exporter).",
+      "step3": "Ajoutez une première ligne d'en-têtes (voir colonnes attendues).",
+      "step4": "Utilisez « Importer depuis Sheets » ou « Exporter vers Sheets » depuis Boutiques.",
+      "serviceLabel": "E-mail du compte de service à partager",
+      "copy": "Copier",
+      "columnsTitle": "Colonnes attendues (1re ligne)",
+      "columnsHelp": "le SKU est requis pour éviter les doublons.",
+      "configureNote": "L'URL du Sheet, l'onglet et les boutons Importer/Exporter se règlent dans la page Boutiques.",
+      "storesLink": "Configurer dans Boutiques"
     }
   },
   "onboarding": {

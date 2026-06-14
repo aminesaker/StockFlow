@@ -906,6 +906,37 @@
       "saving": "Saving…",
       "savedToast": "Billing profile saved",
       "nextHint": "Continuous per-seller sequential numbering (e.g. {prefix}-{year}-0001)."
+    },
+    "shopify": {
+      "subtitle": "Sync your Shopify store in real time.",
+      "available": "Available",
+      "guideTitle": "How to connect",
+      "step1": "Create the Shopify store in the Stores tab and generate a bound API key.",
+      "step2": "In Shopify: Settings → Notifications → Webhooks.",
+      "step3": "Add one webhook per event, JSON format, with the URL below.",
+      "step4": "Paste your API key at the end of the URL (replaces sf_live_…).",
+      "step5": "To import your whole existing catalog, use “Import catalog” in Stores.",
+      "urlLabel": "Webhook URL",
+      "copy": "Copy",
+      "topicsToEnable": "Events to enable:",
+      "configureNote": "The webhook secret, Admin API token and catalog import are set in the Stores page.",
+      "storesLink": "Configure in Stores"
+    },
+    "sheets": {
+      "subtitle": "For merchants without a platform: import/export via a Google Sheet.",
+      "available": "Available",
+      "needsConfig": "The Google service account isn't configured on the platform yet. Contact the administrator.",
+      "guideTitle": "How to connect",
+      "step1": "Create a “Google Sheets” store in the Stores tab and paste your Sheet URL.",
+      "step2": "Share your Sheet with the service account email below (Viewer to import, Editor to export).",
+      "step3": "Add a header row (see expected columns).",
+      "step4": "Use “Import from Sheets” or “Export to Sheets” from Stores.",
+      "serviceLabel": "Service account email to share with",
+      "copy": "Copy",
+      "columnsTitle": "Expected columns (first row)",
+      "columnsHelp": "SKU is required to avoid duplicates.",
+      "configureNote": "The Sheet URL, tab and Import/Export buttons are set in the Stores page.",
+      "storesLink": "Configure in Stores"
     }
   },
   "onboarding": {

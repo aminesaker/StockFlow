@@ -5,6 +5,8 @@ import { getTranslations } from 'next-intl/server'
 import SettingsForm from './SettingsForm'
 import ApiKeysSection from './ApiKeysSection'
 import WooCommerceSection from './WooCommerceSection'
+import ShopifySection from './ShopifySection'
+import GoogleSheetsSection from './GoogleSheetsSection'
 import BillingProfileForm from './BillingProfileForm'
 import { getBillingProfile } from '@/lib/billing/profile'
 import { PageHeader } from '@/components/shared/page-header'
@@ -28,6 +30,7 @@ export default async function SettingsPage() {
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://votreapp.vercel.app'
+  const serviceEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL ?? null
 
   return (
     <div>
@@ -50,11 +53,15 @@ export default async function SettingsPage() {
         </TabsContent>
 
         <TabsContent value="integrations">
-          <WooCommerceSection
-            apiKeyPrefix={(apiKeys ?? [])[0]?.key_prefix ?? null}
-            webhookSecret={settings?.wc_webhook_secret ?? null}
-            appUrl={appUrl}
-          />
+          <div className="space-y-5">
+            <WooCommerceSection
+              apiKeyPrefix={(apiKeys ?? [])[0]?.key_prefix ?? null}
+              webhookSecret={settings?.wc_webhook_secret ?? null}
+              appUrl={appUrl}
+            />
+            <ShopifySection appUrl={appUrl} />
+            <GoogleSheetsSection serviceEmail={serviceEmail} />
+          </div>
         </TabsContent>
 
         <TabsContent value="billing">
